@@ -1,0 +1,9 @@
+/build/*
+.cache
+.vs/
+/.vs/
+.vs
+*.o
+*.exe
+*.obj
+*~
