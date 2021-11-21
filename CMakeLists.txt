@@ -11,15 +11,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(SDL2 REQUIRED)
 
-FILE(GLOB SRCFILES ./src/*.cpp)
-FILE(GLOB HEADFILES ./src/*.h)
+FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp)
+FILE(GLOB HEADFILES ./src/*.h ./src/ecs/*.h)
+
+FILE(GLOB TESTSRCFILES ./test/*.cpp)
+FILE(GLOB TESTHEADFILES ./test/*.h)
 
 
 
+add_executable(Space_game ./src/main/Main.cpp ${SRCFILES} ${HEADFILES})
+target_include_directories(Space_game PUBLIC ${SDL2_INCLUDE_DIRS})
+target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
 
 
-
-add_executable(Space_game ${SRCFILES} ${HEADFILES})
-target_include_directories(Space_game. PUBLIC ${SDL2_INCLUDE_DIRS})
-target_link_libraries(Space_game. PUBLIC ${SDL2_LIBRARIES})
+add_executable(Space_game_tests ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
+target_include_directories(Space_game_tests PUBLIC ${SDL2_INCLUDE_DIRS})
+target_link_libraries(Space_game_tests PUBLIC ${SDL2_LIBRARIES})
 
