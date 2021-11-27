@@ -1,0 +1,4 @@
+#pragma once
+#define MEMORY_POOL_SIZE 52428800 // 100 MiB
+#define MAX_ENTITY_AMOUNT 65536 // 2^10
+#define MAX_COMPONENT_TYPES 64
