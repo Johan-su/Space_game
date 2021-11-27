@@ -1,48 +1,42 @@
 #include "MemoryManager.h"
 #include <cassert>
+#include <iostream>
 #include <cstdlib>
 
-
+typedef uint8_t byte;
 MemoryManager::MemoryManager()
     : m_runTimeData(nullptr), m_bytesAllocated(0), m_MemoryActive(false)
 {  
 }
 
-bool MemoryManager::init()
+void MemoryManager::init()
 {
-  if(m_MemoryActive) return false;
+  assert(!m_MemoryActive);
   m_runTimeData = malloc(MEMORY_POOL_SIZE);
   m_MemoryActive = true;
-  return true;
 }
 
-bool MemoryManager::clean()
+void MemoryManager::clean()
 {
-  if(!m_MemoryActive) return false;
+  assert(m_MemoryActive);
   free(m_runTimeData);
   m_runTimeData = nullptr;
   m_MemoryActive = false;
-  return true;
 }
 
-void *MemoryManager::alloc(size_t size)
+void MemoryManager::dump(const size_t size = 512)
 {
-  assert(size + m_bytesAllocated < MEMORY_POOL_SIZE);
-  uint64_t tmp = m_bytesAllocated;
-  
-  m_bytesAllocated += size;
-  return (void*)((uint8_t*)(m_runTimeData) + tmp); // C++ forcing this mess
-}
+  assert(m_MemoryActive);
+  assert(size < MEMORY_POOL_SIZE);
 
-void MemoryManager::dealloc(void *pointer, size_t size)
-{
-  assert(m_bytesAllocated - size > 0);
-  assert((uint8_t*)pointer > m_runTimeData);
-  assert((uint8_t*)pointer < (uint8_t*)m_runTimeData + MEMORY_POOL_SIZE);
-  
-  for(size_t i = 0; i < size; ++i)
+  size_t rowsize = 16;
+  for(size_t i = 0; i < size / rowsize; ++i)
   {
-    *((uint8_t*)(pointer) + i) = 0;
+    printf("%p ", ((byte*)(m_runTimeData) + rowsize * i));
+    for(size_t j = 0; j < rowsize; ++j)
+    {
+      printf("%x ", *((byte*)(m_runTimeData) + rowsize * i + j));
+    }
+    printf("\n");
   }
-
 }
