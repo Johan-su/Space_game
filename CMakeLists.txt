@@ -14,8 +14,8 @@ find_package(SDL2 REQUIRED)
 FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp)
 FILE(GLOB HEADFILES ./src/*.h ./src/ecs/*.h)
 
-FILE(GLOB TESTSRCFILES ./test/*.cpp)
-FILE(GLOB TESTHEADFILES ./test/*.h)
+#FILE(GLOB TESTSRCFILES ./test/*.cpp)
+#FILE(GLOB TESTHEADFILES ./test/*.h)
 
 
 
@@ -24,7 +24,7 @@ target_include_directories(Space_game PUBLIC ${SDL2_INCLUDE_DIRS})
 target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
 
 
-add_executable(Space_game_tests ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
-target_include_directories(Space_game_tests PUBLIC ${SDL2_INCLUDE_DIRS})
-target_link_libraries(Space_game_tests PUBLIC ${SDL2_LIBRARIES})
+#add_executable(Space_game_tests ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
+#target_include_directories(Space_game_tests PUBLIC ${SDL2_INCLUDE_DIRS})
+#target_link_libraries(Space_game_tests PUBLIC ${SDL2_LIBRARIES})
 
