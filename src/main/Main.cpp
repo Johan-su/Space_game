@@ -24,14 +24,6 @@ void mem_test()
 
 
 
-
-
-
-
-
-
-
-
   mm->clean();
   delete mm;
   mm = nullptr;
@@ -42,14 +34,14 @@ void component_test()
 {
   auto mm = new MemoryManager();
   mm->init();
-  std::cout <<" sizeof " << sizeof(Component_data) << std::endl;
-  auto cd = mm->alloc<Component_data>();
+  //std::cout <<" sizeof " << sizeof(Component_data) << std::endl;
+  //auto cd = mm->alloc<Component_data>();
 
-  for(int i = 0; i < 50; ++i)
-  {
-   *((uint8_t*)(cd) + i) = i;
-  }
-  mm->dump(100);
+  //for(int i = 0; i < 50; ++i)
+  //{
+  // *((uint8_t*)(cd) + i) = i;
+  //}
+  //mm->dump(100);
 
 
 
@@ -69,7 +61,7 @@ void component_test()
 int main(int argc, char *argv[])
 {
   // std::cout << "Hello, World" << std::endl;
-  if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+  if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
   {
     std::cout << "SDL_INITALIZATION FAILED " << std::endl;
     std::cout << SDL_GetError() << std::endl;
