@@ -1,11 +1,9 @@
 #pragma once
+#include "Entity.h"
 #include <cstdint>
 
 
-struct Entity //TODO(johan): move to a better place.
-{
-  uint64_t id;
-};
+
 
 class EntityManager
 {
