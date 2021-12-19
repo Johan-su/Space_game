@@ -1,6 +1,9 @@
 #pragma once
 #include "ecs_constants.h"
 #include "Components.h"
+#include "MemoryManager.h"
+//#include "globals.h"
+#include "ecs_assert.h"
 #include <cstdint>
 #include <cstddef>
 
@@ -8,26 +11,38 @@
 
 class ComponentManager
 {
-    public:
+public:
+    bool init(MemoryManager* mem);
+    bool clean(MemoryManager* mem);
 
 
-        template <typename T>
-        void set_component(Entity e)
-        {
 
-        }
+    template <typename T>
+    void set_component(Entity e)
+    {
+    }
+   template <typename T>
+    T get_component(Entity e)
+    {
+        assert(false, "non specialized template"); // non specialized template
+        return;
+    }
+    template <>
+    PositionComponent get_component<PositionComponent>(Entity e)
+    {
+        auto pc = PositionComponent();
+        pc = {0.0f, 0.0f};
+        return pc;
+    }
+    /*PositionComponent get_component(Entity e)
+    {
+        auto pc = PositionComponent();
+        pc.x = m_positionArray.x[e.id];
+        pc.y = m_positionArray.y[e.id];
+        return pc;
+    }*/
 
-        template <typename T>
-        T get_component(Entity e)
-        {
-            auto pc = PositionComponent();
-            pc.x = m_positionArray.x[e.id];
-            pc.y = m_positionArray.y[e.id];
-
-            return static_cast<T>(pc);
-        }
-
-    private:
-        PositionArray m_positionArray;
-        HealthArray m_healthArray;
+private:
+    PositionArray *m_positionArray;
+    HealthArray *m_healthArray;
 };
