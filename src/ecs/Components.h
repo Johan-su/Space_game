@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "ecs_constants.h"
+#include "ecs_assert.h"
 #include <cstdint>
 
 //#define _DEBUG
@@ -19,7 +20,7 @@
   to_array_field(float, health_regen) \
 
 
-#ifndef _DEBUG
+#ifndef DEBUG
 
 #define STRUCT_GEN(NAME, LIST)                  \
   struct NAME ## Component                      \
@@ -47,8 +48,14 @@ STRUCT_GEN(Health, HEALTHLIST)
 
 #undef to_array_field
 
-#define to_array_field(TYPE, NAME) TYPE NAME[MAX_ENTITY_AMOUNT]; \
-  uint64_t NAME ## _size;                                        \
+#define to_array_field(TYPE, NAME)                                 \
+  TYPE NAME[MAX_ENTITY_AMOUNT];                                    \
+  TYPE get_data_ ## NAME(Entity e)                                 \
+  {                                                                \
+    assert(NAME ## _size < MAX_ENTITY_AMOUNT, "Entity outside MAX_ENTITY_Size"); \
+    return NAME[EntityList[EntityIndices[e.id]].id];               \
+  }                                                                \
+  uint64_t NAME ## _size;                                          \
 
 
 ARRAY_GEN(Position, POSITIONLIST)
