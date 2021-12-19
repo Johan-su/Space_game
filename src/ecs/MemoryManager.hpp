@@ -1,6 +1,6 @@
 #pragma once
-#include "ecs_constants.h"
-#include "ecs_assert.h"
+#include "ecs_constants.hpp"
+#include "ecs_assert.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <cstddef>

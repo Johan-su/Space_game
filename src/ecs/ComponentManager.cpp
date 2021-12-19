@@ -1,5 +1,5 @@
-#include "Components.h"
-#include "ComponentManager.h"
+#include "Components.hpp"
+#include "ComponentManager.hpp"
 
 
 bool ComponentManager::init(MemoryManager* mem)

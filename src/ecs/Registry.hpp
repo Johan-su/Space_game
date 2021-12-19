@@ -1,7 +1,7 @@
 #pragma once
-#include "EntityManager.h"
-#include "MemoryManager.h"
-#include "ComponentManager.h"
+#include "EntityManager.hpp"
+#include "MemoryManager.hpp"
+#include "ComponentManager.hpp"
 
 class Registry
 {

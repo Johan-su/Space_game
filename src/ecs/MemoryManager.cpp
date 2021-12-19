@@ -1,5 +1,5 @@
-#include "MemoryManager.h"
-#include "ecs_assert.h"
+#include "MemoryManager.hpp"
+#include "ecs_assert.hpp"
 #include <iostream>
 #include <cstdlib>
 

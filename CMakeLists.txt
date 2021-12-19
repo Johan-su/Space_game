@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(SDL2 REQUIRED)
 
 FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp)
-FILE(GLOB HEADFILES ./src/*.h ./src/ecs/*.h)
+FILE(GLOB HEADFILES ./src/*.hpp ./src/ecs/*.hpp)
 
 #FILE(GLOB TESTSRCFILES ./test/*.cpp)
 #FILE(GLOB TESTHEADFILES ./test/*.h)

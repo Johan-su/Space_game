@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
-#include "ecs_constants.h"
-#include "ecs_assert.h"
+#include "Entity.hpp"
+#include "ecs_constants.hpp"
+#include "ecs_assert.hpp"
 #include <cstdint>
 
 //#define _DEBUG

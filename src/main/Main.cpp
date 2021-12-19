@@ -1,6 +1,6 @@
-#include "../ecs/ecs.h"
-#include "../ecs/globals.h"
-#include "../ecs/ecs_assert.h"
+#include "../ecs/ecs.hpp"
+#include "../ecs/globals.hpp"
+#include "../ecs/ecs_assert.hpp"
 
 #include <cstdint>
 #include <iostream>

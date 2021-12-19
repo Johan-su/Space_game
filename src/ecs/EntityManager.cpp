@@ -1,7 +1,7 @@
-#include "Entity.h"
-#include "Signature.h"
-#include "MemoryManager.h"
-#include "EntityManager.h"
+#include "Entity.hpp"
+#include "Signature.hpp"
+#include "MemoryManager.hpp"
+#include "EntityManager.hpp"
 
 void EntityManager::init(MemoryManager *mem)
 {

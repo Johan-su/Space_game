@@ -1,9 +1,9 @@
 #pragma once
-#include "ecs_constants.h"
-#include "Components.h"
-#include "MemoryManager.h"
-//#include "globals.h"
-#include "ecs_assert.h"
+#include "ecs_constants.hpp"
+#include "Components.hpp"
+#include "MemoryManager.hpp"
+//#include "globals.hpp"
+#include "ecs_assert.hpp"
 #include <cstdint>
 #include <cstddef>
 

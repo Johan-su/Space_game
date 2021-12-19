@@ -1,7 +1,7 @@
 #pragma once
-#include "MemoryManager.h"
-#include "ComponentManager.h"
-#include "EntityManager.h"
+#include "MemoryManager.hpp"
+#include "ComponentManager.hpp"
+#include "EntityManager.hpp"
 
 struct Globaldata
 {

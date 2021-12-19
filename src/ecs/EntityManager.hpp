@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
-#include "MemoryManager.h"
-#include "Signature.h"
+#include "Entity.hpp"
+#include "MemoryManager.hpp"
+#include "Signature.hpp"
 #include <cstdint>
 
 
