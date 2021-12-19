@@ -1,6 +1,6 @@
 #pragma once
 #include "ecs_constants.h"
-
+#include "globals.h"
 
 
 #include "MemoryManager.h"
