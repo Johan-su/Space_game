@@ -18,7 +18,7 @@ FILE(GLOB HEADFILES ./src/*.hpp ./src/ecs/*.hpp)
 #FILE(GLOB TESTHEADFILES ./test/*.h)
 
 
-
+add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
 add_executable(Space_game ./src/main/Main.cpp ${SRCFILES} ${HEADFILES})
 target_include_directories(Space_game PUBLIC ${SDL2_INCLUDE_DIRS})
 target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
