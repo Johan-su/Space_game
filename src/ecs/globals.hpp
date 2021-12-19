@@ -1,14 +1,9 @@
 #pragma once
-#include "MemoryManager.hpp"
-#include "ComponentManager.hpp"
-#include "EntityManager.hpp"
+#include "Registry.hpp"
 
 struct Globaldata
 {
-  MemoryManager *mem;
-  ComponentManager *compm;
-  EntityManager *enm;
-
+  Registry *reg;
 };
 
-extern Globaldata g_data;
+extern Globaldata glo;
