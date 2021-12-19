@@ -20,19 +20,10 @@
   to_array_field(float, health_regen) \
 
 
-#ifndef DEBUG
-
 #define STRUCT_GEN(NAME, LIST)                  \
   struct NAME ## Component                      \
   {LIST};                                       \
 
-#else
-
-#define STRUCT_GEN(NAME, LIST)                  \
-  struct NAME ## Component                      \
-  {LIST Entity currentEntity;};                 \
-
-#endif
 
 
 
