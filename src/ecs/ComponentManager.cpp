@@ -1,9 +1,12 @@
+#include "Signature.hpp"
 #include "Components.hpp"
 #include "ComponentManager.hpp"
 
 
 bool ComponentManager::init(MemoryManager* mem)
 {
+    m_componentIdCount = 1;
+    
     m_positionArray = mem->alloc<PositionArray>();
     m_healthArray = mem->alloc<HealthArray>();
     return 0;
