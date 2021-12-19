@@ -1,7 +1,7 @@
 #pragma once
 #include "ecs_constants.h"
+#include "ecs_assert.h"
 #include <cstdint>
-#include <cassert>
 #include <cstdlib>
 #include <cstddef>
 typedef uint8_t byte;
@@ -23,28 +23,28 @@ public:
 template <typename T>  
   T *alloc(const size_t amount = 1)
   {
-    assert(amount > 0);
-    assert(m_MemoryActive);
+    assert(amount > 0, "Cannot allocate 0 bytes");
+    assert(m_MemoryActive, "Inactive memory pool");
     const size_t type_size = sizeof(T);
-    assert(type_size * amount + m_bytesAllocated < MEMORY_POOL_SIZE);
+    assert(type_size * amount + m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
   
     uint64_t tmp = m_bytesAllocated;
     m_bytesAllocated += type_size * amount;
-   
-    return (T*)((byte*)(m_runTimeData) + tmp); // C++ forcing this mess
+    
+    return (T*)(((byte*)(m_runTimeData))+ tmp); // C++ forcing this mess
   }
   
 template <typename T>
   void dealloc(T *pointer, const size_t amount = 1)
   {
-    assert(amount > 0);
-    assert(m_MemoryActive);
+    assert(amount > 0, "Cannot deallocate 0 bytes");
+    assert(m_MemoryActive, "Inactive memory pool");
     const size_t size = sizeof(T);
     
-    assert(m_bytesAllocated - size * amount > 0);
+    assert(m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
     
-    assert(pointer >= m_runTimeData);
-    assert((byte*)pointer < (byte*)m_runTimeData + MEMORY_POOL_SIZE);
+    assert(pointer >= m_runTimeData, "Pointer outside memory pool");
+    assert((byte*)pointer < (byte*)m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
   
     for(size_t i = 0; i < size * amount; ++i)
     {
