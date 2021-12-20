@@ -23,6 +23,11 @@ public:
         m_componentManager->set_component<T>(e, comp);
         set_entity_signature(e, sig);
     }
+    template<typename T>
+    void destroy_component(Entity e)
+    {
+        m_componentManager->destroy_component<T>(e);
+    }
 
     template<typename T>
     T get_component(Entity e)
