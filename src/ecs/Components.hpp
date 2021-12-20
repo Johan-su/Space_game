@@ -9,6 +9,7 @@
 
 #define ENTITY_LIST_INDICIES Entity EntityList[MAX_ENTITY_AMOUNT]; \
    uint64_t EntityIndices[MAX_ENTITY_AMOUNT]; \
+   uint64_t EntityAmount; \
 
 
 #define POSITIONLIST \
@@ -26,7 +27,6 @@
 
 
 
-
 #define ARRAY_GEN(NAME, LIST)                   \
   struct NAME ## Array                          \
   {LIST ENTITY_LIST_INDICIES};                  \
@@ -41,12 +41,6 @@ STRUCT_GEN(Health, HEALTHLIST)
 
 #define to_array_field(TYPE, NAME)                                 \
   TYPE NAME[MAX_ENTITY_AMOUNT];                                    \
-  TYPE get_data_ ## NAME(Entity e)                                 \
-  {                                                                \
-    assert(NAME ## _size < MAX_ENTITY_AMOUNT, "Entity outside MAX_ENTITY_Size"); \
-    return NAME[EntityList[EntityIndices[e.id]].id];               \
-  }                                                                \
-  uint64_t NAME ## _size;                                          \
 
 
 ARRAY_GEN(Position, POSITIONLIST)
