@@ -3,6 +3,7 @@
 #include "../ecs/Registry.hpp"
 #include "../ecs/ecs_assert.hpp"
 
+#include <string>
 #include <cstdint>
 #include <iostream>
 #include <SDL.h>
@@ -22,7 +23,7 @@ bool isSame(T first, T second)
 
     for(size_t i = 0; i < typesize; ++i)
     {
-        if(*fp != *sp)
+        if(fp[i] != sp[i])
         {
             result = false;
             break;
@@ -35,41 +36,38 @@ bool isSame(T first, T second)
 
 Globaldata glo;
 
-void mem_test()
-{
-    auto mm = new MemoryManager();
-    mm->init();
-    //char *data = mm->alloc<char>();
-    auto *data = mm->alloc<uint8_t>(1000);
-    for(int i = 0; i < 1000; ++i)
-    {
-      *(data + i) = i;
-    }
-    //printf("%d \n", data[4]);
 
-    //mm->dealloc<int>(data);
-    
-    mm->dump(1000);
-
-
-
-    mm->clean();
-    delete mm;
-    mm = nullptr;
-}
-
+#define TEST_ARRAY_SIZE 10
 
 void component_test()
 {
-    Entity e =  glo.reg->create_entity();
-    auto pc = PositionComponent();
-    pc = {420.0f, 69.0f};
-    glo.reg->set_component(e, pc);
+    Entity elist[TEST_ARRAY_SIZE];
+    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
+    {
+        elist[i] = glo.reg->create_entity();
+    }
 
-    auto pc1 = glo.reg->get_component<PositionComponent>(e);
+    PositionComponent plist[TEST_ARRAY_SIZE];
+    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
+    {
+        plist[i] = {420.0f + (float)i, 69.0f + (float)i};
+        glo.reg->set_component(elist[i], plist[i]);
+    }
 
-    bool test = isSame<PositionComponent>(pc, pc1);
-    std::cout << "pc == pc1: " << test << "\n";
+    PositionComponent prlist[TEST_ARRAY_SIZE];
+    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
+    {
+        prlist[i] = glo.reg->get_component<PositionComponent>(elist[i]);
+        assert(isSame(plist[i], prlist[i]), "p" + std::to_string(i) + "==pr" + std::to_string(i) + " does not match");
+    }
+
+//TODO(johan) improve component testing
+
+
+    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
+    {
+        assert(isSame(plist[i], prlist[i]), "p" + std::to_string(i) + "==pr" + std::to_string(i) + " does not match");
+    }    
 
 }
 
