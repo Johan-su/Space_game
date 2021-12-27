@@ -22,9 +22,9 @@ Entity Entity_functions::create_entity(Entity_data *e_data)
 }
 void Entity_functions::set_entity_signature(Entity_data *e_data, Entity e, Signature sig)
 {
-    e_data->m_signatures[e.id] = sig;
+    e_data->m_signatures[e] = sig;
 }
 Signature Entity_functions::get_entity_signature(Entity_data *e_data, Entity e)
 {
-    return e_data->m_signatures[e.id];
+    return e_data->m_signatures[e];
 }
