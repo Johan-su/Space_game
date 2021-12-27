@@ -8,5 +8,4 @@
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 #include "EntityManager.hpp"
-#include "Registry.hpp"
 

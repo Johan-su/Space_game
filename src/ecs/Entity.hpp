@@ -1,7 +1,4 @@
 #pragma once
 #include <cstdint>
 
-struct Entity
-{
-  uint64_t id;
-};
+typedef uint64_t Entity;

@@ -1,10 +1,11 @@
-/build/*
 .cache
 .vs/
 .vscode
 /.vs/
 .vs
 *.o
+*.i
 *.exe
 *.obj
-*~
+*~*
+*.*~

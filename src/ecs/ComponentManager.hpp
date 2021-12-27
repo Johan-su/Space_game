@@ -1,128 +1,122 @@
 #pragma once
 #include "Components.hpp"
+#include "component_arrays.hpp"
 #include "ecs_constants.hpp"
 #include "Entity.hpp"
 #include "MemoryManager.hpp"
 #include "ecs_assert.hpp"
+#include <string>
 #include <cstdint>
 
 
 
-class ComponentManager
+struct Component_data
 {
-public:
-    bool init(MemoryManager *mem);
-    bool clean(MemoryManager *mem);
+    uint64_t m_componentIdCount;
 
-private:
+    #define STRUCT_GEN(NAME, vargs...) NAME ## _array m_ ## NAME;
+    #define DATA_GEN(TYPE, VAR)    
+
+    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+
+    #undef STRUCT_GEN
+    #undef DATA_GEN    
+
+};
+
+
+
+namespace Component_functions 
+{
+
+
+    bool init(Component_data *cdata, Memory_pool *mem);
+    bool clean(Component_data *cdata, Memory_pool *mem);
+
     template<typename T>
-    bool array_init(T *array, MemoryManager *mem)
+    bool array_init(T *array, Memory_pool *mem)
     {
         array = mem->alloc<T>();
         return 0;
     }
 
-public:
     template <typename T>
-    void set_component(Entity e, T& comp)
+    void set_component(Component_data *cdata, Entity e, T& comp)
     {
         assert(false, "non specialized template");
     }
-    template <>
-    void set_component<PositionComponent>(Entity e, PositionComponent& comp)
-    {
-        Entity *elist =  m_positionArray->EntityList;
-        uint64_t *eind =  m_positionArray->EntityIndices;
-        uint64_t &eAmount = m_positionArray->EntityAmount;
-
-
-        eind[e.id] = eAmount++;
-
-        elist[eind[e.id]] = e;
-
-
-        m_positionArray->x[eind[e.id]] = comp.x;
-        m_positionArray->y[eind[e.id]] = comp.y;        
-    }
+//    template <>
+//    void set_component<PositionComponent>(Component_data *cdata, Entity e, PositionComponent& comp)
+//    {
+//        Entity *elist =  cdata->m_positionArray->EntityList;
+//        uint64_t *eind =  cdata->m_positionArray->EntityIndices;
+//        uint64_t &eAmount = cdata->m_positionArray->EntityAmount;
+//
+//
+//        eind[e.id] = eAmount++;
+//
+//        elist[eind[e.id]] = e;
+//
+//
+//        cdata->m_positionArray->x[eind[e.id]] = comp.x;
+//        cdata->m_positionArray->y[eind[e.id]] = comp.y;        
+//    }
 
     template<typename T>
-    void destroy_component(Entity e)
+    void destroy_component(Component_data *cdata, Entity e)
     {
         assert(false, "non specialized template");       
     }
-    template<>
-    void destroy_component<PositionComponent>(Entity e)
-    { // https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
-    
-        Entity *elist =  m_positionArray->EntityList;
-        uint64_t *eind =  m_positionArray->EntityIndices;
-        uint64_t &eAmount = m_positionArray->EntityAmount;
-
-
-
-        Entity lastentity = elist[--eAmount];
-        uint64_t lastentity_index = eind[lastentity.id];
-        eind[lastentity.id] = eind[e.id];
-        m_positionArray->x[eind[e.id]] = m_positionArray->x[lastentity_index];
-        m_positionArray->y[eind[e.id]] = m_positionArray->y[lastentity_index];
-        
-        elist[eAmount] = {0};
-        elist[eind[lastentity.id]] = lastentity;
-        elist[eind[e.id]] = {0};
-
-        eind[e.id] = 0;
-
-    }
+//    template<>
+//    void destroy_component<PositionComponent>(Component_data *cdata, Entity e)
+//    { // https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
+//    
+//        Entity *elist =  cdata->m_positionArray->EntityList;
+//        uint64_t *eind =  cdata->m_positionArray->EntityIndices;
+//        uint64_t &eAmount = cdata->m_positionArray->EntityAmount;
+//
+//
+//
+//        Entity lastentity = elist[--eAmount];
+//        uint64_t lastentity_index = eind[lastentity.id];
+//        eind[lastentity.id] = eind[e.id];
+//        cdata->m_positionArray->x[eind[e.id]] = cdata->m_positionArray->x[lastentity_index];
+//        cdata->m_positionArray->y[eind[e.id]] = cdata->m_positionArray->y[lastentity_index];
+//        
+//        elist[eAmount] = {0};
+//        elist[eind[lastentity.id]] = lastentity;
+//        elist[eind[e.id]] = {0};
+//
+//        eind[e.id] = 0;
+//
+//    }
 
 
 
    template <typename T>
-    T get_component(Entity e)
+    T get_component(Component_data *cdata, Entity e)
     {
         assert(false, "non specialized template");
         return nullptr;
     }
-    template <>
-    PositionComponent get_component<PositionComponent>(Entity e)
-    {
-        auto& elist =  m_positionArray->EntityList;
-        auto& eind =  m_positionArray->EntityIndices;
+//    template <>
+//    PositionComponent get_component<PositionComponent>(Component_data *cdata, Entity e)
+//    {
+//        auto& elist =  cdata->m_positionArray->EntityList;
+//        auto& eind =  cdata->m_positionArray->EntityIndices;
+//
+//        auto pc = PositionComponent();
+//        pc.x = cdata->m_positionArray->x[eind[e.id]];
+//        pc.y = cdata->m_positionArray->y[eind[e.id]];
+//        return pc;
+//    }
 
-        auto pc = PositionComponent();
-        pc.x = m_positionArray->x[eind[e.id]];
-        pc.y = m_positionArray->y[eind[e.id]];
-        return pc;
-    }
-
-
-
-    /*PositionComponent get_component(Entity e)
-    {
-        auto pc = PositionComponent();
-        pc.x = m_positionArray.x[e.id];
-        pc.y = m_positionArray.y[e.id];
-        return pc;
-    }*/
     template<typename T>
-    Signature get_component_signature()
+    Signature get_component_signature(Component_data *cdata)
     {
-        static Signature component_signature = {getId()};
+        static Signature component_signature = {getId(cdata)};
         return component_signature;
 
     }
-private:
-    uint64_t getId()
-    {
-        assert(m_componentIdCount != 0, "More than " + std::to_string(MAX_COMPONENT_TYPES) + " components registered");
-        uint64_t tmp = m_componentIdCount;
-        m_componentIdCount = m_componentIdCount << 1;
-        return tmp;
-    }
-
-
-private:
-    uint64_t m_componentIdCount;
-
-    PositionArray *m_positionArray;
-    HealthArray *m_healthArray;
-};
+    uint64_t getId(Component_data *cdata);
+}

@@ -3,28 +3,28 @@
 #include "MemoryManager.hpp"
 #include "EntityManager.hpp"
 
-void EntityManager::init(MemoryManager *mem)
+void Entity_functions::init(Entity_data *e_data, Memory_pool *mem)
 {
-    m_entitycount = 0;
-    m_signatures = mem->alloc<Signature>(MAX_ENTITY_AMOUNT);
+    e_data->m_entitycount = 0;
+    e_data->m_signatures = Memory::alloc<Signature>(mem, MAX_ENTITY_AMOUNT);
 }
 
-void EntityManager::clean(MemoryManager *mem)
+void Entity_functions::clean(Entity_data *e_data, Memory_pool *mem)
 {
-    mem->dealloc<Signature>(m_signatures, MAX_ENTITY_AMOUNT);
+    Memory::dealloc<Signature>(mem, e_data->m_signatures, MAX_ENTITY_AMOUNT);
 }
 
-Entity EntityManager::create_entity()
+Entity Entity_functions::create_entity(Entity_data *e_data)
 {
     Entity e = Entity();
-    e = {++m_entitycount};
+    e = {++e_data->m_entitycount};
     return e;
 }
-void EntityManager::set_entity_signature(Entity e, Signature sig)
+void Entity_functions::set_entity_signature(Entity_data *e_data, Entity e, Signature sig)
 {
-    m_signatures[e.id] = sig;
+    e_data->m_signatures[e] = sig;
 }
-Signature EntityManager::get_entity_signature(Entity e)
+Signature Entity_functions::get_entity_signature(Entity_data *e_data, Entity e)
 {
-    return m_signatures[e.id];
+    return e_data->m_signatures[e];
 }
