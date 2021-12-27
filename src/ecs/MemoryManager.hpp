@@ -4,47 +4,54 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstddef>
+
+struct Memory_pool
+{
+  void *m_runTimeData;
+  uint64_t m_bytesAllocated;
+  
+  bool m_MemoryActive;
+
+};
+
+namespace Memory {
+
+
 typedef uint8_t byte;
 
 
 
-class MemoryManager
-{
-public:
+  void init(Memory_pool *mm);
 
-  MemoryManager();
-  
-  void init();
+  void clean(Memory_pool *mm);
 
-  void clean();
-
-  void dump(const size_t size);
+  void dump(Memory_pool *mm,  const size_t size);
   
 template <typename T>  
-  T *alloc(const size_t amount = 1)
+  T *alloc(Memory_pool *mm, const size_t amount = 1)
   {
     assert(amount > 0, "Cannot allocate 0 bytes");
-    assert(m_MemoryActive, "Inactive memory pool");
+    assert(mm->m_MemoryActive, "Inactive memory pool");
     const size_t type_size = sizeof(T);
-    assert(type_size * amount + m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
+    assert(type_size * amount + mm->m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
   
-    uint64_t tmp = m_bytesAllocated;
-    m_bytesAllocated += type_size * amount;
+    uint64_t tmp = mm->m_bytesAllocated;
+    mm->m_bytesAllocated += type_size * amount;
     
-    return (T*)(((byte*)(m_runTimeData))+ tmp); // C++ forcing this mess
+    return (T*)(((byte*)(mm->m_runTimeData))+ tmp); // C++ forcing this mess
   }
   
 template <typename T>
-  void dealloc(T *pointer, const size_t amount = 1)
+  void dealloc(Memory_pool *mm, T *pointer, const size_t amount = 1)
   {
     assert(amount > 0, "Cannot deallocate 0 bytes");
-    assert(m_MemoryActive, "Inactive memory pool");
+    assert(mm->m_MemoryActive, "Inactive memory pool");
     const size_t size = sizeof(T);
     
-    assert(m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
+    assert(mm->m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
     
-    assert(pointer >= m_runTimeData, "Pointer outside memory pool");
-    assert((byte*)pointer < (byte*)m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
+    assert(pointer >= mm->m_runTimeData, "Pointer outside memory pool");
+    assert((byte*)pointer < (byte*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
   
     for(size_t i = 0; i < size * amount; ++i)
     {
@@ -53,15 +60,4 @@ template <typename T>
   }
   
 
-private:
-  
-  void *m_runTimeData;
-
-  uint64_t m_bytesAllocated;
-  
-  bool m_MemoryActive;
-
-};
-
-
-
+}

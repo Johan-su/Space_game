@@ -1,15 +1,15 @@
 #include "SystemManager.hpp"
 
-bool SystemManager::init()
+bool System_functions::init()
 {
     return 0;
 }
 
-bool SystemManager::clean()
+bool System_functions::clean()
 {
     return 0;
 }
-void SystemManager::set_entity_signature(Entity e, Signature sig)
+void System_functions::set_entity_signature(Entity e, Signature sig)
 {
     
 }

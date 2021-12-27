@@ -4,38 +4,34 @@
 #include <cstdlib>
 
 typedef uint8_t byte;
-MemoryManager::MemoryManager()
-    : m_runTimeData(nullptr), m_bytesAllocated(0), m_MemoryActive(false)
-{  
+
+void Memory::init(Memory_pool *mm)
+{
+  assert(!mm->m_MemoryActive, "Memory pool already active");
+  mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
+  mm->m_MemoryActive = true;
 }
 
-void MemoryManager::init()
+void Memory::clean(Memory_pool *mm)
 {
-  assert(!m_MemoryActive, "Memory pool already active");
-  m_runTimeData = malloc(MEMORY_POOL_SIZE);
-  m_MemoryActive = true;
+  assert(mm->m_MemoryActive, "Memory pool already inactive");
+  free(mm->m_runTimeData);
+  mm->m_runTimeData = nullptr;
+  mm->m_MemoryActive = false;
 }
 
-void MemoryManager::clean()
+void Memory::dump(Memory_pool *mm, const size_t size = 512)
 {
-  assert(m_MemoryActive, "Memory pool already inactive");
-  free(m_runTimeData);
-  m_runTimeData = nullptr;
-  m_MemoryActive = false;
-}
-
-void MemoryManager::dump(const size_t size = 512)
-{
-  assert(m_MemoryActive, "uninitalized memory pool");
+  assert(mm->m_MemoryActive, "uninitalized memory pool");
   assert(size < MEMORY_POOL_SIZE, "Dump size greater than pool size");
 
   size_t rowsize = 16;
   for(size_t i = 0; i < size / rowsize; ++i)
   {
-    printf("%p ", ((byte*)(m_runTimeData) + rowsize * i));
+    printf("%p ", ((byte*)(mm->m_runTimeData) + rowsize * i));
     for(size_t j = 0; j < rowsize; ++j)
     {
-      printf("%x ", *((byte*)(m_runTimeData) + rowsize * i + j));
+      printf("%x ", *((byte*)(mm->m_runTimeData) + rowsize * i + j));
     }
     printf("\n");
   }
