@@ -1,5 +1,6 @@
 #pragma once
 #include "Components.hpp"
+#include "component_arrays.hpp"
 #include "ecs_constants.hpp"
 #include "Entity.hpp"
 #include "MemoryManager.hpp"
@@ -7,13 +8,23 @@
 #include <string>
 #include <cstdint>
 
+
+
 struct Component_data
 {
     uint64_t m_componentIdCount;
 
-    PositionArray *m_positionArray;
-    HealthArray *m_healthArray;    
+    #define STRUCT_GEN(NAME, vargs...) NAME ## _array m_ ## NAME;
+    #define DATA_GEN(TYPE, VAR)    
+
+    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+
+    #undef STRUCT_GEN
+    #undef DATA_GEN    
+
 };
+
+
 
 namespace Component_functions 
 {
