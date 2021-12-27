@@ -1,5 +1,5 @@
 #include "Signature.hpp"
-#include "Components.hpp"
+#include "component_arrays.hpp"
 #include "ComponentManager.hpp"
 
 #include <cstring>
@@ -8,7 +8,7 @@
 
 bool Component_functions::init(Component_data *cdata, Memory_pool *mem)
 {
-    cdata->m_componentIdCount = 1;
+/*    cdata->m_componentIdCount = 1;
     cdata->m_positionArray = Memory::alloc<PositionArray>(mem);
 
     memset(cdata->m_positionArray->EntityIndices, 0xFF, sizeof(uint64_t) * MAX_ENTITY_AMOUNT);
@@ -18,17 +18,18 @@ bool Component_functions::init(Component_data *cdata, Memory_pool *mem)
 
 
     cdata->m_healthArray = Memory::alloc<HealthArray>(mem);
-
+*/
     return 0;
 }
 
 bool Component_functions::clean(Component_data *cdata, Memory_pool *mem)
 {
-    Memory::dealloc(mem, cdata->m_positionArray);
+/*    Memory::dealloc(mem, cdata->m_positionArray);
     Memory::dealloc(mem, cdata->m_healthArray);
 
     cdata->m_positionArray = nullptr;
     cdata->m_healthArray = nullptr;   
+*/
     return 0;     
 }
 
