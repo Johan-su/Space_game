@@ -1,6 +1,5 @@
 #include "../ecs/ecs.hpp"
 #include "../ecs/globals.hpp"
-#include "../ecs/Registry.hpp"
 #include "../ecs/ecs_assert.hpp"
 
 #include <string>
@@ -9,7 +8,7 @@
 #include <SDL.h>
 
 
-typedef byte uint8_t;
+typedef uint8_t byte;
 
 template<typename T>
 bool isSame(T first, T second)
@@ -34,41 +33,12 @@ bool isSame(T first, T second)
 }
 
 
-Globaldata glo;
+Globaldata _g;
 
-
-#define TEST_ARRAY_SIZE 10
 
 void component_test()
 {
-    Entity elist[TEST_ARRAY_SIZE];
-    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
-    {
-        elist[i] = glo.reg->create_entity();
-    }
-
-    PositionComponent plist[TEST_ARRAY_SIZE];
-    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
-    {
-        plist[i] = {420.0f + (float)i, 69.0f + (float)i};
-        glo.reg->set_component(elist[i], plist[i]);
-    }
-
-    PositionComponent prlist[TEST_ARRAY_SIZE];
-    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
-    {
-        prlist[i] = glo.reg->get_component<PositionComponent>(elist[i]);
-        assert(isSame(plist[i], prlist[i]), "p" + std::to_string(i) + "==pr" + std::to_string(i) + " does not match");
-    }
-
 //TODO(johan) improve component testing
-
-
-    for(int i = 0; i < TEST_ARRAY_SIZE; ++i)
-    {
-        assert(isSame(plist[i], prlist[i]), "p" + std::to_string(i) + "==pr" + std::to_string(i) + " does not match");
-    }    
-
 }
 
 
@@ -78,21 +48,15 @@ void ecs_test()
 
 bool ecs_init()
 {
-    glo.reg = new Registry();
+    _g.mm = new Memory_pool();
+    Memory::init(_g.mm);
 
-    if(glo.reg->init())
-    {
-        return 1;
-    }
     return 0;
 }
 bool ecs_clean()
 {
-    glo.reg->clean();
 
-    delete glo.reg;
-    glo.reg = nullptr;
-
+    delete _g.mm;
     return 0;
 }
 bool init()
@@ -130,13 +94,13 @@ int main(int argc, char *argv[])
     {
         exit(init_exit_code);
     }
-    //ecs_test();
+    ecs_test();
     component_test();
 
 
 
 
-    int clean_exit_code = clean();
+    int clean_exit_code = 0;//clean();
     std::cout << "clean exit code: " << clean_exit_code << "\n";
     exit(clean_exit_code);
     return 0;
