@@ -1,7 +1,7 @@
 #include <iostream>
-#include <unistd.h>
+//#include <unistd.h>
 #include <cstdlib>
-#include <syscall.h>
+//#include <syscall.h>
 #include <cstring>
 #include <string>
 
@@ -24,7 +24,7 @@ bool load_test_output(const char *filepath)
     {
         return 1;
     }
-    fscanf(fp, )
+    //fscanf(fp, ); //TODO finish
 
     fclose(fp);
     return 0;
@@ -34,7 +34,7 @@ bool testFiles(const char *dirpath)
 {
     char cmds[1000];
     strcat(cmds, "cd dirpath &&");
-    strcat(cmds, " ")
+    strcat(cmds, " ");
 
 
 
