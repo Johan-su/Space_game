@@ -13,8 +13,8 @@ struct Entity_data
 
 namespace Entity_functions
 {
-  void init(Entity_data *e_data, Memory_pool *mem);
-  void clean(Entity_data *e_data, Memory_pool *mem);
+  void init(Memory_pool *mem, Entity_data *e_data);
+  void clean(Memory_pool *mem, Entity_data *e_data);
 
   Entity create_entity(Entity_data *e_data);
   void set_entity_signature(Entity_data *e_data, Entity e, Signature sig);

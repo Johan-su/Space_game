@@ -3,13 +3,13 @@
 #include "MemoryManager.hpp"
 #include "EntityManager.hpp"
 
-void Entity_functions::init(Entity_data *e_data, Memory_pool *mem)
+void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
 {
     e_data->m_entitycount = 0;
     e_data->m_signatures = Memory::alloc<Signature>(mem, MAX_ENTITY_AMOUNT);
 }
 
-void Entity_functions::clean(Entity_data *e_data, Memory_pool *mem)
+void Entity_functions::clean(Memory_pool *mem, Entity_data *e_data)
 {
     Memory::dealloc<Signature>(mem, e_data->m_signatures, MAX_ENTITY_AMOUNT);
 }

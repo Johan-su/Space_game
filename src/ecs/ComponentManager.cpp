@@ -6,7 +6,7 @@
 
 
 
-bool Component_functions::init(Component_data *cdata, Memory_pool *mem)
+bool Component_functions::init(Memory_pool *mem, Component_data *compdata)
 {
 /*    cdata->m_componentIdCount = 1;
     cdata->m_positionArray = Memory::alloc<PositionArray>(mem);
@@ -22,7 +22,7 @@ bool Component_functions::init(Component_data *cdata, Memory_pool *mem)
     return 0;
 }
 
-bool Component_functions::clean(Component_data *cdata, Memory_pool *mem)
+bool Component_functions::clean(Memory_pool *mem, Component_data *compdata)
 {
 /*    Memory::dealloc(mem, cdata->m_positionArray);
     Memory::dealloc(mem, cdata->m_healthArray);
@@ -39,4 +39,11 @@ uint64_t Component_functions::getId(Component_data *cdata)
     uint64_t tmp = cdata->m_componentIdCount;
     cdata->m_componentIdCount = cdata->m_componentIdCount << 1;
     return tmp;    
+}
+
+
+template <typename T>
+void Component_functions::set_component(Component_data *cdata, Entity e, T& comp)
+{
+     assert(false, "non specialized template");
 }
