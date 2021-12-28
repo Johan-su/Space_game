@@ -11,12 +11,12 @@
 typedef uint8_t byte;
 
 template<typename T>
-bool isSame(T first, T second)
+bool isSame(T *first, T *second)
 {
     size_t typesize =  sizeof(T);
 
-    auto *fp = (byte*)&first;
-    auto *sp = (byte*)&second;
+    auto *fp = (byte*)first;
+    auto *sp = (byte*)second;
 
     bool result = true;
 
@@ -50,6 +50,14 @@ bool ecs_init()
 {
     _g.mm = new Memory_pool();
     Memory::init(_g.mm);
+    _g.edata = Memory::alloc<Entity_data>(_g.mm);
+    _g.compdata = Memory::alloc<Component_data>(_g.mm);
+    _g.sysdata = Memory::alloc<System_data>(_g.mm);
+
+   Entity_functions::init(_g.mm, _g.edata);
+   Component_functions::init(_g.mm, _g.compdata);
+   System_functions::init(_g.mm, _g.sysdata);
+   
 
     return 0;
 }
