@@ -1,9 +1,28 @@
+#ifdef _WIN32
+ #define _CRT_SECURE_NO_WARNINGS // stop annoying deprecated warnings on windows.
+#endif
+
 #include <iostream>
 //#include <unistd.h>
 #include <cstdlib>
 //#include <syscall.h>
 #include <cstring>
 #include <string>
+
+
+int cmd_echo(const char *command)
+{
+    std::cout << "[CMD] " << command << "\n";
+    int returncode = system(command);
+
+    if(returncode)
+    {
+        std::cout << "command failed with code " << returncode << "\n";
+    }
+    return returncode;
+}
+
+
 
 bool testFile(const char *filepath)
 {
@@ -13,7 +32,7 @@ bool testFile(const char *filepath)
     strcat(cmds, "| > output_");
     strcat(cmds, filepath);
     strcat(cmds, "_.txt");
-    system(cmds);
+    cmd_echo(cmds);
     return 0;
 }
 
@@ -41,31 +60,6 @@ bool testFiles(const char *dirpath)
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 int main(int argc, char **argv)
