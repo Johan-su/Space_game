@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.18.4)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") ## add -v for verbose output
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ") ## add -v for verbose output
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
 
 project(Space_game VERSION 1.0.0)
 
