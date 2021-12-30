@@ -4,6 +4,7 @@
 #include "ecs_constants.hpp"
 #include "Entity.hpp"
 #include "MemoryManager.hpp"
+#include "Signature.hpp"
 #include "ecs_assert.hpp"
 #include <string>
 #include <cstdint>
