@@ -3,6 +3,7 @@
 #include "SystemManager.hpp"
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
+
 struct Globaldata
 {
   Memory_pool *mm;

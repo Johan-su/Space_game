@@ -1,9 +1,5 @@
 #include "MemoryManager.hpp"
 #include "ecs_assert.hpp"
-#include <iostream>
-#include <cstdlib>
-
-typedef uint8_t byte;
 
 void Memory::init(Memory_pool *mm)
 {
@@ -28,10 +24,10 @@ void Memory::dump(Memory_pool *mm, const size_t size = 512)
   size_t rowsize = 16;
   for(size_t i = 0; i < size / rowsize; ++i)
   {
-    printf("%p ", ((byte*)(mm->m_runTimeData) + rowsize * i));
+    printf("%p ", ((char*)(mm->m_runTimeData) + rowsize * i));
     for(size_t j = 0; j < rowsize; ++j)
     {
-      printf("%x ", *((byte*)(mm->m_runTimeData) + rowsize * i + j));
+      printf("%x ", *((char*)(mm->m_runTimeData) + rowsize * i + j));
     }
     printf("\n");
   }

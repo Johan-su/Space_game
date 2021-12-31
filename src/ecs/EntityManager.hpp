@@ -3,7 +3,6 @@
 #include "Entity.hpp"
 #include "MemoryManager.hpp"
 #include "Signature.hpp"
-#include <cstdint>
 
 struct Entity_data
 {

@@ -1,9 +1,6 @@
 #pragma once
 #include "ecs_constants.hpp"
 #include "ecs_assert.hpp"
-#include <cstdint>
-#include <cstdlib>
-#include <cstddef>
 
 struct Memory_pool
 {
@@ -16,8 +13,6 @@ struct Memory_pool
 
 namespace Memory {
 
-
-typedef uint8_t byte;
 
 
 
@@ -38,7 +33,7 @@ template <typename T>
     uint64_t tmp = mm->m_bytesAllocated;
     mm->m_bytesAllocated += type_size * amount;
     
-    return (T*)(((byte*)(mm->m_runTimeData))+ tmp); // C++ forcing this mess
+    return (T*)(((char*)(mm->m_runTimeData))+ tmp); // C++ forcing this mess
   }
   
 template <typename T>
@@ -51,11 +46,11 @@ template <typename T>
     assert(mm->m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
     
     assert(pointer >= mm->m_runTimeData, "Pointer outside memory pool");
-    assert((byte*)pointer < (byte*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
+    assert((char*)pointer < (char*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
   
     for(size_t i = 0; i < size * amount; ++i)
     {
-      *((byte*)(pointer) + i) = 0;
+      *((char*)(pointer) + i) = 0;
     }
   }
   

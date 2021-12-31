@@ -5,8 +5,6 @@
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
 
-#include <cstring>
-
 
 
 bool Component_functions::init(Memory_pool *mm, Component_data *compdata)
@@ -86,7 +84,7 @@ void Component_functions::destroy_component<NAME ## _component> \
     NAME ## _array *comparray = cdata->m_ ## NAME; \
     Entity *e_ind = comparray->entity_indicies; \
     Entity *e_list = comparray->entity_list; \
-    size_t& ar_size = compoarray->array_size; \
+    size_t& ar_size = comparray->array_size; \
     vargs \
     e_list[e_ind[e]] = e_list[ar_size]; \
     e_ind[e_list[ar_size]] = e_ind[e]; \
@@ -95,7 +93,7 @@ void Component_functions::destroy_component<NAME ## _component> \
 } \
 //TODO:(johan) finish https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
 #define DATA_GEN(TYPE, VAR) \
-comparray->VAR[e_ind[e]] = VAR[ar_size]; \ 
+comparray->VAR[e_ind[e]] = comparray->VAR[ar_size];
 
 COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
 #undef STRUCT_GEN

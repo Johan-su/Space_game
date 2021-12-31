@@ -1,13 +1,12 @@
 #pragma once
-#include "Components.hpp"
-#include "component_arrays.hpp"
 #include "ecs_constants.hpp"
-#include "Entity.hpp"
 #include "MemoryManager.hpp"
+#include "Components.hpp"
+#include "Entity.hpp"
+#include "component_arrays.hpp"
 #include "Signature.hpp"
 #include "ecs_assert.hpp"
 #include <string>
-#include <cstdint>
 
 
 /* component arrays in component_data
