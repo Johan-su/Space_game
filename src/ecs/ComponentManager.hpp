@@ -50,7 +50,7 @@ namespace Component_functions
     void destroy_component(Component_data *cdata, Entity e);
 
     template <typename T>
-    T get_view(Component_data *cdata, Entity e);
+    T get_view(Component_data *cdata);
 
     template<typename T>
     Signature get_component_signature(Component_data *cdata)

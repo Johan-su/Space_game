@@ -90,8 +90,8 @@ void Component_functions::destroy_component<NAME ## _component> \
     e_ind[e_list[ar_size]] = e_ind[e]; \
     e_ind[e] = MAX_ENTITY_AMOUNT + 1; \
     --ar_size; \
-} \
-//TODO:(johan) finish https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
+}
+
 #define DATA_GEN(TYPE, VAR) \
 comparray->VAR[e_ind[e]] = comparray->VAR[ar_size];
 
@@ -99,9 +99,9 @@ COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
 #undef STRUCT_GEN
 #undef DATA_GEN
 
-
+//TODO:(johan) finish https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
 template <typename T>
-T Component_functions::get_view(Component_data *cdata, Entity e)
+T Component_functions::get_view(Component_data *cdata)
 {
 
 }
