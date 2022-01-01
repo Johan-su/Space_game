@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## add_compile_options(/W4 /WX)
 ## else()
 ##     # lots of warnings
-##     add_compile_options(-Wall -Wextra -pedantic)
+##     add_compile_options(-Wall -Wextra -pedantic -Werror)
 ## endif()
 
 if(WIN32)
