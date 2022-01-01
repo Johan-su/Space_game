@@ -112,14 +112,28 @@ COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
 
 //TODO:(johan) finish https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
 template <typename T>
-View<T> & Component_functions::get_view(Component_data *cdata)
+View<T> & Component_functions::get_view(Component_data *cdata) //--
 {
-
+    assert(false, "no template specialization");
+    return *(View<T>*)0;
 }
 
-void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //TODO:(johan) improve performance
-{
+#define STRUCT_GEN(NAME, vargs...) \
+template<> \
+View<NAME ## _component> & Component_functions::get_view<NAME ## _component>(Component_data *cdata) \
+{ \
+     return *(View<NAME ## _component>*)0; \
+}
+#define DATA_GEN(TYPE, VAR)
 
+COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+#undef STRUCT_GEN
+#undef DATA_GEN
+
+
+
+void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //--
+{
 #define STRUCT_GEN(NAME, vargs...) \
 if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
 { \
