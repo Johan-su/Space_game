@@ -3,14 +3,13 @@
 #endif
 
 #include <iostream>
-//#include <unistd.h>
 #include <cstdlib>
-//#include <syscall.h>
 #include <memory>
 #include <unordered_map>
 #include <functional>
-#include <cstring>
+#include "string.h"
 #include <string>
+
 
 
 // TESTS:
@@ -27,6 +26,9 @@ std::unordered_map<std::string, std::function<int()> > str_to_func =
 
 };
 
+
+
+
 int cmd_echo(const char *command)
 {
     std::cout << "[CMD] running " << command << "\n";
@@ -38,9 +40,9 @@ char exe_name[512];
 char path_to_exe[512];
 char path_to_test_file[512];
 
-int run_test(char *exe_location, const char *function)
+
+void set_path_to_exe(const char *exe_location)
 {
-    std::cout << "[Note] running " << function << "\n";
     memset(exe_name, 0, 512);
     memset(path_to_exe, 0, 512);
 
@@ -52,6 +54,52 @@ int run_test(char *exe_location, const char *function)
 
     strcat(path_to_exe, exe_location);
     path_to_exe[strlen(exe_location) - strlen(exe_name)] = '\0'; 
+}
+void set_path_to_test_file()
+{
+    memset(path_to_test_file, 0, 512);
+
+    strcat(path_to_test_file, __FILE__);
+    _strrev(path_to_test_file);
+    size_t firstslash10 = strcspn(path_to_test_file, "/");
+    _strrev(path_to_test_file);
+    path_to_test_file[strlen(path_to_test_file) - firstslash10] = '\0';
+}
+
+char mvbuffer[512];
+void move_file(const char* dst_path, const char* src_path)
+{
+    memset(mvbuffer, 0, 512);
+
+    strcat(mvbuffer, "move /Y ");
+    strcat(mvbuffer, src_path);
+    strcat(mvbuffer, " ");
+    strcat(mvbuffer, dst_path);
+
+    cmd_echo(mvbuffer);
+
+    memset(mvbuffer, 0, 512);
+}
+
+char delbuffer[512];
+void delete_file(const char* src_path)
+{
+    memset(delbuffer, 0, 512);
+
+    strcat(delbuffer, "del /F /Q");
+    strcat(delbuffer, src_path);
+
+    cmd_echo(delbuffer);
+
+    memset(delbuffer, 0, 512);
+}
+
+char stdout_buffer[2048];
+
+int run_test(const char *function)
+{
+    std::cout << "[Note] running " << function << "\n";
+
 
     memset(buffer, 0, 512);
 
@@ -68,39 +116,76 @@ int run_test(char *exe_location, const char *function)
     strcat(buffer, ".txt");
     strcat(buffer, " 2>&1");
 
-    auto return_code = cmd_echo(buffer);
+    int return_code = cmd_echo(buffer);
 
     std::cout << "[Note] program exited with " << return_code << " return_code\n"; 
 
     memset(buffer, 0, 512);
 
+    FILE *fp = fopen(path_to_test_file, "r");
 
-    strcat(buffer, "move /Y "); //TODO(johan) probably check if file already exists
-    strcat(buffer, path_to_exe);
-    strcat(buffer, "output_");
-    strcat(buffer, function);
-    strcat(buffer, ".txt");
-    strcat(buffer, " ");
+    int diff;
+    if(fp)
+    {
+        strcat(buffer, "cd ");
+        strcat(buffer, path_to_exe);
+        strcat(buffer, " && ");
+        strcat(buffer, "fc /L ");
+        strcat(buffer, "output_");
+        strcat(buffer, function);
+
+        strcat(buffer, " ");
+        strcat(buffer, path_to_test_file);
+        strcat(buffer, "output_");
+        strcat(buffer, function);
+        strcat(buffer, "> diff_.txt");
+
+        cmd_echo(buffer);
+
+        memset(stdout_buffer, 0, 2048);
+
+        FILE *fpDiff = fopen("diff_.txt", "r");
+        if(fpDiff)
+        {
+
+            fread(stdout_buffer, 1, 2048, fpDiff);
+            fclose(fpDiff);
+        }
+
+        diff = strcmp(stdout_buffer, "FC: no differences encountered");
+
+        fclose(fp);
+    }
 
 
-    strcat(path_to_test_file, __FILE__);
-    _strrev(path_to_test_file);
-    size_t firstslash10 = strcspn(path_to_test_file, "/");
-    _strrev(path_to_test_file);
-    path_to_test_file[strlen(path_to_test_file) - firstslash10] = '\0';
+    memset(buffer, 0, 512);
 
-    strcat(buffer, path_to_test_file);    
+    char dst[512];
+    memset(dst, 0, 512);
 
-    strcat(buffer, "tests/");
+    strcat(dst, path_to_exe);
+    strcat(dst, "output_");
+    strcat(dst, function);
+    strcat(dst, ".txt");
+
+    char src[512];
+    memset(src, 0, 512);
+
+    strcat(src, path_to_test_file);
+    strcat(src, "tests/");
+
+    move_file(dst, src);
 
 
 
-    cmd_echo(buffer);
 
+    return diff;
+}
 
+int update_test(const char *function)
+{
 
-
-    return return_code;
+    return 0;
 }
 
 int run_function(std::function<int()> func)
@@ -108,25 +193,6 @@ int run_function(std::function<int()> func)
     return func();
 }
 
-
-
-
-
-
-
-
-
-bool testFile(const char *filepath)
-{
-    char cmds[200];
-    strcat(cmds, "echo ");
-    strcat(cmds, filepath);
-    strcat(cmds, " | > output_");
-    strcat(cmds, filepath);
-    strcat(cmds, "_.txt");
-    cmd_echo(cmds);
-    return 0;
-}
 
 bool load_test_output(const char *filepath)
 {
@@ -141,74 +207,83 @@ bool load_test_output(const char *filepath)
     return 0;
 }
 
-bool testFiles(const char *dirpath)
-{
-    char cmds[1000];
-    strcat(cmds, "cd dirpath &&");
-    strcat(cmds, " ");
-
-
-
-
-    return 0;
-}
-
-
 
 void usage(const char *arg = "")
 {
     if(!strcmp(arg, "TS"))
     {
         // add for special usage.
-        return;
+        exit(1);
     }
     if(!strcmp(arg, "r"))
     {
         // add for special usage.        
-        return;
+        exit(1);
     }
 
-    std::cout << "USAGE: Space_Game_test.exe [-TS function] [-r]\n"
+    std::cout << "USAGE: Space_Game_test.exe [-TS function] [-r/-u] function\n"
     << "-TS is used for for internal functions\n"
     << "-r runs all tests\n"
+    << "-u updates all tests"
     << "no parameters runs this usage\n";
+    exit(1);
 }
 
 
 int main(int argc, char *argv[])
 {
+    set_path_to_exe(argv[0]);
+    set_path_to_test_file();
 
 
     if(argc < 2) usage();
 
     bool tsflag = false;
     bool rflag = false;
-    bool nextflag = false;
+    bool uflag = false;
+    bool argflag = false;
+    std::string funcstr;
 
     for(uint32_t i = 1; i < argc; ++i)
     {
-        if(nextflag)
+        if(argflag)
         {
-            nextflag = false;
-            if(argv[i][0] == '-')
+            argflag = false;
+            if(argc == i + 1)
             {
-               if(tsflag) usage("TS");
-               if(rflag) usage("r");  
-            } 
-            else
-            {
+                for(auto& it : str_to_func)
+                {
+                    if(strcmp(argv[i], it.first.c_str()) == 0 )
+                    {
+
+                        funcstr = argv[i][0];
+                        break;
+                    }
+                }
                 if(tsflag)
                 {
                     exit(run_function(str_to_func[argv[i]]));
                 }
-                if(rflag)
+                else if(rflag)
                 {
-                    for(auto& it: str_to_func)
-                    {
-                        auto return_code = run_test(argv[0], it.first.c_str());
-                    }
+                    run_test(funcstr.c_str());
                 }
+                else if(uflag)
+                {
+                    update_test(funcstr.c_str());
+                }
+                else
+                {
+                    usage();
+                }
+                tsflag = false;
+                rflag = false;
+                uflag = false;
             }
+            else
+            {
+                assert(false, "only single flag -$FLAG$ {argument}");
+            } 
         }
         if(argv[i][0] == '-')
         {
@@ -216,12 +291,44 @@ int main(int argc, char *argv[])
             {
                 tsflag = true;
             }
-            if(argv[i][1] == 'r' && argc != i)
+            else if(argv[i][1] == 'r')
             {
                 rflag = true;
             }
-            nextflag = true;
+            else if(argv[i][1] == 'u')
+            {
+                uflag = true;
+            }
+            else
+            {
+                usage();
+            }
+            argflag = true;
         }
+    }
+
+    if(tsflag)
+    {
+        assert(false, "-TS flag with no argument");
+    }
+    else if(rflag)
+    {
+        for(auto & it: str_to_func)
+        {
+            auto return_code = run_test(it.first.c_str());
+        }  
+    }
+    else if(uflag)
+    {
+        for(auto & it: str_to_func)
+        {
+            auto return_code = update_test(it.first.c_str());
+        }  
+    }
+    else
+    {
+        usage();
+        
     }
 
     return 0;
