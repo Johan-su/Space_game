@@ -5,6 +5,7 @@
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
 
+#include <string>
 
 
 bool Component_functions::init(Memory_pool *mm, Component_data *compdata)
@@ -32,13 +33,23 @@ bool Component_functions::clean(Memory_pool *mm, Component_data *compdata)
     return 0;     
 }
 
-uint64_t Component_functions::getId(Component_data *cdata)
+
+uint64_t Component_functions::getId(Component_data *cdata) // should not be called directly
 {
     assert(cdata->m_componentIdCount != 0, "More than " + std::to_string(MAX_COMPONENT_TYPES) + " components registered");
     uint64_t tmp = cdata->m_componentIdCount;
     cdata->m_componentIdCount = cdata->m_componentIdCount << 1;
     return tmp;    
 }
+
+template <typename T>
+Signature Component_functions::get_component_signature(Component_data *cdata)
+{
+    static Signature component_signature = {getId(cdata)};
+    return component_signature;
+}
+
+
 
 
 template <typename T>
@@ -101,8 +112,25 @@ COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
 
 //TODO:(johan) finish https://gist.github.com/dakom/82551fff5d2b843cbe1601bbaff2acbf
 template <typename T>
-T Component_functions::get_view(Component_data *cdata)
+View<T> & Component_functions::get_view(Component_data *cdata)
 {
 
 }
 
+void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //TODO:(johan) improve performance
+{
+
+#define STRUCT_GEN(NAME, vargs...) \
+if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
+{ \
+Component_functions::destroy_component<NAME ## _component>(cdata, e); \
+}
+
+#define DATA_GEN(TYPE, VAR)
+
+COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+#undef STRUCT_GEN
+#undef DATA_GEN
+
+
+}

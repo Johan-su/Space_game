@@ -2,11 +2,12 @@
 #include "ecs_constants.hpp"
 #include "MemoryManager.hpp"
 #include "Components.hpp"
-#include "Entity.hpp"
 #include "component_arrays.hpp"
+#include "Entity.hpp"
 #include "Signature.hpp"
 #include "ecs_assert.hpp"
-#include <string>
+#include "View_Groups.hpp"
+//#include <string>
 
 
 /* component arrays in component_data
@@ -34,14 +35,11 @@ namespace Component_functions
 {
     bool init(Memory_pool *mm, Component_data *compdata);
     bool clean(Memory_pool *mm, Component_data *compdata);
-    uint64_t getId(Component_data *cdata);
+
+    uint64_t getId(Component_data *cdata); // should not be called directly
 
     template<typename T>
-    bool array_init(T *array, Memory_pool *mem)
-    {
-        array = mem->alloc<T>();
-        return 0;
-    }
+    Signature get_component_signature(Component_data *cdata); 
 
     template <typename T>
     void set_component(Component_data *cdata, Entity e, T& comp);
@@ -50,12 +48,7 @@ namespace Component_functions
     void destroy_component(Component_data *cdata, Entity e);
 
     template <typename T>
-    T get_view(Component_data *cdata);
+    View<T> & get_view(Component_data *cdata);
 
-    template<typename T>
-    Signature get_component_signature(Component_data *cdata)
-    {
-        static Signature component_signature = {getId(cdata)};
-        return component_signature;
-    }
+    void destroy_entity(Component_data *compdata, Entity e, Signature sig);
 }
