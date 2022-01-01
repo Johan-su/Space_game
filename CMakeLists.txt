@@ -24,8 +24,8 @@ endif()
 find_package(SDL2 REQUIRED)
 
 
-FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp)
-FILE(GLOB HEADFILES ./src/*.hpp ./src/ecs/*.hpp)
+FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp ./src/ecs/systems/*.cpp)
+FILE(GLOB HEADFILES ./src/*.hpp ./src/ecs/*.hpp ./src/ecs/systems/*.hpp)
 
 FILE(GLOB TESTSRCFILES ./test/*.cpp)
 FILE(GLOB TESTHEADFILES ./test/*.hpp)
