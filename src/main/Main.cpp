@@ -48,15 +48,15 @@ void ecs_test()
 
 bool ecs_init()
 {
-    _g.mm = new Memory_pool();
-    Memory::init(_g.mm);
-    _g.edata = Memory::alloc<Entity_data>(_g.mm);
-    _g.compdata = Memory::alloc<Component_data>(_g.mm);
-    _g.sysdata = Memory::alloc<System_data>(_g.mm);
+    _g.reg->mm = new Memory_pool();
+    Memory::init(_g.reg->mm);
+    _g.reg->edata = Memory::alloc<Entity_data>(_g.reg->mm);
+    _g.reg->compdata = Memory::alloc<Component_data>(_g.reg->mm);
+    _g.reg->sysdata = Memory::alloc<System_data>(_g.reg->mm);
 
-   Entity_functions::init(_g.mm, _g.edata);
-   Component_functions::init(_g.mm, _g.compdata);
-   System_functions::init(_g.mm, _g.sysdata);
+   Entity_functions::init(_g.reg->mm, _g.reg->edata);
+   Component_functions::init(_g.reg->mm, _g.reg->compdata);
+   System_functions::init(_g.reg->mm, _g.reg->sysdata);
    
 
     return 0;
@@ -64,7 +64,7 @@ bool ecs_init()
 bool ecs_clean()
 {
 
-    delete _g.mm;
+    delete _g.reg->mm;
     return 0;
 }
 bool init()
