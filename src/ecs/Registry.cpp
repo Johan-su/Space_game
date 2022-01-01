@@ -62,7 +62,9 @@ void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
     auto & edata = rdata->edata;
     auto & compdata = rdata->compdata;
 
-    Component_functions::destroy_entity(compdata, e);
+    auto sig = edata->m_signatures[e];
+
+    Component_functions::destroy_entity(compdata, e, sig);
 
 
     Entity_functions::destroy_entity(edata, e);
