@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.hpp"
-#include "ComponentManager.hpp"
+#include "Components.hpp"
+#include "component_arrays.hpp"
 
 struct BaseCollection 
 {
@@ -8,9 +9,8 @@ struct BaseCollection
 };
 
 template <typename T>
-struct View// : public BaseCollection
+struct View : public BaseCollection
 {
-    T p[12];
     //only the template specializations should be used.
 };
 
