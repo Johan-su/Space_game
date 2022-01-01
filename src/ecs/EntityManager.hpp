@@ -16,6 +16,8 @@ namespace Entity_functions
   void clean(Memory_pool *mem, Entity_data *e_data);
 
   Entity create_entity(Entity_data *e_data);
+  void destroy_entity(Entity_data *edata, Entity e);
+
   void set_entity_signature(Entity_data *e_data, Entity e, Signature sig);
   Signature get_entity_signature(Entity_data *e_data, Entity e);
 

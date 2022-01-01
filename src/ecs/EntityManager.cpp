@@ -20,6 +20,12 @@ Entity Entity_functions::create_entity(Entity_data *e_data)
     e = {++e_data->m_entitycount};
     return e;
 }
+void Entity_functions::destroy_entity(Entity_data *edata, Entity e)
+{
+    Entity_functions::set_entity_signature(edata, e, 0);
+    --edata->m_entitycount;
+}
+
 void Entity_functions::set_entity_signature(Entity_data *e_data, Entity e, Signature sig)
 {
     e_data->m_signatures[e] = sig;
