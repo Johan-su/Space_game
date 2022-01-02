@@ -1,9 +1,10 @@
 #pragma once
+#include "../Registry.hpp"
+#include "../system.hpp"
 
-
-namespace health_system
+class health_system :  System
 {
-    void init();
+    void init(Signature syssig);
     void clean();
-    void update(Component_data *cdata, Entity_data *edata, Signature sig);
-}
+    void update(Registry_data *rdata, Signature sig);
+};
