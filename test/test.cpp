@@ -13,11 +13,13 @@
 
 #include "./tests/memory_double_init.hpp"
 #include "./tests/memory_alloc.hpp"
+#include "./tests/ecs_view_test.hpp"
 
 // TESTS:
 #define TESTLIST(X) \
 X(memory_double_init) \
 X(memory_alloc) \
+X(ecs_view_test) \
 
 
 
