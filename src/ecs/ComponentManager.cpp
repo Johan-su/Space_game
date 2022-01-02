@@ -8,9 +8,9 @@
 #include <string>
 
 
-bool Component_functions::init(Memory_pool *mm, Component_data *compdata)
+bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) compdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm);
+    #define STRUCT_GEN(NAME, vargs...) cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm);
     #define DATA_GEN(TYPE, VAR)
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
@@ -21,9 +21,9 @@ bool Component_functions::init(Memory_pool *mm, Component_data *compdata)
     return 0;
 }
 
-bool Component_functions::clean(Memory_pool *mm, Component_data *compdata)
+bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, compdata->m_ ## NAME);
+    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, cdata->m_ ## NAME);
     #define DATA_GEN(TYPE, VAR)
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)

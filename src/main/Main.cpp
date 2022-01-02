@@ -52,11 +52,11 @@ bool ecs_init()
     _g.reg->mm = new Memory_pool();
     Memory::init(_g.reg->mm);
     _g.reg->edata = Memory::alloc<Entity_data>(_g.reg->mm);
-    _g.reg->compdata = Memory::alloc<Component_data>(_g.reg->mm);
+    _g.reg->cdata = Memory::alloc<Component_data>(_g.reg->mm);
     _g.reg->sysdata = Memory::alloc<System_data>(_g.reg->mm);
 
    Entity_functions::init(_g.reg->mm, _g.reg->edata);
-   Component_functions::init(_g.reg->mm, _g.reg->compdata);
+   Component_functions::init(_g.reg->mm, _g.reg->cdata);
    System_functions::init(_g.reg->mm, _g.reg->sysdata);
    
 

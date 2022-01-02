@@ -33,8 +33,8 @@ struct Component_data
 
 namespace Component_functions 
 {
-    bool init(Memory_pool *mm, Component_data *compdata);
-    bool clean(Memory_pool *mm, Component_data *compdata);
+    bool init(Memory_pool *mm, Component_data *cdata);
+    bool clean(Memory_pool *mm, Component_data *cdata);
 
     uint64_t getId(Component_data *cdata); // should not be called directly
 
@@ -50,5 +50,5 @@ namespace Component_functions
     template <typename T>
     View<T> & get_view(Component_data *cdata);
 
-    void destroy_entity(Component_data *compdata, Entity e, Signature sig);
+    void destroy_entity(Component_data *cdata, Entity e, Signature sig);
 }
