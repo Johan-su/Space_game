@@ -11,21 +11,29 @@
 #include "string.h"
 #include <string>
 
-
+#include "./tests/memory_double_init.hpp"
+#include "./tests/memory_alloc.hpp"
 
 // TESTS:
-#include "./tests/ComponentManager_test.hpp"
+#define TESTLIST(X) \
+X(memory_double_init) \
+X(memory_alloc) \
 
 
+
+#define TESTF(var)\
+{#var, var::test},
 
 std::unordered_map<std::string, std::function<int()> > str_to_func = 
 { 
-{"ComponentManager_test", ComponentManager_test::test}
+TESTLIST(TESTF)
 
 
 
 
 };
+
+#undef TESTF
 
 char tmp_path[512];
 void set_tmp_path()
@@ -135,7 +143,7 @@ int run_test(const char *function, const char *program)
 
     FILE *fp = fopen(buffer, "r");
 
-    int diff;
+    int diff = -1;
     if(fp) // file exists
     {
         memset(buffer, 0 ,512);
@@ -339,11 +347,33 @@ int main(int argc, char *argv[])
             }
             return 0;  
         }
+        else if(flag[1] == 'l')
+        {
+            std::cout << "Printing test list: " << "\n";
+            for(auto & pair : str_to_func)
+            {
+                std::cout <<  pair.first << "\n";
+            }
+        }
         else { usage(program); }
     }
     else
     {
         arg = *argv++;
+        int it = 0;
+        for(auto & pair : str_to_func)
+        {
+            if(arg == pair.first)
+            {
+                break;
+            }
+            ++it;
+        }
+        if (it == str_to_func.size())
+        {
+            std::cout << "[ERROR] test not found" << "\n";
+            exit(1);
+        }
         if(flag[0] != '-') usage(program);
         if(flag[1] == 'T' && flag[2] == 'S')
         {
