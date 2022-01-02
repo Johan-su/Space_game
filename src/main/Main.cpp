@@ -48,6 +48,7 @@ void ecs_test()
 
 bool ecs_init()
 {
+    _g.reg = new Registry_data();
     _g.reg->mm = new Memory_pool();
     Memory::init(_g.reg->mm);
     _g.reg->edata = Memory::alloc<Entity_data>(_g.reg->mm);
@@ -63,8 +64,8 @@ bool ecs_init()
 }
 bool ecs_clean()
 {
-
     delete _g.reg->mm;
+    delete _g.reg;
     return 0;
 }
 bool init()
