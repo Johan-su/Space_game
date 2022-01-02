@@ -20,7 +20,7 @@ namespace Memory {
 
   void clean(Memory_pool *mm);
 
-  void dump(Memory_pool *mm,  const size_t size);
+  void dump(Memory_pool *mm,  const size_t size, bool addr);
   
 template <typename T>  
   T *alloc(Memory_pool *mm, const size_t amount = 1)
