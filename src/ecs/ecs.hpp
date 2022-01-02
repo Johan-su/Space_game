@@ -3,9 +3,14 @@
 #include "globals.hpp"
 
 #include "Components.hpp"
+#include "component_arrays.hpp"
+#include "View_Groups.hpp"
+
+#include "system.hpp"
 
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 #include "EntityManager.hpp"
 
+#include "Registry.hpp"
