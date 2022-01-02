@@ -9,7 +9,7 @@ struct Registry_data
 {
     Memory_pool *mm;
     Entity_data *edata;
-    Component_data *compdata;
+    Component_data *cdata;
     System_data *sysdata;
 };
 
@@ -23,10 +23,10 @@ namespace Registry_functions
     Signature get_entity_signature(Registry_data *rdata, Entity e);
 
     template <typename T>
-    void set_component(Registry_data *rdata, T& comp);
+    void set_component(Registry_data *rdata, Entity e, T& comp);
 
     template <typename T>
-    View<T> get_view(Registry_data *rdata, Signature sig);
+    View<T> & get_view(Registry_data *rdata, Signature sig);
     
     template <typename T>
     PartialView<T> get_partial_view(Registry_data *rdata, Signature sig);
