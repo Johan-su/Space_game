@@ -42,7 +42,7 @@ namespace Component_functions
     Signature get_component_signature(Component_data *cdata); 
 
     template <typename T>
-    void set_component(Component_data *cdata, Entity e, T& comp);
+    void set_component(Component_data *cdata, Entity e, T comp);
 
     template<typename T>
     void destroy_component(Component_data *cdata, Entity e);
