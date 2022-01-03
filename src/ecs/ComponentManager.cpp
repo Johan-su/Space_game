@@ -10,7 +10,13 @@
 
 bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm);
+    #define STRUCT_GEN(NAME, vargs...) \
+    cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm); \
+    for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i) \
+    { \
+        cdata->m_ ## NAME->entity_indicies[i] = MAX_ENTITY_AMOUNT - 1; \
+    }
+
     #define DATA_GEN(TYPE, VAR)
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
@@ -53,7 +59,7 @@ Signature Component_functions::get_component_signature(Component_data *cdata)
 
 
 template <typename T>
-void Component_functions::set_component(Component_data *cdata, Entity e, T& comp)
+void Component_functions::set_component(Component_data *cdata, Entity e, T comp)
 {
     assert(false, "non specialized template");
 }
@@ -62,7 +68,7 @@ void Component_functions::set_component(Component_data *cdata, Entity e, T& comp
 #define STRUCT_GEN(NAME, vargs...) \
 template<> \
 void Component_functions::set_component<NAME ## _component> \
-(Component_data *cdata, Entity e, NAME ## _component& comp) \
+(Component_data *cdata, Entity e, NAME ## _component comp) \
 { \
     NAME ## _array *comparray = cdata->m_ ## NAME; \
     Entity *e_ind = comparray->entity_indicies; \
@@ -99,7 +105,7 @@ void Component_functions::destroy_component<NAME ## _component> \
     vargs \
     e_list[e_ind[e]] = e_list[ar_size]; \
     e_ind[e_list[ar_size]] = e_ind[e]; \
-    e_ind[e] = MAX_ENTITY_AMOUNT + 1; \
+    e_ind[e] = MAX_ENTITY_AMOUNT - 1; \
     --ar_size; \
 }
 
