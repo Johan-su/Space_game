@@ -27,7 +27,7 @@ void Memory::dump(Memory_pool *mm, const size_t size = 512, bool addr = true)
         size_t rowsize = 16;
         for(size_t i = 0; i < size / rowsize; ++i)
         {
-            printf("0x%08x : ", ((char*)(mm->m_runTimeData) + rowsize * i));
+            printf("0x%08x : ", ((uint32_t)((uint64_t)((char*)(mm->m_runTimeData) + rowsize * i)))); // nice casting to supress warnings
             for(size_t j = 0; j < rowsize; ++j)
             {
                 auto val = (uint8_t)*((char*)(mm->m_runTimeData) + rowsize * i + j);
