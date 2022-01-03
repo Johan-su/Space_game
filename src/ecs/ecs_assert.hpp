@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#ifndef DDEBUG
+#ifdef _DEBUG
 #define assert(condition, message) \
  do \
 { \
