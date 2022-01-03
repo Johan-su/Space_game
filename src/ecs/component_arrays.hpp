@@ -6,7 +6,7 @@
 
 // struct component array generator
 #define STRUCT_GEN(NAME, vargs...) \
-struct NAME ## _array {Entity entity_list[MAX_ENTITY_AMOUNT]; Entity entity_indicies[MAX_ENTITY_AMOUNT]; size_t array_size; vargs};
+struct NAME ## _array {Entity entity_indicies[MAX_ENTITY_AMOUNT]; Entity entity_list[MAX_ENTITY_AMOUNT]; vargs size_t array_size;};
 
 #define DATA_GEN(TYPE, VAR) \
 TYPE VAR[MAX_ENTITY_AMOUNT];
