@@ -1,6 +1,6 @@
 #pragma once
-#include "../../src/ecs/MemoryManager.hpp"
-#include "../../src/ecs/ComponentManager.hpp"
+#include "../../src/files/ecs/MemoryManager.hpp"
+#include "../../src/files/ecs/ComponentManager.hpp"
 
 namespace memory_double_init
 {

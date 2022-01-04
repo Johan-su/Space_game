@@ -1,4 +1,4 @@
-#include "../../src/ecs/ecs.hpp"
+#include "../../src/files/ecs/ecs.hpp"
 
 
 namespace ecs_view_test
