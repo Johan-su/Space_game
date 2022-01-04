@@ -24,15 +24,16 @@ endif()
 find_package(SDL2 REQUIRED)
 
 
-FILE(GLOB SRCFILES ./src/*.cpp ./src/ecs/*.cpp ./src/ecs/systems/*.cpp)
-FILE(GLOB HEADFILES ./src/*.hpp ./src/ecs/*.hpp ./src/ecs/systems/*.hpp)
+FILE(GLOB_RECURSE SRCFILES ./src/files/*.cpp )
+FILE(GLOB_RECURSE HEADFILES ./src/files/*.hpp)
+
+FILE(GLOB MAIN ./src/main/Main.cpp)
 
 FILE(GLOB TESTSRCFILES ./test/*.cpp)
 FILE(GLOB TESTHEADFILES ./test/*.hpp)
 
 
-add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
-add_executable(Space_game ./src/main/Main.cpp ${SRCFILES} ${HEADFILES})
+add_executable(Space_game ${MAIN} ${SRCFILES} ${HEADFILES})
 target_include_directories(Space_game PUBLIC ${SDL2_INCLUDE_DIRS})
 target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
 
