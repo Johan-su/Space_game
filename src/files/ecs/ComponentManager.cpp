@@ -1,4 +1,5 @@
 #include "ecs_constants.hpp"
+#include "ecs_assert.hpp"
 #include "Signature.hpp"
 #include "Components.hpp"
 #include "component_arrays.hpp"
