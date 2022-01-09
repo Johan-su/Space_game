@@ -1,5 +1,6 @@
 #include "MemoryManager.hpp"
 #include "ecs_assert.hpp"
+#include <cstring>
 
 void Memory::init(Memory_pool *mm)
 {
