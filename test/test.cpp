@@ -33,10 +33,6 @@ X(ecs_view_test) \
 std::unordered_map<std::string, std::function<int()> > str_to_func = 
 { 
 TESTLIST(TESTF)
-
-
-
-
 };
 
 #undef TESTF
@@ -48,11 +44,24 @@ void set_tmp_path()
     strcat(tmp_path, "\\");
 }
 
-
-int cmd_echo(const char *command)
+char echo_buffer[4096];
+int cmd_echo(const char *c1 = "", const char *c2 = "", const char *c3 ="", const char *c4 ="", const char *c5 ="", const char *c6 ="", const char *c7 ="", const char *c8 ="", const char *c9 ="", const char *c10 ="", const char *c11 ="", const char *c12 ="")
 {
-    std::cout << "[CMD] running " << command << "\n";
-    return std::system(command);
+    memset(echo_buffer, 0, 4096);
+    strcat(echo_buffer, c1);
+    strcat(echo_buffer, c2);
+    strcat(echo_buffer, c3);
+    strcat(echo_buffer, c4);
+    strcat(echo_buffer, c5);
+    strcat(echo_buffer, c6);
+    strcat(echo_buffer, c7);
+    strcat(echo_buffer, c8);
+    strcat(echo_buffer, c9);
+    strcat(echo_buffer, c10);
+    strcat(echo_buffer, c11);
+    strcat(echo_buffer, c12);
+    std::cout << "[CMD] running " << echo_buffer << "\n";
+    return std::system(echo_buffer);
 }
 
 char buffer[512];
@@ -102,32 +111,14 @@ void set_path_to_test_file()
     path_to_test_file[strlen(path_to_test_file) - firstslash10] = '\0';
 }
 
-char mvbuffer[512];
-void move_file(const char* dst_path, const char* src_path)
+void move_file(const char *dst_path, const char *src_path)
 {
-    memset(mvbuffer, 0, 512);
-
-    strcat(mvbuffer, "move /Y ");
-    strcat(mvbuffer, src_path);
-    strcat(mvbuffer, " ");
-    strcat(mvbuffer, dst_path);
-
-    cmd_echo(mvbuffer);
-
-    memset(mvbuffer, 0, 512);
+    cmd_echo("move /Y ", src_path, " ", dst_path);
 }
 
-char delbuffer[512];
 void delete_file(const char* src_path)
 {
-    memset(delbuffer, 0, 512);
-
-    strcat(delbuffer, "del /F /Q ");
-    strcat(delbuffer, src_path);
-
-    cmd_echo(delbuffer);
-
-    memset(delbuffer, 0, 512);
+    cmd_echo("del /F /Q ", src_path);
 }
 
 
@@ -139,19 +130,7 @@ int run_test(const char *function, const char *program)
 {
     std::cout << "[Note] running " << function << "\n";
 
-
-    memset(buffer, 0, 512);
-
-    strcat(buffer, "cd %TEMP% && ");
-    strcat(buffer, path_to_exe);
-    strcat(buffer, exe_name);
-    strcat(buffer, " -TS ");
-    strcat(buffer, function);
-    strcat(buffer, " 1>output_");
-    strcat(buffer, function);
-    strcat(buffer, ".txt 2>&1");
-
-    int return_code = cmd_echo(buffer);
+    int return_code = cmd_echo("cd %TEMP% && ", path_to_exe, exe_name, " -TS ", function, " 1>output_", function, ".txt 2>&1");
 
     std::cout << "[Note] program exited with " << return_code << " return_code\n"; 
 
@@ -168,22 +147,7 @@ int run_test(const char *function, const char *program)
     int diff = -1;
     if(fp) // file exists
     {
-        memset(buffer, 0 ,512);
-
-        strcat(buffer, "cd %TEMP% && fc output_");
-        strcat(buffer, function);
-        strcat(buffer, ".txt");
-
-        strcat(buffer, " ");
-        strcat(buffer, path_to_test_file);
-        strcat(buffer, "tests/");
-        strcat(buffer, "output_");
-        strcat(buffer, function);
-        strcat(buffer, ".txt");
-
-        strcat(buffer, "> diff_.txt");
-
-        cmd_echo(buffer);
+        cmd_echo("cd %TEMP% && fc output_", function, ".txt", " ", path_to_test_file, "tests/", "output_", function, ".txt", "> diff_.txt");
 
         memset(stdout_diff, 0, 2048);
 
