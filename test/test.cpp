@@ -2,6 +2,9 @@
     #define _CRT_SECURE_NO_WARNINGS // stop annoying deprecated warnings on windows.
     #include "Windows.h"
 #endif
+#ifdef __linux__
+    #include "unistd.h"
+#endif
 
 #include <iostream>
 #include <cstdlib>
@@ -10,6 +13,7 @@
 #include <functional>
 #include "string.h"
 #include <string>
+#include <cstring>
 
 #include "./tests/memory_double_init.hpp"
 #include "./tests/memory_alloc.hpp"
@@ -56,6 +60,17 @@ char exe_name[512];
 char path_to_exe[512];
 char path_to_test_file[512];
 
+void strrev(char *buffer)
+{
+    size_t j = strlen(buffer);
+    for(size_t i = 0; i < strlen(buffer); ++i)
+    {
+        buffer[i] = buffer[j];
+        --j;
+    }
+    buffer[strlen(buffer) + 1] = '\0';
+}
+
 
 void set_path_to_exe(const char *program)
 {
@@ -63,12 +78,17 @@ void set_path_to_exe(const char *program)
     memset(path_to_exe, 0, 512);
 
     strcat(exe_name, program);
-    _strrev(exe_name);
+    strrev(exe_name);
     size_t firstslash = strcspn(exe_name, "\\");
     exe_name[firstslash] = '\0';
-    _strrev(exe_name);
-
+    strrev(exe_name);
+#ifdef _WIN32
     GetModuleFileName(NULL, path_to_exe, 512); // only works on windows
+#endif
+    readlink()
+#ifdef __linux__
+
+#endif
     path_to_exe[strlen(path_to_exe)- strlen(exe_name)] = '\0'; 
 }
 void set_path_to_test_file()
@@ -76,9 +96,9 @@ void set_path_to_test_file()
     memset(path_to_test_file, 0, 512);
 
     strcat(path_to_test_file, __FILE__);
-    _strrev(path_to_test_file);
+   strrev(path_to_test_file);
     size_t firstslash10 = strcspn(path_to_test_file, "/");
-    _strrev(path_to_test_file);
+   strrev(path_to_test_file);
     path_to_test_file[strlen(path_to_test_file) - firstslash10] = '\0';
 }
 
@@ -189,9 +209,9 @@ int run_test(const char *function, const char *program)
                 break;
             }
         }
-        _strrev(stdout_diff);
+        strrev(stdout_diff);
         stdout_diff[strlen(stdout_diff) - firstnewline] = '\0';
-        _strrev(stdout_diff);
+        strrev(stdout_diff);
         diff = strcmp(stdout_diff, "\nFC: no differences encountered\n\n");
 
         fclose(fp);
