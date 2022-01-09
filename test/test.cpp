@@ -38,14 +38,16 @@ TESTLIST(TESTF)
 #undef TESTF
 
 char tmp_path[512];
-void set_tmp_path()
-{
-    strcat(tmp_path, getenv("TEMP"));
-    strcat(tmp_path, "\\");
-}
-
+char path_to_exe[512];
 char echo_buffer[4096];
-int cmd_echo(const char *c1 = "", const char *c2 = "", const char *c3 ="", const char *c4 ="", const char *c5 ="", const char *c6 ="", const char *c7 ="", const char *c8 ="", const char *c9 ="", const char *c10 ="", const char *c11 ="", const char *c12 ="")
+
+char buffer[512];
+char exe_name[512];
+char path_to_test_file[512];
+
+char str_buffer[512];
+
+int cmd_echo(const char *c1 = "", const char *c2 = "", const char *c3 ="", const char *c4 ="", const char *c5 ="", const char *c6 ="", const char *c7 ="", const char *c8 ="", const char *c9 ="", const char *c10 ="", const char *c11 ="", const char *c12 ="", const char *c13 ="", const char *c14 ="", const char *c15 ="")
 {
     memset(echo_buffer, 0, 4096);
     strcat(echo_buffer, c1);
@@ -60,25 +62,83 @@ int cmd_echo(const char *c1 = "", const char *c2 = "", const char *c3 ="", const
     strcat(echo_buffer, c10);
     strcat(echo_buffer, c11);
     strcat(echo_buffer, c12);
-    std::cout << "[CMD] running " << echo_buffer << "\n";
+    strcat(echo_buffer, c13);
+    strcat(echo_buffer, c14);
+    strcat(echo_buffer, c15);
+    std::cout << "[CMD] " << echo_buffer << "\n";
     return std::system(echo_buffer);
 }
 
-char buffer[512];
-char exe_name[512];
-char path_to_exe[512];
-char path_to_test_file[512];
-
-void strrev(char *buffer)
+int64_t strrfind(char s, char *buf)
 {
-    size_t j = strlen(buffer);
-    for(size_t i = 0; i < strlen(buffer); ++i)
+    int64_t index = -1;
+    size_t buf_len = strlen(buf);
+    for(size_t i = buf_len - 1; i > 0 ; --i)
     {
-        buffer[i] = buffer[j];
+        if(*(buf + i) == s)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+int64_t strfind(char s, char *buf)
+{
+    int64_t index = -1;
+    size_t buf_len = strlen(buf);
+    for(size_t i = 0; i < buf_len ; ++i)
+    {
+        if(*(buf + i) == s)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+void strrev(char *buf) //TODO(johan) fix.
+{
+    memset(str_buffer, 0, 512);
+    size_t buf_len = strlen(buf);
+    size_t j = strlen(buf) - 1;
+    for(size_t i = 0; i < buf_len; ++i)
+    {
+        *(str_buffer + i) = *(buf + j);
         --j;
     }
-    buffer[strlen(buffer) + 1] = '\0';
+    str_buffer[strlen(str_buffer)] = '\0';
+    strcpy(buf, str_buffer);
 }
+
+
+
+void set_path_to_test_file()
+{
+
+    memset(path_to_test_file, 0, 512);
+
+    strcat(path_to_test_file, __FILE__);
+
+    int firstslash = strrfind('/', path_to_test_file);
+
+
+    path_to_test_file[firstslash + 1] = '\0';
+}
+
+
+
+#ifdef _WIN32
+
+
+void set_tmp_path()
+{
+    strcat(tmp_path, getenv("TEMP"));
+    strcat(tmp_path, "\\");
+}
+
 
 
 void set_path_to_exe(const char *program)
@@ -91,35 +151,78 @@ void set_path_to_exe(const char *program)
     size_t firstslash = strcspn(exe_name, "\\");
     exe_name[firstslash] = '\0';
     strrev(exe_name);
-#ifdef _WIN32
     GetModuleFileName(NULL, path_to_exe, 512); // only works on windows
-#endif
-    readlink()
-#ifdef __linux__
-
-#endif
     path_to_exe[strlen(path_to_exe)- strlen(exe_name)] = '\0'; 
 }
-void set_path_to_test_file()
-{
-    memset(path_to_test_file, 0, 512);
 
-    strcat(path_to_test_file, __FILE__);
-   strrev(path_to_test_file);
-    size_t firstslash10 = strcspn(path_to_test_file, "/");
-   strrev(path_to_test_file);
-    path_to_test_file[strlen(path_to_test_file) - firstslash10] = '\0';
-}
 
 void move_file(const char *dst_path, const char *src_path)
 {
     cmd_echo("move /Y ", src_path, " ", dst_path);
 }
 
+
+
 void delete_file(const char* src_path)
 {
     cmd_echo("del /F /Q ", src_path);
 }
+
+
+#endif
+
+#ifdef __linux__
+
+
+void set_tmp_path()
+{
+    strcat(tmp_path, "/var/tmp/");
+}
+
+void set_path_to_exe(const char *program)
+{
+    memset(exe_name, 0, 512);
+    memset(path_to_exe, 0, 512);
+
+    strcat(exe_name, program);
+
+    strrev(exe_name);
+    #ifdef _WIN32
+    size_t firstslash = strrfind('\', exe_name);
+    #endif
+
+    #ifdef __linux__
+    size_t firstslash = strfind('/', exe_name);
+
+    #endif
+
+    exe_name[firstslash] = '\0';
+    strrev(exe_name);
+    readlink("/proc/self/exe", path_to_exe, 512);
+    auto exe_name_len = strlen(exe_name);
+    path_to_exe[strlen(path_to_exe) - exe_name_len ] = '\0'; 
+}
+
+
+void move_file(const char *dst_path, const char *src_path)
+{
+    cmd_echo("mv -f ", src_path, " ", dst_path);
+}
+
+
+void delete_file(const char* src_path)
+{
+    cmd_echo("rm -f ", src_path);
+}
+
+#endif
+
+
+
+
+
+
+
 
 
 char stdout_old[2048];
@@ -130,9 +233,9 @@ int run_test(const char *function, const char *program)
 {
     std::cout << "[Note] running " << function << "\n";
 
-    int return_code = cmd_echo("cd %TEMP% && ", path_to_exe, exe_name, " -TS ", function, " 1>output_", function, ".txt 2>&1");
+    int return_code = cmd_echo("cd ", tmp_path, " && ", path_to_exe, exe_name, " -TS ", function, " 1>output_", function, ".txt 2>&1");
 
-    std::cout << "[Note] program exited with " << return_code << " return_code\n"; 
+    std::cout << "[Note] program exited with " << "exit code: " << return_code << "\n"; 
 
     memset(buffer, 0, 512);
 
@@ -142,12 +245,33 @@ int run_test(const char *function, const char *program)
     strcat(buffer, function);
     strcat(buffer, ".txt");
 
-    FILE *fp = fopen(buffer, "r");
-
     int diff = -1;
-    if(fp) // file exists
+
+    FILE *fp = fopen(buffer, "r");
+    if(!fp)
     {
-        cmd_echo("cd %TEMP% && fc output_", function, ".txt", " ", path_to_test_file, "tests/", "output_", function, ".txt", "> diff_.txt");
+        std::cout << "[WARNING] no test file found -- Skipping test\n";
+
+        memset(buffer, 0, 512);
+        strcat(buffer, tmp_path);
+        strcat(buffer, "output_");
+        strcat(buffer, function);
+        strcat(buffer, ".txt");
+
+        delete_file(buffer);
+        return 0;
+    }
+    fclose(fp);
+
+    // file exists
+    
+        #ifdef _WIN32
+        cmd_echo("cd ", tmp_path, " && ", "fc output_", function, ".txt", " ", path_to_test_file, "tests/", "output_", function, ".txt", "> diff_.txt");
+        #endif
+
+        #ifdef __linux__
+        cmd_echo("cd ", tmp_path, " && ", "diff -q output_", function, ".txt", " ", path_to_test_file, "tests/", "output_", function, ".txt", "> diff_.txt");
+        #endif
 
         memset(stdout_diff, 0, 2048);
 
@@ -156,30 +280,32 @@ int run_test(const char *function, const char *program)
         strcat(buffer, tmp_path);
         strcat(buffer, "diff_.txt");
 
-        FILE *fpDiff = fopen(buffer, "r");
-        if(fpDiff)
-        {
-
-            fread(stdout_diff, 2048, 1, fpDiff);
-
-            fclose(fpDiff);
-        }
-        size_t firstnewline = 0;
-        for(int i = 0; i < strlen(stdout_diff); ++i)
-        {
-            if(stdout_diff[i] == 10)
-            {
-                firstnewline = i;
-                break;
-            }
-        }
-        strrev(stdout_diff);
-        stdout_diff[strlen(stdout_diff) - firstnewline] = '\0';
-        strrev(stdout_diff);
-        diff = strcmp(stdout_diff, "\nFC: no differences encountered\n\n");
-
-        fclose(fp);
+    FILE *fpDiff = fopen(buffer, "r");
+    if(fpDiff)
+    {
+        fread(stdout_diff, 2048, 1, fpDiff);
+        fclose(fpDiff);
     }
+    #ifdef _WIN32
+    size_t firstnewline = 0;
+    for(int i = 0; i < strlen(stdout_diff); ++i)
+    {
+        if(stdout_diff[i] == '\n')
+        {
+            firstnewline = i;
+            break;
+        }
+    }
+    strrev(stdout_diff);
+    stdout_diff[strlen(stdout_diff) - firstnewline] = '\0';
+    strrev(stdout_diff);
+    diff = strcmp(stdout_diff, "\nFC: no differences encountered\n\n");
+    #endif
+
+    #ifdef __linux__
+    diff = strcmp(stdout_diff, "");
+    #endif
+    
 
 
 
@@ -187,6 +313,9 @@ int run_test(const char *function, const char *program)
     if(diff)
     {
         memset(buffer, 0 , 512);
+        memset(stdout_new, 0, 2048);
+        memset(stdout_old, 0, 2048);
+
         strcat(buffer, tmp_path);
         strcat(buffer, "output_");
         strcat(buffer, function);
@@ -240,7 +369,9 @@ int update_test(const char *function)
     std::cout << "[Note] updating " << function << "\n";
     memset(buffer, 0, 512);
 
-    strcat(buffer, "cd %TEMP% && ");
+    strcat(buffer, "cd ");
+    strcat(buffer, tmp_path);
+    strcat(buffer, " && ");
     strcat(buffer, path_to_exe);
     strcat(buffer, exe_name);
     strcat(buffer, " -TS ");
@@ -279,16 +410,6 @@ int run_function(std::function<int()> func)
 
 void usage(const char *program, const char *arg = "")
 {
-    if(!strcmp(arg, "TS"))
-    {
-        // add for special usage.
-        exit(1);
-    }
-    if(!strcmp(arg, "r"))
-    {
-        // add for special usage.        
-        exit(1);
-    }
 
     std::cerr << "USAGE: [-TS function] [-r/-u] function for " << program << "\n"
     << "-TS is used for for internal functions\n"
@@ -298,7 +419,8 @@ void usage(const char *program, const char *arg = "")
     exit(1);
 }
 
-
+char test_buffer[512];
+char rtest_buffer[512];
 int main(int argc, char *argv[])
 {
     set_tmp_path();
