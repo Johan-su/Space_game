@@ -13,9 +13,9 @@ void Registry_functions::init(Registry_data *rdata)
     mm = new Memory_pool();
     Memory::init(mm);
 
-    edata = Memory::alloc<Entity_data>(mm);
-    cdata = Memory::alloc<Component_data>(mm);
-    sysdata = Memory::alloc<System_data>(mm);
+    edata = Memory::alloc<Entity_data>(mm, 1);
+    cdata = Memory::alloc<Component_data>(mm, 1);
+    sysdata = Memory::alloc<System_data>(mm, 1);
 
     Entity_functions::init(mm, edata);
     Component_functions::init(mm, cdata);
@@ -33,9 +33,9 @@ void Registry_functions::clean(Registry_data *rdata)
     Component_functions::clean(mm, cdata);
     Entity_functions::clean(mm, edata);
 
-    Memory::dealloc(mm, sysdata);
-    Memory::dealloc(mm, cdata);
-    Memory::dealloc(mm, edata);
+    Memory::dealloc(mm, sysdata, 1);
+    Memory::dealloc(mm, cdata, 1);
+    Memory::dealloc(mm, edata, 1);
     
     Memory::clean(mm);
     free(mm);

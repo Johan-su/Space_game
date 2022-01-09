@@ -12,7 +12,7 @@
 bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 {
     #define STRUCT_GEN(NAME, vargs...) \
-    cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm); \
+    cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm, 1); \
     for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i) \
     { \
         cdata->m_ ## NAME->entity_indicies[i] = MAX_ENTITY_AMOUNT - 1; \
@@ -30,7 +30,7 @@ bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 
 bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, cdata->m_ ## NAME);
+    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, cdata->m_ ## NAME, 1);
     #define DATA_GEN(TYPE, VAR)
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
