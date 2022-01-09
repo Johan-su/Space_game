@@ -13,6 +13,7 @@
  } while(0)
 
 #else
- do {} while(0) \
+#define assert(condition, message) \
+do {} while(0)
 
  #endif
