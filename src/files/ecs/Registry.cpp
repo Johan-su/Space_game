@@ -83,7 +83,7 @@ void set_component(Registry_data *rdata, Entity e, T& comp)
     auto *edata = rdata->edata;
 
     C_F::set_component<T>(cdata, e, comp);
-    E_F::set_entity_signature(edata, e, E_F::get_entity_signature(edata, e) | C_F::get_component_signature<T>(cdata))
+    E_F::set_entity_signature(edata, e, E_F::get_entity_signature(edata, e) | C_F::get_component_signature<T>(cdata));
 }
 
 template <typename T>
