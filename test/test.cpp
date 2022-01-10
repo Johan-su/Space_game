@@ -457,7 +457,7 @@ int main(int argc, char *argv[])
         }
         else if(flag[1] == 'l')
         {
-            std::cout << "Printing test list: " << "\n";
+            std::cout << "Test list: " << "\n";
             for(auto & pair : str_to_func)
             {
                 std::cout <<  pair.first << "\n";
