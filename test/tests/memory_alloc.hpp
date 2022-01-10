@@ -11,6 +11,7 @@ namespace memory_alloc
 
         auto *data = Memory::alloc<uint64_t>(mm, 1);
         auto *data2 = Memory::alloc<uint8_t>(mm, 100);
+        auto *data3 = Memory::alloc<uint64_t>(mm);
 
         *data = UINT64_MAX;
 
@@ -18,8 +19,10 @@ namespace memory_alloc
         {
             *(data2 + i) = i;
         }
+        *data3 = 0x11111111ABCDEF01; // little endian memory pattern
+        
 
-        Memory::dump(mm, 120, false);
+        Memory::dump(mm, 140, false);
         return 0;
     }
 }
