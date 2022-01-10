@@ -13,20 +13,25 @@ namespace ecs_view_test
     };
     int test()
     {
-        auto *reg = new Registry_data();
-        Registry_functions::init(reg);
+        auto *rd = new Registry_data();
+        Registry_functions::init(rd);
+
+        auto *mm = rd->mm;
+
+        Entity e1 = Registry_functions::create_entity(rd);
+
+        auto pc1 = Position_component();
+        pc1 = {float(e1), float(e1)};
+
+        Registry_functions::set_component(rd, e1, pc1);
 
 
 
 
 
-
-
-
-
-        Registry_functions::clean(reg);
-        delete reg;
-        reg = nullptr;
+        Registry_functions::clean(rd);
+        delete rd;
+        rd = nullptr;
         return 0;
     }
 }
