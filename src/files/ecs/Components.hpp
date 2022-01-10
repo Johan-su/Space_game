@@ -5,18 +5,18 @@
 
 //#define _DEBUG
 #define COMPONENT_LIST(STRC, DATA) \
-STRC(Position, \
-DATA(float, x) \
-DATA(float, y) \
-) \
-STRC(Size, \
-DATA(float, width) \
-DATA(float, height) \
-) \
-STRC(Health, \
-DATA(float, hp) \
-DATA(float, hp_regen) \
-) \
+STRC(Position,                     \
+DATA(float, x)                     \
+DATA(float, y)                     \
+)                                  \
+STRC(Size,                         \
+DATA(float, width)                 \
+DATA(float, height)                \
+)                                  \
+STRC(Health,                       \
+DATA(float, hp)                    \
+DATA(float, hp_regen)              \
+)                                  \
 
 
 // struct component generator

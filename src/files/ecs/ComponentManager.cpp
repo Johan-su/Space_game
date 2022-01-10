@@ -11,10 +11,10 @@
 
 bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) \
-    cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm, 1); \
-    for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i) \
-    { \
+    #define STRUCT_GEN(NAME, vargs...)                                 \
+    cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm, 1);          \
+    for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)                      \
+    {                                                                  \
         cdata->m_ ## NAME->entity_indicies[i] = MAX_ENTITY_AMOUNT - 1; \
     }
 
@@ -66,18 +66,18 @@ void Component_functions::set_component(Component_data *cdata, Entity e, T comp)
 }
 
 
-#define STRUCT_GEN(NAME, vargs...) \
-template<> \
+#define STRUCT_GEN(NAME, vargs...)                          \
+template<>                                                  \
 void Component_functions::set_component<NAME ## _component> \
-(Component_data *cdata, Entity e, NAME ## _component comp) \
-{ \
-    NAME ## _array *comparray = cdata->m_ ## NAME; \
-    Entity *e_ind = comparray->entity_indicies; \
-    Entity *e_list = comparray->entity_list; \
-    e_ind[e] = comparray->array_size++; \
-    e_list[e_ind[e]] = e; \
-    vargs\
-} \
+(Component_data *cdata, Entity e, NAME ## _component comp)  \
+{                                                           \
+    NAME ## _array *comparray = cdata->m_ ## NAME;          \
+    Entity *e_ind = comparray->entity_indicies;             \
+    Entity *e_list = comparray->entity_list;                \
+    e_ind[e] = comparray->array_size++;                     \
+    e_list[e_ind[e]] = e;                                   \
+    vargs                                                   \
+}                                                           \
 
 #define DATA_GEN(TYPE, VAR) \
 comparray->VAR[e_ind[e]] = comp.VAR;
@@ -94,20 +94,20 @@ void Component_functions::destroy_component(Component_data *cdata, Entity e)
     assert(false, "non specialized template");
 }
 
-#define STRUCT_GEN(NAME, vargs...) \
-template<> \
+#define STRUCT_GEN(NAME, vargs...)                              \
+template<>                                                      \
 void Component_functions::destroy_component<NAME ## _component> \
-(Component_data *cdata, Entity e) \
-{ \
-    NAME ## _array *comparray = cdata->m_ ## NAME; \
-    Entity *e_ind = comparray->entity_indicies; \
-    Entity *e_list = comparray->entity_list; \
-    size_t& ar_size = comparray->array_size; \
-    vargs \
-    e_list[e_ind[e]] = e_list[ar_size]; \
-    e_ind[e_list[ar_size]] = e_ind[e]; \
-    e_ind[e] = MAX_ENTITY_AMOUNT - 1; \
-    --ar_size; \
+(Component_data *cdata, Entity e)                               \
+{                                                               \
+    NAME ## _array *comparray = cdata->m_ ## NAME;              \
+    Entity *e_ind = comparray->entity_indicies;                 \
+    Entity *e_list = comparray->entity_list;                    \
+    size_t& ar_size = comparray->array_size;                    \
+    vargs                                                       \
+    e_list[e_ind[e]] = e_list[ar_size];                         \
+    e_ind[e_list[ar_size]] = e_ind[e];                          \
+    e_ind[e] = MAX_ENTITY_AMOUNT - 1;                           \
+    --ar_size;                                                  \
 }
 
 #define DATA_GEN(TYPE, VAR) \
@@ -125,12 +125,13 @@ View<T> & Component_functions::get_view(Component_data *cdata) //--
     return *(View<T>*)0;
 }
 
-#define STRUCT_GEN(NAME, vargs...) \
-template<> \
+#define STRUCT_GEN(NAME, vargs...)                                                                  \
+template<>                                                                                          \
 View<NAME ## _component> & Component_functions::get_view<NAME ## _component>(Component_data *cdata) \
-{ \
-     return *(View<NAME ## _component>*)0; \
+{                                                                                                   \
+     return *(View<NAME ## _component>*)0;                                                          \
 }
+
 #define DATA_GEN(TYPE, VAR)
 
 COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
@@ -141,10 +142,10 @@ COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //--
 {
-#define STRUCT_GEN(NAME, vargs...) \
+#define STRUCT_GEN(NAME, vargs...)                                                                                      \
 if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
-{ \
-Component_functions::destroy_component<NAME ## _component>(cdata, e); \
+{                                                                                                                       \
+Component_functions::destroy_component<NAME ## _component>(cdata, e);                                                   \
 }
 
 #define DATA_GEN(TYPE, VAR)
