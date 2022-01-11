@@ -55,18 +55,18 @@ namespace Component_functions
     }
 
 
-    #define STRUCT_GEN(NAME, vargs...)                         \
-    template<>                                                 \
-    void set_component<NAME ## _component>                     \
+    #define STRUCT_GEN(NAME, vargs...)                          \
+    template<>                                                  \
+    inline void set_component<NAME ## _component>               \
     (Component_data *cdata, Entity e, NAME ## _component& comp) \
-    {                                                          \
-        NAME ## _array *comparray = cdata->m_ ## NAME;         \
-        Entity *e_ind = comparray->entity_indicies;            \
-        Entity *e_list = comparray->entity_list;               \
-        e_ind[e] = comparray->array_size++;                    \
-        e_list[e_ind[e]] = e;                                  \
-        vargs                                                  \
-    }                                                          \
+    {                                                           \
+        NAME ## _array *comparray = cdata->m_ ## NAME;          \
+        Entity *e_ind = comparray->entity_indicies;             \
+        Entity *e_list = comparray->entity_list;                \
+        e_ind[e] = comparray->array_size++;                     \
+        e_list[e_ind[e]] = e;                                   \
+        vargs                                                   \
+    }                                                           \
 
     #define DATA_GEN(TYPE, VAR) \
     comparray->VAR[e_ind[e]] = comp.VAR;
@@ -85,7 +85,7 @@ namespace Component_functions
 
     #define STRUCT_GEN(NAME, vargs...)                 \
     template<>                                         \
-    void destroy_component<NAME ## _component>         \
+    inline void destroy_component<NAME ## _component>  \
     (Component_data *cdata, Entity e)                  \
     {                                                  \
         NAME ## _array *comparray = cdata->m_ ## NAME; \
@@ -98,6 +98,8 @@ namespace Component_functions
         e_ind[e] = MAX_ENTITY_AMOUNT - 1;              \
         --ar_size;                                     \
     }
+
+
     #define DATA_GEN(TYPE, VAR) \
     comparray->VAR[e_ind[e]] = comparray->VAR[ar_size];
 
@@ -116,11 +118,11 @@ namespace Component_functions
     }
 
 
-    #define STRUCT_GEN(NAME, vargs...)                                             \
-    template<>                                                                     \
-    View<NAME ## _component> & get_view<NAME ## _component>(Component_data *cdata) \
-    {                                                                              \
-        return *(View<NAME ## _component>*)0;                                      \
+    #define STRUCT_GEN(NAME, vargs...)                                                    \
+    template<>                                                                            \
+    inline View<NAME ## _component> & get_view<NAME ## _component>(Component_data *cdata) \
+    {                                                                                     \
+        return *(View<NAME ## _component>*)0;                                             \
     }
 
     #define DATA_GEN(TYPE, VAR)
