@@ -15,6 +15,9 @@ struct Registry_data
 
 namespace Registry_functions
 {
+    namespace E_F = Entity_functions;
+    namespace C_F = Component_functions;
+
     void init(Registry_data *rdata);
     void clean(Registry_data *rdata);
 
@@ -24,16 +27,28 @@ namespace Registry_functions
 
 
 
+
+}
+
+namespace Registry_functions
+{
+
     template <typename T>
     void set_component(Registry_data *rdata, Entity e, T& comp)
     {
-    namespace E_F = Entity_functions;
-    namespace C_F = Component_functions;
-    auto *cdata = rdata->cdata;
-    auto *edata = rdata->edata;
 
-    C_F::set_component<T>(cdata, e, comp);
-    E_F::set_entity_signature(edata, e, E_F::get_entity_signature(edata, e) | C_F::get_component_signature<T>(cdata));
+        auto *cdata = rdata->cdata;
+        auto *edata = rdata->edata;
+
+        C_F::set_component<T>(cdata, e, comp);
+        E_F::set_entity_signature(edata, e, E_F::get_entity_signature(edata, e) | C_F::get_component_signature<T>(cdata));
+    }
+
+    
+    template <typename T>
+    Signature get_component_signature(Registry_data *rdata)
+    {
+        return C_F::get_component_signature<T>(rdata->cdata);
     }
 
 
@@ -41,7 +56,7 @@ namespace Registry_functions
     template <typename T>
     View<T> & get_view(Registry_data *rdata, Signature sig)
     {
-    return Component_functions::get_view<T>(rdata->cdata);
+        return Component_functions::get_view<T>(rdata->cdata);
     }
 
 
@@ -50,5 +65,6 @@ namespace Registry_functions
     {
 
     }
+
 
 }
