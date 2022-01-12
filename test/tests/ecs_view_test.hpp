@@ -4,14 +4,14 @@
 
 namespace ecs_view_test
 {
-    class health_system : System
+    /*class health_system : System
     {
         void update(Registry_data *rdata)
         {
             auto & view = Registry_functions::get_view<Health_component>(rdata, m_Systemsignature);
             //for(auto& tuple ) /TODO(johan): finish test
         }
-    };
+    };*/
     int test()
     {
         auto *rd = new Registry_data();
@@ -25,6 +25,8 @@ namespace ecs_view_test
         pc1 = {float(e1), float(e1)};
 
         Registry_functions::set_component(rd, e1, pc1);
+
+        auto view = Registry_functions::get_view<Position_component>(rd, Registry_functions::get_component_signature<Position_component>(rd));
 
 
 
