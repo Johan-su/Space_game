@@ -44,5 +44,3 @@ target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
 
 
 add_executable(Space_game_test ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
-#target_include_directories(Space_game_tests PUBLIC ${SDL2_INCLUDE_DIRS})
-#target_link_libraries(Space_game_tests PUBLIC ${SDL2_LIBRARIES})
