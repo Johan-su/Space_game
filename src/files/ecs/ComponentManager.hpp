@@ -36,16 +36,21 @@ namespace Component_functions
     bool init(Memory_pool *mm, Component_data *cdata);
     bool clean(Memory_pool *mm, Component_data *cdata);
 
-    uint64_t getId(Component_data *cdata); // should not be called directly
+    uint64_t getId(Component_data *cdata);
 
+    void destroy_entity(Component_data *cdata, Entity e, Signature sig);
+
+}
+
+
+namespace Component_functions
+{
     template <typename T>
     Signature get_component_signature(Component_data *cdata)
     {
         static Signature component_signature = {getId(cdata)};
         return component_signature;
     }
-
-
 
 
     template <typename T>
@@ -66,7 +71,7 @@ namespace Component_functions
         e_ind[e] = comparray->array_size++;                     \
         e_list[e_ind[e]] = e;                                   \
         vargs                                                   \
-    }                                                           \
+    }                                                           
 
     #define DATA_GEN(TYPE, VAR) \
     comparray->VAR[e_ind[e]] = comp.VAR;
@@ -95,8 +100,8 @@ namespace Component_functions
         vargs                                          \
         e_list[e_ind[e]] = e_list[ar_size];            \
         e_ind[e_list[ar_size]] = e_ind[e];             \
-        e_ind[e] = MAX_ENTITY_AMOUNT - 1;              \
-        --ar_size;                                     \
+        e_ind[e] = MAX_ENTITY_AMOUNT;                  \
+        --ar_size;                                     
     }
 
 
@@ -121,7 +126,11 @@ namespace Component_functions
     #define STRUCT_GEN(NAME, vargs...)                                                    \
     template<>                                                                            \
     inline View<NAME ## _component> & get_view<NAME ## _component>(Component_data *cdata) \
-    {                                                                                     \
+    {
+        auto view = View<NAME ## _component>();
+        
+        
+                                                                                             \
         return *(View<NAME ## _component>*)0;                                             \
     }
 
@@ -133,5 +142,4 @@ namespace Component_functions
 
 
 
-    void destroy_entity(Component_data *cdata, Entity e, Signature sig);
 }
