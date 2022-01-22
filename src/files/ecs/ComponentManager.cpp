@@ -58,7 +58,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signat
 #define STRUCT_GEN(NAME, vargs...)                                                                                      \
 if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
 {                                                                                                                       \
-Component_functions::destroy_component<NAME ## _component>(cdata, e);                                                   \
+    Component_functions::destroy_component<NAME ## _component>(cdata, e);                                               \
 }
 
 #define DATA_GEN(TYPE, VAR)
