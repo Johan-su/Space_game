@@ -83,25 +83,24 @@ namespace Component_functions
 
 
     template<typename T>
-    void destroy_component(Component_data *cdata, Entity e)
+    inline void destroy_component(Component_data *cdata, Entity e)
     {
         assert(false, "non specialized template");
     }
 
-    #define STRUCT_GEN(NAME, vargs...)                 \
-    template<>                                         \
-    inline void destroy_component<NAME ## _component>  \
-    (Component_data *cdata, Entity e)                  \
-    {                                                  \
-        NAME ## _array *comparray = cdata->m_ ## NAME; \
-        Entity *e_ind = comparray->entity_indicies;    \
-        Entity *e_list = comparray->entity_list;       \
-        size_t& ar_size = comparray->array_size;       \
-        vargs                                          \
-        e_list[e_ind[e]] = e_list[ar_size];            \
-        e_ind[e_list[ar_size]] = e_ind[e];             \
-        e_ind[e] = MAX_ENTITY_AMOUNT;                  \
-        --ar_size;                                     
+    #define STRUCT_GEN(NAME, vargs...)                                                  \
+    template<>                                                                          \
+    inline void destroy_component<NAME ## _component> (Component_data *cdata, Entity e) \
+    {                                                                                   \
+        NAME ## _array *comparray = cdata->m_ ## NAME;                                  \
+        Entity *e_ind = comparray->entity_indicies;                                     \
+        Entity *e_list = comparray->entity_list;                                        \
+        size_t &ar_size = comparray->array_size;                                        \
+        vargs                                                                           \
+        e_list[e_ind[e]] = e_list[ar_size];                                             \
+        e_ind[e_list[ar_size]] = e_ind[e];                                              \
+        e_ind[e] = MAX_ENTITY_AMOUNT;                                                   \
+        --ar_size;                                                                      \
     }
 
 
@@ -123,7 +122,7 @@ namespace Component_functions
     }
 
 
-    #define STRUCT_GEN(NAME, vargs...)                                                    \
+    /*#define STRUCT_GEN(NAME, vargs...)                                                    \
     template<>                                                                            \
     inline View<NAME ## _component> & get_view<NAME ## _component>(Component_data *cdata) \
     {
@@ -138,7 +137,7 @@ namespace Component_functions
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
     #undef STRUCT_GEN
-    #undef DATA_GEN
+    #undef DATA_GEN */
 
 
 
