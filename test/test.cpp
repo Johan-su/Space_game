@@ -99,7 +99,7 @@ int64_t strfind(char s, char *buf)
     return index;
 }
 
-void strrev(char *buf) //TODO(johan) fix.
+void str_rev(char *buf)
 {
     memset(str_buffer, 0, 512);
     size_t buf_len = strlen(buf);
@@ -147,10 +147,10 @@ void set_path_to_exe(const char *program)
     memset(path_to_exe, 0, 512);
 
     strcat(exe_name, program);
-    strrev(exe_name);
+    str_rev(exe_name);
     size_t firstslash = strcspn(exe_name, "\\");
     exe_name[firstslash] = '\0';
-    strrev(exe_name);
+    str_rev(exe_name);
     GetModuleFileName(NULL, path_to_exe, 512); // only works on windows
     path_to_exe[strlen(path_to_exe)- strlen(exe_name)] = '\0'; 
 }
@@ -186,7 +186,7 @@ void set_path_to_exe(const char *program)
 
     strcat(exe_name, program);
 
-    strrev(exe_name);
+    str_rev(exe_name);
     #ifdef _WIN32
     size_t firstslash = strrfind('\', exe_name);
     #endif
@@ -197,7 +197,7 @@ void set_path_to_exe(const char *program)
     #endif
 
     exe_name[firstslash] = '\0';
-    strrev(exe_name);
+    str_rev(exe_name);
     readlink("/proc/self/exe", path_to_exe, 512);
     auto exe_name_len = strlen(exe_name);
     path_to_exe[strlen(path_to_exe) - exe_name_len ] = '\0'; 
@@ -296,9 +296,9 @@ int run_test(const char *function, const char *program)
             break;
         }
     }
-    strrev(stdout_diff);
+    str_rev(stdout_diff);
     stdout_diff[strlen(stdout_diff) - firstnewline] = '\0';
-    strrev(stdout_diff);
+    str_rev(stdout_diff);
     diff = strcmp(stdout_diff, "\nFC: no differences encountered\n\n");
     #endif
 
