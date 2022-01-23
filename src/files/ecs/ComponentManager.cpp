@@ -42,7 +42,7 @@ bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 }
 
 
-uint64_t Component_functions::getId(Component_data *cdata) // should not be called directly
+uint64_t Component_functions::getId(Component_data *cdata)
 {
     assert(cdata->m_componentIdCount != 0, "More than " + std::to_string(MAX_COMPONENT_TYPES) + " components registered");
     uint64_t tmp = cdata->m_componentIdCount;
@@ -51,21 +51,19 @@ uint64_t Component_functions::getId(Component_data *cdata) // should not be call
 }
 
 
-
-
-void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //--
+void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //TODO(johan): do this in a better way without checking for every signature.
 {
-#define STRUCT_GEN(NAME, vargs...)                                                                                      \
-if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
-{                                                                                                                       \
-    Component_functions::destroy_component<NAME ## _component>(cdata, e);                                               \
-}
+    #define STRUCT_GEN(NAME, vargs...)                                                                                      \
+    if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
+    {                                                                                                                       \
+        Component_functions::destroy_component<NAME ## _component>(cdata, e);                                               \
+    }
 
-#define DATA_GEN(TYPE, VAR)
+    #define DATA_GEN(TYPE, VAR)
 
-COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-#undef STRUCT_GEN
-#undef DATA_GEN
+    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+    #undef STRUCT_GEN
+    #undef DATA_GEN
 
 
 }
