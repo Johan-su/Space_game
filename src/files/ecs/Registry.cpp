@@ -5,10 +5,10 @@
 
 void Registry_functions::init(Registry_data *rdata)
 {
-    auto & mm = rdata->mm;
-    auto & edata = rdata->edata;
-    auto & cdata = rdata->cdata;
-    auto & sysdata = rdata->sysdata;
+    auto &mm      = rdata->mm;
+    auto &edata   = rdata->edata;
+    auto &cdata   = rdata->cdata;
+    auto &sysdata = rdata->sysdata;
 
     mm = new Memory_pool();
     Memory::init(mm);
@@ -40,9 +40,9 @@ void Registry_functions::clean(Registry_data *rdata)
     Memory::clean(mm);
     free(mm);
 
-    mm = nullptr;
-    edata = nullptr;
-    cdata = nullptr;
+    mm      = nullptr;
+    edata   = nullptr;
+    cdata   = nullptr;
     sysdata = nullptr;
 }
 
