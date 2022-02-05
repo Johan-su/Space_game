@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+
+
 #ifdef _DEBUG
 #define assert(condition, message)                         \
  do                                                        \
@@ -11,7 +13,7 @@
       << ": " << message << "\n";                          \
       exit(1);                                             \
    }                                                       \
- } while(0)
+} while(0)
 
 #else
 #define assert(condition, message) \
