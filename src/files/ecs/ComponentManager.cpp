@@ -1,6 +1,5 @@
 #include "ecs_constants.hpp"
 #include "ecs_assert.hpp"
-#include "Signature.hpp"
 #include "Components.hpp"
 #include "component_arrays.hpp"
 #include "MemoryManager.hpp"
@@ -15,7 +14,7 @@ bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
     cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm, 1);          \
     for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)                      \
     {                                                                  \
-        cdata->m_ ## NAME->entity_indicies[i] = MAX_ENTITY_AMOUNT - 1; \
+        cdata->m_ ## NAME->entity_indicies[i] = ENTITY_NULL; \
     }
 
     #define DATA_GEN(TYPE, VAR)
@@ -31,7 +30,7 @@ bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 
 bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
-    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, cdata->m_ ## NAME, 1);
+    #define STRUCT_GEN(NAME, vargs...) Memory::dealloc(mm, cdata->m_ ## NAME);
     #define DATA_GEN(TYPE, VAR)
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
@@ -51,13 +50,12 @@ uint64_t Component_functions::getId(Component_data *cdata)
 }
 
 
-void Component_functions::destroy_entity(Component_data *cdata, Entity e, Signature sig) //TODO(johan): do this in a better way without checking for every signature.
+void Component_functions::destroy_entity(Component_data *cdata, Entity e) 
 {
-    #define STRUCT_GEN(NAME, vargs...)                                                                                      \
-    if (( sig & get_component_signature<NAME ## _component>(cdata) ) == get_component_signature<NAME ## _component>(cdata)) \
-    {                                                                                                                       \
-        Component_functions::destroy_component<NAME ## _component>(cdata, e);                                               \
-    }
+    #define STRUCT_GEN(NAME, vargs...) \
+    Component_functions::destroy_component<NAME ## _component>(cdata, e);
+
+
 
     #define DATA_GEN(TYPE, VAR)
 
