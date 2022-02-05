@@ -15,7 +15,7 @@ void Memory::clean(Memory_pool *mm)
     assert(mm->m_MemoryActive, "Memory pool already inactive");
     free(mm->m_runTimeData);
     mm->m_runTimeData = nullptr;
-     mm->m_MemoryActive = false;
+    mm->m_MemoryActive = false;
 }
 
 void Memory::dump(Memory_pool *mm, const size_t size = 512, bool addr = true)
