@@ -4,6 +4,8 @@
 
 namespace ecs_view_test
 {
+    namespace R_f = Registry_functions;
+
     int test()
     {
         auto *rd = new Registry_data();
@@ -23,7 +25,7 @@ namespace ecs_view_test
         }
 
 
-        auto view = Registry_functions::get_view<Position_component>(rd, Registry_functions::get_component_signature<Position_component>(rd));
+        auto view = R_f::get_view<Position_component>(rd);
 
 
 
