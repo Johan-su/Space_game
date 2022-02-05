@@ -14,7 +14,7 @@ bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
     cdata->m_ ## NAME = Memory::alloc<NAME ## _array>(mm, 1);          \
     for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)                      \
     {                                                                  \
-        cdata->m_ ## NAME->entity_indicies[i] = ENTITY_NULL; \
+        cdata->m_ ## NAME->entity_indicies[i] = ENTITY_NULL;           \
     }
 
     #define DATA_GEN(TYPE, VAR)
