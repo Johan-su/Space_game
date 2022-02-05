@@ -4,7 +4,6 @@
 #include "Components.hpp"
 #include "component_arrays.hpp"
 #include "Entity.hpp"
-#include "Signature.hpp"
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
 //#include <string>
@@ -38,20 +37,13 @@ namespace Component_functions
 
     uint64_t getId(Component_data *cdata);
 
-    void destroy_entity(Component_data *cdata, Entity e, Signature sig);
+    void destroy_entity(Component_data *cdata, Entity e);
 
 }
 
 
 namespace Component_functions
 {
-    template <typename T>
-    Signature get_component_signature(Component_data *cdata)
-    {
-        static Signature component_signature = {getId(cdata)};
-        return component_signature;
-    }
-
 
     template <typename T>
     void set_component(Component_data *cdata, Entity e, T& comp)
@@ -77,6 +69,7 @@ namespace Component_functions
     comparray->VAR[e_ind[e]] = comp.VAR;
 
     COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+    
     #undef STRUCT_GEN
     #undef DATA_GEN
 
@@ -96,6 +89,7 @@ namespace Component_functions
         Entity *e_ind = comparray->entity_indicies;                                     \
         Entity *e_list = comparray->entity_list;                                        \
         size_t &ar_size = comparray->array_size;                                        \
+        if(e_ind[e] == ENTITY_NULL) return;                                             \
         vargs                                                                           \
         e_list[e_ind[e]] = e_list[ar_size];                                             \
         e_ind[e_list[ar_size]] = e_ind[e];                                              \
