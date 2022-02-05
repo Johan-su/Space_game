@@ -25,15 +25,15 @@ void Registry_functions::init(Registry_data *rdata)
 
 void Registry_functions::clean(Registry_data *rdata)
 {
-    auto &mm = rdata->mm;
-    auto &edata = rdata->edata;
-    auto &cdata = rdata->cdata;
+    auto &mm      = rdata->mm;
+    auto &edata   = rdata->edata;
+    auto &cdata   = rdata->cdata;
     auto &sysdata = rdata->sysdata;
 
     System_functions::clean(mm, sysdata);
     Component_functions::clean(mm, cdata);
     Entity_functions::clean(mm, edata);
-    
+
     Memory::dealloc(mm, sysdata, 1);
     Memory::dealloc(mm, cdata, 1);
     Memory::dealloc(mm, edata, 1);
@@ -60,21 +60,16 @@ Entity Registry_functions::create_entity(Registry_data *rdata)
 
 void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
 {
-    auto & edata = rdata->edata;
-    auto & cdata = rdata->cdata;
+    auto &edata = rdata->edata;
+    auto &cdata = rdata->cdata;
 
-    auto sig = edata->m_signatures[e];
 
-    Component_functions::destroy_entity(cdata, e, sig);
+    Component_functions::destroy_entity(cdata, e);
 
 
     Entity_functions::destroy_entity(edata, e);
 }
 
 
-Signature get_entity_signature(Registry_data *rdata, Entity e)
-{
-    return Entity_functions::get_entity_signature(rdata->edata, e);
-}
     
 
