@@ -50,7 +50,7 @@ void Registry_functions::clean(Registry_data *rdata)
 
 Entity Registry_functions::create_entity(Registry_data *rdata)
 {
-    auto & edata = rdata->edata;
+    auto *edata = rdata->edata;
 
     Entity e = Entity_functions::create_entity(edata);
 
@@ -65,8 +65,6 @@ void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
 
 
     Component_functions::destroy_entity(cdata, e);
-
-
     Entity_functions::destroy_entity(edata, e);
 }
 
