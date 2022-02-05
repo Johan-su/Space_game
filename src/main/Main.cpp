@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
     int clean_exit_code = 0;//clean();
     std::cout << "clean exit code: " << clean_exit_code << "\n";
     exit(clean_exit_code);
+    std::cin.ignore();
     return 0;
 }
 
