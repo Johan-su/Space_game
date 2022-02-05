@@ -25,7 +25,6 @@ namespace ecs_view_test
         }
 
 
-        auto view = R_f::get_view<Position_component>(rd);
 
 
 

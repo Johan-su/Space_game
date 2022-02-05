@@ -15,5 +15,4 @@ void health_system::clean()
 
 void health_system::update(Registry_data *rdata)
 {
-    auto data = Component_functions::get_view<Health_component>(rdata->cdata);
 }

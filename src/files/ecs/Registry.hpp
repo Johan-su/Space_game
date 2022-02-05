@@ -42,22 +42,5 @@ namespace Registry_functions
         C_F::set_component<T>(cdata, e, comp);
     }
 
-    
-
-
-
-    template <typename T, typename... args>
-    View<T> get_view(Registry_data *rdata)
-    {
-        //return nullptr; //Component_functions::get_view<T, args...>(rdata->cdata);  //TODO(johan) fix
-    }
-
-
-    template <typename T>
-    PartialView<T> get_partial_view(Registry_data *rdata)
-    {
-
-    }
-
 
 }
