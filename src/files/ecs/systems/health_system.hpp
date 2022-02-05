@@ -4,7 +4,7 @@
 
 class health_system :  System
 {
-    void init(Signature syssig);
+    void init();
     void clean();
-    void update(Registry_data *rdata, Signature sig);
+    void update(Registry_data *rdata);
 };

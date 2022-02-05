@@ -21,7 +21,6 @@ namespace Registry_functions
 
     Entity create_entity(Registry_data *rdata);
     void destroy_entity(Registry_data *rdata, Entity e);
-    Signature get_entity_signature(Registry_data *rdata, Entity e);
 
 
 
@@ -41,27 +40,21 @@ namespace Registry_functions
         auto *edata = rdata->edata;
 
         C_F::set_component<T>(cdata, e, comp);
-        E_F::set_entity_signature(edata, e, E_F::get_entity_signature(edata, e) | C_F::get_component_signature<T>(cdata));
     }
 
     
-    template <typename T>
-    Signature get_component_signature(Registry_data *rdata)
-    {
-        return Component_functions::get_component_signature<T>(rdata->cdata);
-    }
 
 
 
     template <typename T, typename... args>
-    View<T> & get_view(Registry_data *rdata)
+    View<T> get_view(Registry_data *rdata)
     {
-        return Component_functions::get_view<T, args...>(rdata->cdata);
+        //return nullptr; //Component_functions::get_view<T, args...>(rdata->cdata);  //TODO(johan) fix
     }
 
 
     template <typename T>
-    PartialView<T> get_partial_view(Registry_data *rdata, Signature sig)
+    PartialView<T> get_partial_view(Registry_data *rdata)
     {
 
     }

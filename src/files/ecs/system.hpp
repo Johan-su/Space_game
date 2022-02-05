@@ -5,5 +5,4 @@
 class System
 {
 public:
-    Signature m_Systemsignature;
 };
