@@ -4,24 +4,24 @@
 
 void Memory::init(Memory_pool *mm)
 {
-  assert(!mm->m_MemoryActive, "Memory pool already active");
-  mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
-  memset(mm->m_runTimeData, 0, MEMORY_POOL_SIZE);
-  mm->m_MemoryActive = true;
+    assert(!mm->m_MemoryActive, "Memory pool already active");
+    mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
+    memset(mm->m_runTimeData, 0, MEMORY_POOL_SIZE);
+    mm->m_MemoryActive = true;
 }
 
 void Memory::clean(Memory_pool *mm)
 {
-  assert(mm->m_MemoryActive, "Memory pool already inactive");
-  free(mm->m_runTimeData);
-  mm->m_runTimeData = nullptr;
-  mm->m_MemoryActive = false;
+    assert(mm->m_MemoryActive, "Memory pool already inactive");
+    free(mm->m_runTimeData);
+    mm->m_runTimeData = nullptr;
+     mm->m_MemoryActive = false;
 }
 
 void Memory::dump(Memory_pool *mm, const size_t size = 512, bool addr = true)
 {
-  assert(mm->m_MemoryActive, "uninitalized memory pool");
-  assert(size < MEMORY_POOL_SIZE, "Dump size greater than pool size");
+    assert(mm->m_MemoryActive, "uninitalized memory pool");
+    assert(size < MEMORY_POOL_SIZE, "Dump size greater than pool size");
 
     if(addr)
     {
