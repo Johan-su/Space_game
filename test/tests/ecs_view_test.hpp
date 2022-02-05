@@ -27,7 +27,7 @@ namespace ecs_view_test
 
 
 
-
+        Collection coll = get_collection(Position_component, Health_component, Test_component);
 
 
         Registry_functions::clean(rd);
