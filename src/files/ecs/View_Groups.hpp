@@ -6,7 +6,7 @@
 struct Collection 
 {
     // Entity m_entities[MAX_ENTITY_AMOUNT];
-    void *comparray;
+    void *comparray; // only one component type
     uint64_t size = 0;
 };
 
