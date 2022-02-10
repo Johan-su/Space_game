@@ -24,7 +24,7 @@ namespace Memory
     void dump(Memory_pool *mm,  const size_t size, bool addr);
   
     template <typename T>  
-    T *alloc(Memory_pool *mm, size_t amount = 1) //TODO(johan) fix, memory alignment
+    T *alloc(Memory_pool *mm, size_t amount = 1)
     {
         assert(amount > 0, "Cannot allocate 0 bytes");
         assert(mm->m_MemoryActive, "Inactive memory pool");
