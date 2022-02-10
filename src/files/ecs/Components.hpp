@@ -25,6 +25,25 @@ DATA(bool, d)                      \
 DATA(short, e)                     \
 )
 
+
+// enum component generator
+enum
+{
+
+#define STRUCT_GEN(NAME, vargs...) \
+NAME ##_CONSTANT,
+
+#define DATA_GEN(TYPE, VAR) \
+
+COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+
+
+#undef STRUCT_GEN
+#undef DATA_GEN
+
+};
+
+
 // struct component generator
 #define STRUCT_GEN(NAME, vargs...) \
 struct NAME ## _component {vargs};
