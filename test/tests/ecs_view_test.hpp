@@ -11,26 +11,38 @@ namespace ecs_view_test
         auto *rd = new Registry_data();
         Registry_functions::init(rd);
 
-        auto *mm = rd->mm;
-        auto *cdata = rd->cdata;
+        auto &mm = rd->mm;
+        auto &cdata = rd->cdata;
+
 
         Entity elist[100];
+        Entity elist1[50];
         
-        for(int i = 0; i < 100; ++i)
+        for(size_t i = 0; i < 100; ++i)
         {
             elist[i] = Registry_functions::create_entity(rd);
             auto pc1 = Position_component();
+            pc1      = {float(elist[i]), float(elist[i])};
 
-            pc1 = {float(elist[i]), float(elist[i])};
             Registry_functions::set_component(rd, elist[i], pc1);
         }
 
 
-        size_t *result_buffer; //TODO(johan) fix bug here
-        result_buffer = Component_functions::get_component_array_sizes<Position_component, Test_component, Health_component>(mm, cdata);
+        for(size_t i = 0; i < 50; ++i)
+        {
+            elist1[i] = Registry_functions::create_entity(rd);
+            auto hc1  = Health_component();
+            hc1       = {float(elist[i]), float(elist[i])};
+
+            Registry_functions::set_component(rd, elist[i], hc1);
+        }
 
 
-        for(int i = 0; i < 3; ++i)
+        size_t *result_buffer;
+        result_buffer = Component_functions::get_component_array_sizes<Position_component, Health_component>(mm, cdata);
+
+
+        for(size_t i = 0; i < 2; ++i)
         {
             std::cout << result_buffer[i] << ", ";
         }
@@ -39,7 +51,6 @@ namespace ecs_view_test
 
 
 
-        //Collection coll = get_collection(Position_Component, Health_Component, Test_Component);
 
 
         Registry_functions::clean(rd);
