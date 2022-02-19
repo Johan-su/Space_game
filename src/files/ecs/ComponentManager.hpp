@@ -138,11 +138,11 @@ namespace Component_functions
     }
 
 
-    #define STRUCT_GEN(NAME, vargs...)                                                \
-    template<>                                                                        \
-    inline size_t get_component_array_size<NAME ## _component>(Component_data *cdata) \
-    {                                                                                 \
-        return get_component_array<NAME ## _component>(cdata)->array_size;            \
+    #define STRUCT_GEN(NAME, vargs...)                                                 \
+    template<>                                                                         \
+     inline size_t get_component_array_size<NAME ## _component>(Component_data *cdata) \
+    {                                                                                  \
+        return get_component_array<NAME ## _component>(cdata)->array_size;             \
     }
 
 
@@ -154,19 +154,17 @@ namespace Component_functions
 
 
 
-
-
-
     template<typename T1, typename... Ts> // TODO(johan) check if working
-    void get_component_array_sizes(Memory_pool *mm, Component_data *cdata, size_t *result_buf) // https://en.cppreference.com/w/cpp/language/parameter_pack
+    size_t *get_component_array_sizes(Memory_pool *mm, Component_data *cdata) // https://en.cppreference.com/w/cpp/language/parameter_pack
     {
         const size_t type_count = 1 + sizeof...(Ts);
 
-        result_buf = Memory::alloc<size_t>(mm, type_count);
+        size_t *result_buf = Memory::alloc<size_t>(mm, type_count);
+       
 
         __get_component_array_sizes<T1, Ts...>(cdata, result_buf);
 
-
+        return result_buf;
     }
 
 
@@ -175,8 +173,7 @@ namespace Component_functions
     {
         const size_t type_count = sizeof...(Ts);
 
-        result_buf[type_count] = 0;
-        //*(result_buf[type_count]) = get_component_array_size<T1>(cdata);
+        result_buf[type_count] = get_component_array_size<T1>(cdata);
 
 
 

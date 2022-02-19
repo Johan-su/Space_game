@@ -27,7 +27,7 @@ namespace ecs_view_test
 
 
         size_t *result_buffer; //TODO(johan) fix bug here
-        Component_functions::get_component_array_sizes<Position_component, Test_component, Health_component>(mm, cdata, result_buffer);
+        result_buffer = Component_functions::get_component_array_sizes<Position_component, Test_component, Health_component>(mm, cdata);
 
 
         for(int i = 0; i < 3; ++i)
