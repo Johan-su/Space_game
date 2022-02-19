@@ -138,11 +138,11 @@ namespace Component_functions
     }
 
 
-    #define STRUCT_GEN(NAME, vargs...)                                                 \
-    template<>                                                                         \
-     inline size_t get_component_array_size<NAME ## _component>(Component_data *cdata) \
-    {                                                                                  \
-        return get_component_array<NAME ## _component>(cdata)->array_size;             \
+    #define STRUCT_GEN(NAME, vargs...)                                                \
+    template<>                                                                        \
+    inline size_t get_component_array_size<NAME ## _component>(Component_data *cdata) \
+    {                                                                                 \
+        return get_component_array<NAME ## _component>(cdata)->array_size;            \
     }
 
 
