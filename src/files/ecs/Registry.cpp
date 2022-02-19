@@ -5,16 +5,16 @@
 
 void Registry_functions::init(Registry_data *rdata)
 {
-    auto *mm      = rdata->mm;
-    auto *edata   = rdata->edata;
-    auto *cdata   = rdata->cdata;
-    auto *sysdata = rdata->sysdata;
+    auto &mm      = rdata->mm;
+    auto &edata   = rdata->edata;
+    auto &cdata   = rdata->cdata;
+    auto &sysdata = rdata->sysdata;
 
     mm = new Memory_pool();
     Memory::init(mm);
 
-    edata = Memory::alloc<Entity_data>(mm);
-    cdata = Memory::alloc<Component_data>(mm);
+    edata   = Memory::alloc<Entity_data>(mm);
+    cdata   = Memory::alloc<Component_data>(mm);
     sysdata = Memory::alloc<System_data>(mm);
 
     Entity_functions::init(mm, edata);
@@ -25,10 +25,10 @@ void Registry_functions::init(Registry_data *rdata)
 
 void Registry_functions::clean(Registry_data *rdata)
 {
-    auto *mm      = rdata->mm;
-    auto *edata   = rdata->edata;
-    auto *cdata   = rdata->cdata;
-    auto *sysdata = rdata->sysdata;
+    auto &mm      = rdata->mm;
+    auto &edata   = rdata->edata;
+    auto &cdata   = rdata->cdata;
+    auto &sysdata = rdata->sysdata;
 
     System_functions::clean(mm, sysdata);
     Component_functions::clean(mm, cdata);
