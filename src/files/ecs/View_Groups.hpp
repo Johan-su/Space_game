@@ -3,9 +3,10 @@
 #include "Components.hpp"
 #include "component_arrays.hpp"
 
-struct Collection 
+template<typename T>
+struct Collection
 {
-    Entity *m_entities;
-    void *comparray; // only one component type
     size_t size;
+    Entity *m_entities;
+    T *comparray; // only one component type
 };
