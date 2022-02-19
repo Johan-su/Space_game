@@ -12,6 +12,7 @@ namespace ecs_view_test
         Registry_functions::init(rd);
 
         auto *mm = rd->mm;
+        auto *cdata = rd->cdata;
 
         Entity elist[100];
         
@@ -25,9 +26,20 @@ namespace ecs_view_test
         }
 
 
+        size_t *result_buffer; //TODO(johan) fix bug here
+        Component_functions::get_component_array_sizes<Position_component, Test_component, Health_component>(mm, cdata, result_buffer);
 
 
-        Collection coll = get_collection(Position_component, Health_component, Test_component);
+        for(int i = 0; i < 3; ++i)
+        {
+            std::cout << result_buffer[i] << ", ";
+        }
+        std::cout << "\n";
+
+
+
+
+        //Collection coll = get_collection(Position_Component, Health_Component, Test_Component);
 
 
         Registry_functions::clean(rd);
