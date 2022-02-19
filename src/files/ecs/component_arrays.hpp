@@ -12,7 +12,6 @@ struct NAME ## _array                          \
     Entity entity_list[MAX_ENTITY_AMOUNT];     \
     size_t array_size;                         \
     vargs                                      \
-                                               \
 };
 
 #define DATA_GEN(TYPE, VAR) \
