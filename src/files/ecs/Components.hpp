@@ -17,13 +17,6 @@ STRC(Health,                       \
 DATA(float, hp)                    \
 DATA(float, hp_regen)              \
 )                                  \
-STRC(Test,                         \
-DATA(float, a)                     \
-DATA(float, b)                     \
-DATA(int, c)                       \
-DATA(bool, d)                      \
-DATA(short, e)                     \
-)
 
 
 // enum component generator
