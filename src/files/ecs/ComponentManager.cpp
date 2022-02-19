@@ -41,15 +41,6 @@ bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 }
 
 
-uint64_t Component_functions::getId(Component_data *cdata)
-{
-    assert(cdata->m_componentIdCount != 0, "More than " + std::to_string(MAX_COMPONENT_TYPES) + " components registered");
-    uint64_t tmp = cdata->m_componentIdCount;
-    cdata->m_componentIdCount = cdata->m_componentIdCount << 1;
-    return tmp;    
-}
-
-
 void Component_functions::destroy_entity(Component_data *cdata, Entity e) 
 {
     #define STRUCT_GEN(NAME, vargs...) \
