@@ -38,15 +38,17 @@ namespace ecs_view_test
         }
 
 
-        size_t *result_buffer;
-        result_buffer = Component_functions::get_component_array_sizes<Position_component, Health_component>(mm, cdata);
+        auto *comparray = Component_functions::min_size_component_array<Position_component, Health_component>(mm, cdata);
+
+        /*size_t *result_buffer;
+        //result_buffer = Component_functions::get_component_array_sizes<Position_component, Health_component>(mm, cdata);
 
 
         for(size_t i = 0; i < 2; ++i)
         {
             std::cout << result_buffer[i] << ", ";
         }
-        std::cout << "\n";
+        std::cout << "\n";*/
 
 
 
