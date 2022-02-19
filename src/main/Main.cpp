@@ -94,10 +94,13 @@ bool clean()
 
 
 
-
+#include "../../test/tests/ecs_view_test.hpp"
 
 int main(int argc, char *argv[])
 {
+    return ecs_view_test::test();
+
+
 
     int init_exit_code = init();
     std::cout << "init exit code: " << init_exit_code << "\n";
