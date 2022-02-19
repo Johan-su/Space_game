@@ -6,7 +6,6 @@
 #include "Entity.hpp"
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
-//#include <string>
 
 
 /* component arrays in component_data
@@ -154,7 +153,7 @@ namespace Component_functions
 
 
 
-    template<typename T1, typename... Ts> // TODO(johan) check if working
+    template<typename T1, typename... Ts>
     size_t *get_component_array_sizes(Memory_pool *mm, Component_data *cdata) // https://en.cppreference.com/w/cpp/language/parameter_pack
     {
         const size_t type_count = 1 + sizeof...(Ts);
@@ -162,25 +161,54 @@ namespace Component_functions
         size_t *result_buf = Memory::alloc<size_t>(mm, type_count);
        
 
-        __get_component_array_sizes<T1, Ts...>(cdata, result_buf);
+        __get_component_array_sizes<T1, Ts...>(cdata, result_buf, type_count);
 
         return result_buf;
     }
 
 
     template<typename T1, typename... Ts>
-    void __get_component_array_sizes(Component_data *cdata, size_t *result_buf)
+    void __get_component_array_sizes(Component_data *cdata, size_t *result_buf, size_t buf_size)
     {
         const size_t type_count = sizeof...(Ts);
 
-        result_buf[type_count] = get_component_array_size<T1>(cdata);
+        result_buf[buf_size - (type_count + 1)] = get_component_array_size<T1>(cdata);
 
 
 
         if constexpr (type_count)
         {
-            __get_component_array_sizes<Ts...>(cdata, result_buf);
+            __get_component_array_sizes<Ts...>(cdata, result_buf, buf_size);
         }
     }
+
+    template<typename T1, typename... Ts>
+    Collection<T1> get_collection(Memory_pool *mm, Component_data *cdata)
+    {
+        const size_t type_count = 1 + sizeof...(Ts);
+
+        size_t *array_sizes = get_component_array_sizes<T1, Ts...>(mm, cdata);
+
+        uint64_t min = 0xFFFFFFFFFFFFFFFF; // largest unsigned integer
+        size_t minpos;
+
+        for(size_t i = 0; i < type_count; ++i)
+        {
+            if(array_sizes[i] < min)
+            {
+                min = array_sizes[i];
+                minpos = i;
+            }
+        }
+
+
+        // TODO(johan) finish
+
+
+        Memory::dealloc(mm, array_sizes, type_count);
+        
+    }
+
+    
 
 }
