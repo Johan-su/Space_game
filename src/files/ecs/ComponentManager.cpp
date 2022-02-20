@@ -11,11 +11,12 @@
 
 bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
 {
-    memset(cdata->m_array_init, 0, sizeof(cdata->m_array_init[0]) * MAX_COMPONENT_TYPES);
-    memset(cdata->m_array_sizes, 0, sizeof(cdata->m_array_sizes[0]) * MAX_COMPONENT_TYPES);
+    memset(cdata->m_array_init,           0, sizeof(cdata->m_array_init[0])           * MAX_COMPONENT_TYPES);
+    memset(cdata->m_array_sizes,          0, sizeof(cdata->m_array_sizes[0])          * MAX_COMPONENT_TYPES);
     memset(cdata->m_component_alignments, 0, sizeof(cdata->m_component_alignments[0]) * MAX_COMPONENT_TYPES);
-    memset(cdata->m_component_sizes, 0, sizeof(cdata->m_component_sizes[0]) * MAX_COMPONENT_TYPES);
-    memset(cdata->m_componentArrays, 0, sizeof(cdata->m_componentArrays[0]) * MAX_COMPONENT_TYPES);
+    memset(cdata->m_component_sizes,      0, sizeof(cdata->m_component_sizes[0])      * MAX_COMPONENT_TYPES);
+    memset(cdata->m_componentArrays,      0, sizeof(cdata->m_componentArrays[0])      * MAX_COMPONENT_TYPES);
+
     cdata->m_componentTypesCount = 0;
 
 
@@ -48,8 +49,8 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         assert(cdata->m_array_init[i], "disordered/uninitalized componentArrays");
 
         void *comparray      = cdata->m_componentArrays[i];
-        size_t compsize      = cdata->m_component_sizes[i];
-        size_t size          = *(size_t*)(comparray);
+        size_t &compsize     = cdata->m_component_sizes[i];
+        size_t &size         = *(size_t*)(comparray);
         Entity *sparse_array = (Entity*)((size_t*)(comparray) + 1);
         Entity *entity_list  = (Entity*)((size_t*)(comparray) + 1) + 1;
         char *dense_array    = (char*)((Entity*)((size_t*)(comparray) + 1) + 2);
