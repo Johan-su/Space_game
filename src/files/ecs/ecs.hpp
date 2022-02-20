@@ -3,7 +3,6 @@
 #include "globals.hpp"
 
 #include "Components.hpp"
-#include "component_arrays.hpp"
 #include "View_Groups.hpp"
 
 #include "system.hpp"

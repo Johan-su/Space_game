@@ -10,7 +10,10 @@ void Registry_functions::init(Registry_data *rdata)
     auto &cdata   = rdata->cdata;
     auto &sysdata = rdata->sysdata;
 
-    mm = new Memory_pool();
+    mm = (Memory_pool*)malloc(sizeof(Memory_pool));
+
+    mm->m_MemoryActive = false;
+
     Memory::init(mm);
 
     edata   = Memory::alloc<Entity_data>(mm);

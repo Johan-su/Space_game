@@ -4,7 +4,7 @@
 
 #ifdef _DEBUG
 #define assert(condition, message)                         \
- do                                                        \
+do                                                         \
 {                                                          \
    if(!(condition))                                        \
    {                                                       \
@@ -15,8 +15,21 @@
    }                                                       \
 } while(0)
 
+#define dbg(expression) \
+do                      \
+{                       \
+   expression;          \
+} while (0) 
+
+
+
+
 #else
 #define assert(condition, message) \
 do {} while(0)
+
+#define dbg(expression) \
+do {} while(0)
+
 
  #endif

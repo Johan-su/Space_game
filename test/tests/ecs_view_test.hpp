@@ -14,6 +14,8 @@ namespace ecs_view_test
         auto &mm = rd->mm;
         auto &cdata = rd->cdata;
 
+        Registry_functions::init_component<Position>(rd);
+        Registry_functions::init_component<Size>(rd);
 
         Entity elist[100];
         Entity elist1[50];
@@ -21,7 +23,7 @@ namespace ecs_view_test
         for(size_t i = 0; i < 100; ++i)
         {
             elist[i] = Registry_functions::create_entity(rd);
-            auto pc1 = Position_component();
+            auto pc1 = Position();
             pc1      = {float(elist[i]), float(elist[i])};
 
             Registry_functions::set_component(rd, elist[i], pc1);
@@ -31,24 +33,12 @@ namespace ecs_view_test
         for(size_t i = 0; i < 50; ++i)
         {
             elist1[i] = Registry_functions::create_entity(rd);
-            auto hc1  = Health_component();
-            hc1       = {float(elist[i]), float(elist[i])};
+            auto sz1  = Size();
+            sz1       = {10 * float(elist[i]), 10 * float(elist[i])};
 
-            Registry_functions::set_component(rd, elist[i], hc1);
+            Registry_functions::set_component(rd, elist[i], sz1);
         }
 
-
-        auto *comparray = Component_functions::min_size_component_array<Position_component, Health_component>(mm, cdata);
-
-        /*size_t *result_buffer;
-        //result_buffer = Component_functions::get_component_array_sizes<Position_component, Health_component>(mm, cdata);
-
-
-        for(size_t i = 0; i < 2; ++i)
-        {
-            std::cout << result_buffer[i] << ", ";
-        }
-        std::cout << "\n";*/
 
 
 

@@ -2,10 +2,10 @@
 #include "ecs_constants.hpp"
 #include "MemoryManager.hpp"
 #include "Components.hpp"
-#include "component_arrays.hpp"
 #include "Entity.hpp"
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
+#include <type_traits>
 
 
 /* component arrays in component_data
@@ -15,15 +15,15 @@
 */
 struct Component_data
 {
-    uint64_t m_componentIdCount;
+    void *m_componentArrays[MAX_COMPONENT_TYPES];
 
-    #define STRUCT_GEN(NAME, vargs...) NAME ## _array *m_ ## NAME;
-    #define DATA_GEN(TYPE, VAR)    
+    size_t m_array_sizes[MAX_COMPONENT_TYPES];
 
-    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+    bool m_array_init[MAX_COMPONENT_TYPES];
 
-    #undef STRUCT_GEN
-    #undef DATA_GEN    
+    uint64_t m_componentTypesCount;
+
+
 
 };
 
@@ -34,9 +34,10 @@ namespace Component_functions
     bool init(Memory_pool *mm, Component_data *cdata);
     bool clean(Memory_pool *mm, Component_data *cdata);
 
-    uint64_t getId(Component_data *cdata);
 
     void destroy_entity(Component_data *cdata, Entity e);
+
+    size_t get_id();
 
 }
 
@@ -44,188 +45,83 @@ namespace Component_functions
 namespace Component_functions
 {
 
-
     template<typename T>
-    auto *get_component_array(Component_data *cdata)
+    size_t get_unique_component_id()
     {
-        assert(false, "non specialized template");
-        return nullptr;
+        static size_t id = get_id();
+        return id;
     }
-
-    #define STRUCT_GEN(NAME, vargs...)                                          \
-    template<>                                                                  \
-    inline auto *get_component_array<NAME ## _component>(Component_data *cdata) \
-    {                                                                           \
-        return cdata->m_ ## NAME;                                               \
-    } 
-
-    #define DATA_GEN(TYPE, VAR)
-
-    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-    
-    #undef STRUCT_GEN
-    #undef DATA_GEN
-
-
-
-    template <typename T>
-    void set_component(Component_data *cdata, Entity e, T& comp)
-    {
-        assert(false, "non specialized template");
-    }
-
-
-    #define STRUCT_GEN(NAME, vargs...)                          \
-    template<>                                                  \
-    inline void set_component<NAME ## _component>               \
-    (Component_data *cdata, Entity e, NAME ## _component& comp) \
-    {                                                           \
-        NAME ## _array *comparray = cdata->m_ ## NAME;          \
-        Entity *e_ind = comparray->entity_indicies;             \
-        Entity *e_list = comparray->entity_list;                \
-        e_ind[e] = comparray->array_size++;                     \
-        e_list[e_ind[e]] = e;                                   \
-        vargs                                                   \
-    }                                                           
-
-    #define DATA_GEN(TYPE, VAR) \
-    comparray->VAR[e_ind[e]] = comp.VAR;
-
-    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-    
-    #undef STRUCT_GEN
-    #undef DATA_GEN
-
 
 
     template<typename T>
-    inline void destroy_component(Component_data *cdata, Entity e)
+    void init_component(Memory_pool *mm, Component_data *cdata)
     {
-        assert(false, "non specialized template");
-    }
+       const size_t compid = get_unique_component_id<T>();
 
-    #define STRUCT_GEN(NAME, vargs...)                                                  \
-    template<>                                                                          \
-    inline void destroy_component<NAME ## _component> (Component_data *cdata, Entity e) \
-    {                                                                                   \
-        auto *comparray = get_component_array<NAME ## _component>(cdata);               \
-        Entity *e_ind = comparray->entity_indicies;                                     \
-        Entity *e_list = comparray->entity_list;                                        \
-        size_t &ar_size = comparray->array_size;                                        \
-        if(e_ind[e] == ENTITY_NULL) return;                                             \
-        vargs                                                                           \
-        e_list[e_ind[e]] = e_list[ar_size];                                             \
-        e_ind[e_list[ar_size]] = e_ind[e];                                              \
-        e_ind[e] = MAX_ENTITY_AMOUNT;                                                   \
-        --ar_size;                                                                      \
-    }
+        ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
 
+        comparray = Memory::alloc<ComponentArray<T>>(mm);
 
-    #define DATA_GEN(TYPE, VAR) \
-    comparray->VAR[e_ind[e]] = comparray->VAR[ar_size];
-
-    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-    #undef STRUCT_GEN
-    #undef DATA_GEN
-
-
-    template<typename T>
-    size_t get_component_array_size(Component_data *cdata)
-    {
-        assert(false, "non specialized template");
-        return 0;
-    }
-
-
-    #define STRUCT_GEN(NAME, vargs...)                                                \
-    template<>                                                                        \
-    inline size_t get_component_array_size<NAME ## _component>(Component_data *cdata) \
-    {                                                                                 \
-        return get_component_array<NAME ## _component>(cdata)->array_size;            \
-    }
-
-
-    #define DATA_GEN(TYPE, VAR)
-
-    COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-    #undef STRUCT_GEN
-    #undef DATA_GEN
-
-
-
-
-    template<typename T1, typename... Ts>
-    void __min_size_component_array(Component_data *cdata, size_t minsize, void **mincomparray) //TODO(Johan) fix this hack
-    {
-        const size_t type_count = sizeof...(Ts);
-
-
-            auto *comparray = get_component_array<T1>(cdata);
-            size_t compsize = comparray->array_size;
-
-        if constexpr (type_count)
+        comparray->size = 0;
+        for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)
         {
-            if(compsize < minsize)
-            {
-                minsize = compsize;
-                mincomparray = (void**)(&comparray); 
-            }
-        }
-    }
-
-    inline auto *Void_to_comparray(Component_data *cdata, void *comparray) //TODO(Johan) fix this hacks
-    {
-
-        #define STRUCT_GEN(NAME, vargs...)                                         \
-        if (comparray == get_component_array<NAME ## _component>(cdata))           \
-        {                                                                          \
-            return (NAME ## _array*)comparray;                                     \
+            comparray->sparse_array[i] = ENTITY_NULL;
+            comparray->entity_list[i]  = ENTITY_NULL;
         }
 
-        #define DATA_GEN(TYPE, VAR)
+        cdata->m_componentArrays[compid] = comparray;
+        cdata->m_array_sizes[compid]     = sizeof(ComponentArray<T>);
+        cdata->m_array_init[compid]      = true;
 
-        COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+        dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
 
-        #undef STRUCT_GEN
-        #undef DATA_GEN 
-
-        return nullptr;
     }
 
-    template<typename T1, typename... Ts>
-    auto *min_size_component_array(Memory_pool *mm, Component_data *cdata) // https://en.cppreference.com/w/cpp/language/parameter_pack
+
+    template<typename T>
+    ComponentArray<T> *get_component_array(Component_data *cdata)
     {
+        size_t compid = get_unique_component_id<T>();
+        assert(cdata->m_array_init[compid], "Component_array was not initalized");
 
-        void *ptr = nullptr;
+        auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];
+        assert(comparray != nullptr, "ComponentArray is null");
 
-        __min_size_component_array<T1, Ts...>(cdata, SIZE_MAX, &ptr); //TODO(Johan) fix this hack
-
-        return Void_to_comparray(cdata, ptr);
+        return comparray;
     }
 
-
-
-
-
-
-    template<typename T1, typename... Ts>
-    Collection<T1> &get_collection(Memory_pool *mm, Component_data *cdata)
+    template<typename T>
+    void set_component(Component_data *cdata, Entity e, T comp)
     {
-        const size_t type_count = 1 + sizeof...(Ts);
+        assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
+        size_t compid = get_unique_component_id<T>();
+        ComponentArray<T> *comparray = get_component_array<T>(cdata);
 
-        
+        comparray->sparse_array[e] = comparray->size;
 
+        comparray->entity_list[comparray->size] = e;
 
-        auto &collection = Collection<T1>(min);
+        comparray->dense_array[comparray->size] = comp;
 
-
-        
-
-
-        return collection;
+        ++comparray->size;
     }
 
-    
+    template<typename T>
+    void destroy_component(Component_data *cdata, Entity e)
+    {
+        assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
+        size_t compid = get_unique_component_id<T>();
+        ComponentArray<T> *comparray = get_component_array<T>(cdata);
+        assert(comparray->size > 0, "array size is 0");
+
+        Entity laste = comparray->entity_list[comparray->size - 1];
+
+        comparray->dense_array[comparray->sparse_array[e]] = comparray->dense_array[comparray->sparse_array[laste]];
+        comparray->sparse_array[laste] = comparray->sparse_array[e]
+        
+        comparray->sparse_array[e] = ENTITY_NULL;
+        --comparray->size;
+    }
 }

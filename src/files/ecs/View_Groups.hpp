@@ -1,7 +1,6 @@
 #pragma once
 #include "Entity.hpp"
 #include "Components.hpp"
-#include "component_arrays.hpp"
 
 template<typename T>
 class Collection

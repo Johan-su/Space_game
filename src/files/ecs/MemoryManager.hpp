@@ -7,7 +7,7 @@ struct Memory_pool
   void *m_runTimeData;
   size_t m_bytesAllocated;
   
-  bool m_MemoryActive = false;
+  bool m_MemoryActive;
 
 };
 

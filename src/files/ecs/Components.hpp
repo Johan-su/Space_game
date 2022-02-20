@@ -4,72 +4,41 @@
 #include "ecs_assert.hpp"
 
 
-#define COMPONENT_LIST(STRC, DATA) \
-STRC(Position,                     \
-DATA(float, x)                     \
-DATA(float, y)                     \
-)                                  \
-STRC(Size,                         \
-DATA(float, width)                 \
-DATA(float, height)                \
-)                                  \
-STRC(Health,                       \
-DATA(float, hp)                    \
-DATA(float, hp_regen)              \
-)                                  \
 
-
-// enum component generator
-enum
+struct Position
 {
-
-#define STRUCT_GEN(NAME, vargs...) \
-NAME ##_CONSTANT,
-
-#define DATA_GEN(TYPE, VAR) \
-
-COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-
-
-#undef STRUCT_GEN
-#undef DATA_GEN
-
+    float x;
+    float y;
 };
 
 
-// struct component generator
-#define STRUCT_GEN(NAME, vargs...) \
-struct NAME ## _component {vargs};
-
-#define DATA_GEN(TYPE, VAR) \
-TYPE VAR;
-
-COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
+struct Size
+{
+    float width;
+    float height;
+};
 
 
-#undef STRUCT_GEN
-#undef DATA_GEN
+struct Health_hp
+{
+    float hp;
+};
 
-//######## introspection ############
-
-// Member amount
-#define STRUCT_GEN(NAME, vargs...) \
-const size_t NAME ## _MEMBER_AMOUNT = 0 vargs; // expands to  0 ( + 1 + 1 + 1 + ... 1; ) 
-
-#define DATA_GEN(TYPE, VAR) \
-+ 1
-
-COMPONENT_LIST(STRUCT_GEN, DATA_GEN)
-
-#undef STRUCT_GEN
-#undef DATA_GEN
+struct Health_regen
+{
+    float hp_regen;
+};
 
 
 
-// 
-
-
-
+template<typename T>
+struct ComponentArray
+{
+    size_t size;
+    Entity sparse_array[MAX_ENTITY_AMOUNT];
+    Entity entity_list[MAX_ENTITY_AMOUNT];
+    T dense_array[MAX_ENTITY_AMOUNT];
+};
 
 
 
