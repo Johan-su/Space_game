@@ -96,7 +96,7 @@ namespace Component_functions
     {
         assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-        size_t compid = get_unique_component_id<T>();
+        const size_t compid = get_unique_component_id<T>();
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
 
         comparray->sparse_array[e] = comparray->size;
@@ -124,5 +124,16 @@ namespace Component_functions
         
         comparray->sparse_array[e] = ENTITY_NULL;
         --comparray->size;
+    }
+
+
+
+    
+
+
+    template<typename T1, typename... Ts>
+    View<T1> get_view(Component_data *cdata)
+    {
+        auto view = View<T1>();
     }
 }
