@@ -5,23 +5,21 @@
 #include "Entity.hpp"
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
-#include <type_traits>
 
 
-/* component arrays in component_data
-// from component_arrays.hpp and components.hpp
-//
-//
-*/
+
 struct Component_data
 {
     void *m_componentArrays[MAX_COMPONENT_TYPES];
 
     size_t m_array_sizes[MAX_COMPONENT_TYPES];
+    size_t m_component_sizes[MAX_COMPONENT_TYPES];
+    size_t m_component_alignments[MAX_COMPONENT_TYPES];
+
+    size_t m_componentTypesCount;
 
     bool m_array_init[MAX_COMPONENT_TYPES];
 
-    uint64_t m_componentTypesCount;
 
 
 
@@ -56,7 +54,7 @@ namespace Component_functions
     template<typename T>
     void init_component(Memory_pool *mm, Component_data *cdata)
     {
-       const size_t compid = get_unique_component_id<T>();
+        const size_t compid = get_unique_component_id<T>();
 
         ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
 
@@ -69,9 +67,12 @@ namespace Component_functions
             comparray->entity_list[i]  = ENTITY_NULL;
         }
 
-        cdata->m_componentArrays[compid] = comparray;
-        cdata->m_array_sizes[compid]     = sizeof(ComponentArray<T>);
-        cdata->m_array_init[compid]      = true;
+        cdata->m_array_init[compid]           = true;
+        cdata->m_array_sizes[compid]          = sizeof(ComponentArray<T>);
+        cdata->m_component_alignments[compid] = alignof(T);
+        cdata->m_component_sizes[compid]      = sizeof(T);
+        cdata->m_componentArrays[compid]      = comparray;
+        cdata->m_componentTypesCount         += 1;
 
         dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
 
