@@ -3,3 +3,4 @@
 #define MAX_ENTITY_AMOUNT 65536 // 2^10
 #define ENTITY_NULL MAX_ENTITY_AMOUNT - 1
 #define MAX_COMPONENT_TYPES 256
+#define VIEW_SIZE 4096 // increase for faster iteration at the cost of higher memory usage.
