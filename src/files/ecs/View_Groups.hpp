@@ -18,11 +18,19 @@ public:
         this->comparray  = Memory::alloc<T>(mm, size);
     }
 
-
-
     ~Collection()
     {
         Memory::dealloc<Entity>(mm, m_entities, size);
         Memory::dealloc<T>(mm, comparray, size);
     }
+};
+
+
+
+template<typename T>
+struct View
+{
+    size_t m_size;
+    Entity m_entities[VIEW_SIZE];
+    T m_comparray[VIEW_SIZE];
 };
