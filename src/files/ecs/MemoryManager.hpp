@@ -14,9 +14,6 @@ struct Memory_pool
 namespace Memory
 {
 
-
-
-
     void init(Memory_pool *mm);
 
     void clean(Memory_pool *mm);
@@ -58,5 +55,4 @@ namespace Memory
             *((char*)(pointer) + i) = 0;
         }
     }
-
 }
