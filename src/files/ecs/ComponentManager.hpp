@@ -94,7 +94,8 @@ namespace Component_functions
     template<typename T>
     void set_component(Component_data *cdata, Entity e, T comp)
     {
-        assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
+        assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
+        assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
         const size_t compid = get_unique_component_id<T>();
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
@@ -109,8 +110,9 @@ namespace Component_functions
     }
 
     template<typename T>
-    void destroy_component(Component_data *cdata, Entity e)
+    void destroy_component(Component_data *cdata, Entity e) // TODO(Johan) add lookup to check if entity exists in componentarray
     {
+        assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
         assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
         size_t compid = get_unique_component_id<T>();
@@ -134,6 +136,62 @@ namespace Component_functions
     template<typename T1, typename... Ts>
     View<T1> get_view(Component_data *cdata)
     {
+        const size_t typeCount = 1 + sizeof...(Ts);
+
+        size_t mincompid;
+        size_t compids[typeCount];
+        size_t minsize = SIZE_MAX;
+
+        _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
+
+        std::cout << "compids: ";
+        for(int i = 0; i < typeCount; ++i)
+        {
+            std::cout << compids[i] << ", ";
+        }
+        std::cout << "\n";
+
+        std::cout << "mincompid " << mincompid << "\n";
+        std::cout << "minsize " << minsize << "\n";
+
         auto view = View<T1>();
+
+        auto *comparray = get_component_array<T1>(cdata);
+
+        auto *mincomparray = cdata->m_componentArrays[mincompid]; // dangerous
+
+        //TODO(Johan) finish
+
+
+
+        return view;
+    }
+
+
+
+
+    template<typename T1, typename... Ts>
+    void _set_min_comp_array_size(const Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
+    {
+        const size_t typeCount = 1 + sizeof...(Ts);
+        const size_t compid = Component_functions::get_unique_component_id<T1>();
+        assert(cdata->m_array_init[compid], "componentArray not initalized");
+
+        const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
+        const size_t size = comparray->size;
+
+        if(size < minsize)
+        {
+            minsize = size;
+            mincompid = compid;
+        }
+
+
+        compids[component_amount - typeCount] = compid;
+
+        if constexpr (typeCount - 1) // just works with constexpr
+        {
+            _set_min_comp_array_size<Ts...>(cdata, mincompid, compids, minsize, component_amount);
+        }
     }
 }
