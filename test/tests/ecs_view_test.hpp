@@ -17,10 +17,13 @@ namespace ecs_view_test
         Registry_functions::init_component<Position>(rd);
         Registry_functions::init_component<Size>(rd);
 
-        Entity elist[100];
-        Entity elist1[50];
+        #define ELIST_CAP 100
+        #define ELIST1_CAP 150
+
+        Entity elist[ELIST_CAP];
+        Entity elist1[ELIST1_CAP];
         
-        for(size_t i = 0; i < 100; ++i)
+        for(size_t i = 0; i < ELIST_CAP; ++i)
         {
             elist[i] = Registry_functions::create_entity(rd);
             auto pc1 = Position();
@@ -30,14 +33,17 @@ namespace ecs_view_test
         }
 
 
-        for(size_t i = 0; i < 50; ++i)
+        for(size_t i = 0; i < ELIST1_CAP; ++i)
         {
             elist1[i] = Registry_functions::create_entity(rd);
             auto sz1  = Size();
             sz1       = {10 * float(elist[i]), 10 * float(elist[i])};
 
-            Registry_functions::set_component(rd, elist[i], sz1);
+            Registry_functions::set_component(rd, elist1[i], sz1);
         }
+
+
+        auto view = Component_functions::get_view<Position, Size>(cdata);
 
 
 
