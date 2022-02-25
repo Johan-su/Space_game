@@ -30,7 +30,7 @@ public:
 template<typename T>
 struct View
 {
-    size_t m_size;
-    Entity m_entities[VIEW_SIZE];
-    T m_comparray[VIEW_SIZE];
+    size_t size;
+    Entity entity_list[VIEW_SIZE];
+    T comparray[VIEW_SIZE];
 };
