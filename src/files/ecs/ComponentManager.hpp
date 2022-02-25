@@ -156,12 +156,54 @@ namespace Component_functions
 
         auto view = View<T1>();
 
+        for(size_t i = 0; i < VIEW_SIZE; ++i)
+        {
+            view.entity_list[i] = ENTITY_NULL;
+        }
+
         auto *comparray = get_component_array<T1>(cdata);
 
-        auto *mincomparray = cdata->m_componentArrays[mincompid]; // dangerous
+        void *mincomparray = cdata->m_componentArrays[mincompid]; // dangerous
 
-        //TODO(Johan) finish
+        size_t *size_pointer = (size_t*)(mincomparray);
+        Entity *sparse_array = (Entity*)(size_pointer + 1);
+        Entity *entity_list  = sparse_array + MAX_ENTITY_AMOUNT;
 
+        size_t size = *size_pointer;
+        
+
+        for(size_t i = 0; i < size; ++i)
+        {
+            Entity e = entity_list[i];
+
+            for(size_t j = 0; j < typeCount; ++j) // checks mincomparray again which is unnecessary.
+            {   
+                void *curr_comp_array     = cdata->m_componentArrays[compids[j]];
+                size_t *curr_size_pointer = (size_t*)(curr_comp_array);
+                Entity *curr_sparse_array = (Entity*)(curr_size_pointer + 1);
+
+                if(curr_sparse_array[e] == ENTITY_NULL)
+                {
+                    goto continue_outer_loop; // first use of goto
+                }
+
+            }
+
+            
+            view.entity_list[view.size++] = e;   // will break when more than VIEW_SIZE (4096) entites are included
+                  
+            continue_outer_loop : ;
+        }
+
+        for(size_t i = 0; i < view.size; ++i)
+        {
+            Entity e = view.entity_list[i];
+            std::cout << "entity, " << e << "\n";
+
+            view.comparray[i] = comparray->dense_array[comparray->sparse_array[e]];
+        }
+
+        std::cout << "size: " << view.size << "\n";
 
 
         return view;
@@ -169,7 +211,7 @@ namespace Component_functions
 
 
 
-
+    // garbage function
     template<typename T1, typename... Ts>
     void _set_min_comp_array_size(const Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
     {
