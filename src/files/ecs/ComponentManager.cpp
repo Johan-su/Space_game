@@ -50,10 +50,12 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
         void *comparray      = cdata->m_componentArrays[i];
         size_t &compsize     = cdata->m_component_sizes[i];
-        size_t &size         = *(size_t*)(comparray);
-        Entity *sparse_array = (Entity*)((size_t*)(comparray) + 1);
-        Entity *entity_list  = (Entity*)((size_t*)(comparray) + 1) + 1;
-        char *dense_array    = (char*)((Entity*)((size_t*)(comparray) + 1) + 2);
+        size_t *size_pointer = (size_t*)(comparray);
+        Entity *sparse_array = (Entity*)(size_pointer + 1);
+        Entity *entity_list  = sparse_array + MAX_ENTITY_AMOUNT;
+        char *dense_array    = (char*)(entity_list + MAX_ENTITY_AMOUNT);
+
+        size_t size = *size_pointer;
 
 
         assert(size > 0, "array size is 0");
