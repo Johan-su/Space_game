@@ -32,7 +32,7 @@ struct Health_regen
 
 
 template<typename T>
-struct ComponentArray //changing variable order will affect componentManager functions
+struct ComponentArray //changing variables or order will affect componentManager functions
 {
     size_t size;
     Entity sparse_array[MAX_ENTITY_AMOUNT];
