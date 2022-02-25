@@ -19,31 +19,50 @@ namespace ecs_view_test
 
         #define ELIST_CAP 100
         #define ELIST1_CAP 150
-
-        Entity elist[ELIST_CAP];
-        Entity elist1[ELIST1_CAP];
+        #define ELIST2_CAP 100
         
         for(size_t i = 0; i < ELIST_CAP; ++i)
         {
-            elist[i] = Registry_functions::create_entity(rd);
+            Entity e  = Registry_functions::create_entity(rd);
             auto pc1 = Position();
-            pc1      = {float(elist[i]), float(elist[i])};
+            pc1      = {-1 * float(e), -1 * float(e)};
 
-            Registry_functions::set_component(rd, elist[i], pc1);
+            Registry_functions::set_component(rd, e, pc1);
         }
 
 
         for(size_t i = 0; i < ELIST1_CAP; ++i)
         {
-            elist1[i] = Registry_functions::create_entity(rd);
+            Entity e  = Registry_functions::create_entity(rd);
             auto sz1  = Size();
-            sz1       = {10 * float(elist[i]), 10 * float(elist[i])};
+            sz1       = {float(e), float(e)};
 
-            Registry_functions::set_component(rd, elist1[i], sz1);
+            Registry_functions::set_component(rd, e, sz1);
         }
 
 
+        for(size_t i = 0; i < ELIST2_CAP; ++i)
+        {
+            Entity e  = Registry_functions::create_entity(rd);
+            auto sz1  = Size();
+            sz1       = {float(e), float(e)};
+            auto pos  = Position();
+            pos       = {-1 * float(e), -1 * float(e)};
+
+            Registry_functions::set_component(rd, e, sz1);            
+            Registry_functions::set_component(rd, e, pos);            
+        }
+
         auto view = Component_functions::get_view<Position, Size>(cdata);
+
+
+        for(int i = 0; i < view.size; ++i)
+        {
+            Entity e     = view.entity_list[i];
+            Position pos = view.comparray[i];
+
+            std::cout << "Entity: " << e << ", x: " << pos.x << ", y: " << pos.y << "\n";
+        }
 
 
 
