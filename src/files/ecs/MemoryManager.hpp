@@ -6,8 +6,16 @@ struct Memory_pool
 {
   void *m_runTimeData;
   size_t m_bytesAllocated;
-  
   bool m_MemoryActive;
+  
+  uint8_t padding1;
+  uint8_t padding2;
+  uint8_t padding3;
+  uint8_t padding4;
+  uint8_t padding5;
+  uint8_t padding6;
+  uint8_t padding7;
+  
 
 };
 
