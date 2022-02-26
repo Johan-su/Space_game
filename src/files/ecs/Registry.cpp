@@ -5,6 +5,12 @@
 
 void Registry_functions::init(Registry_data *rdata)
 {
+    assert(rdata          != nullptr, "Registry_data cannot be NULL");
+    assert(rdata->mm      != nullptr, "Memory_pool cannot be NULL");
+    assert(rdata->edata   != nullptr, "Entity_data cannot be NULL");
+    assert(rdata->cdata   != nullptr, "Component_data cannot be NULL");
+    assert(rdata->sysdata != nullptr, "System_data cannot be NULL");
+
     auto &mm      = rdata->mm;
     auto &edata   = rdata->edata;
     auto &cdata   = rdata->cdata;
@@ -21,7 +27,7 @@ void Registry_functions::init(Registry_data *rdata)
     sysdata = Memory::alloc<System_data>(mm);
 
     Entity_functions::init(mm, edata);
-    Component_functions::init(mm, cdata);
+    Component_functions::init(cdata);
     System_functions::init(mm, sysdata);
 }
 
