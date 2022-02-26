@@ -96,12 +96,16 @@ bool clean()
 
 #include "../../test/tests/ecs_view_test.hpp"
 
+
 int main(int argc, char *argv[])
 {
+    (void)argc;
+    (void)argv;
+
     return ecs_view_test::test();
 
 
-
+    /*
     int init_exit_code = init();
     std::cout << "init exit code: " << init_exit_code << "\n";
     if(init_exit_code)
@@ -119,6 +123,7 @@ int main(int argc, char *argv[])
     exit(clean_exit_code);
     std::cin.ignore();
     return 0;
+    */
 }
 
 
