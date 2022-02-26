@@ -23,6 +23,9 @@ namespace memory_alloc
         
 
         Memory::dump(mm, 140, false);
+        Memory::clean(mm);
+        delete mm;
+        mm = nullptr;
         return 0;
     }
 }
