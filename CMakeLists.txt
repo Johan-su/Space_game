@@ -12,13 +12,9 @@ project(Space_game VERSION 1.0.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-## if (MSVC)
-## # warning level 4 and all warnings as errors
-## add_compile_options(/W4 /WX)
-## else()
-##     # lots of warnings
-##     add_compile_options(-Wall -Wextra -pedantic -Werror)
-## endif()
+ if (MSVC)
+ add_compile_options(/EHsc, /fsanitize=address)
+ endif()
 
 if(WIN32)
 endif()
