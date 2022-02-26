@@ -56,7 +56,7 @@ bool ecs_init()
     _g.reg->sysdata = Memory::alloc<System_data>(_g.reg->mm);
 
    Entity_functions::init(_g.reg->mm, _g.reg->edata);
-   Component_functions::init(_g.reg->mm, _g.reg->cdata);
+   Component_functions::init(_g.reg->cdata);
    System_functions::init(_g.reg->mm, _g.reg->sysdata);
    
 
