@@ -23,11 +23,10 @@ if(WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-        set(ENV{LSAN_OPTIONS} verbosity=1:log_threads=1)
 
-        set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}           -Wall -fsanitize=address -g")
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}       -Wall -fsanitize=address -g")
-        set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -Wall -fsanitize=address -g")
+        set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}           -Wall -Wpedantic -fsanitize=address -g")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}       -Wall -Wpedantic -fsanitize=address -g")
+        set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -Wall -Wpedantic -fsanitize=address -g")
 
 endif()
 
