@@ -58,7 +58,10 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         size_t size = *size_pointer;
 
 
-        assert(size > 0, "array size is 0");
+        if(size == 0) {
+            dbg(std::cout << "DEBUG: Ignoring destroy entity on empty array\n");
+            break;
+        }
 
         Entity laste = entity_list[size - 1];
 
