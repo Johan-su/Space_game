@@ -5,11 +5,7 @@
 
 void Registry_functions::init(Registry_data *rdata)
 {
-    assert(rdata          != nullptr, "Registry_data cannot be NULL");
-    assert(rdata->mm      != nullptr, "Memory_pool cannot be NULL");
-    assert(rdata->edata   != nullptr, "Entity_data cannot be NULL");
-    assert(rdata->cdata   != nullptr, "Component_data cannot be NULL");
-    assert(rdata->sysdata != nullptr, "System_data cannot be NULL");
+    assert(rdata != nullptr, "Registry_data cannot be NULL");
 
     auto &mm      = rdata->mm;
     auto &edata   = rdata->edata;
