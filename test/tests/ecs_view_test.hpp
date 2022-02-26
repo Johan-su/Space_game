@@ -2,6 +2,21 @@
 #include "../../src/files/ecs/ecs.hpp"
 
 
+struct Position
+{
+    float x;
+    float y;
+};
+
+
+struct Size
+{
+    float width;
+    float height;
+};
+
+
+
 namespace ecs_view_test
 {
     namespace R_f = Registry_functions;
