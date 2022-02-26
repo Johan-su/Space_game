@@ -29,7 +29,7 @@ struct Component_data
 
 namespace Component_functions 
 {
-    bool init(Memory_pool *mm, Component_data *cdata);
+    bool init(Component_data *cdata);
     bool clean(Memory_pool *mm, Component_data *cdata);
 
 
@@ -97,7 +97,6 @@ namespace Component_functions
         assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
         assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
-        const size_t compid = get_unique_component_id<T>();
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
 
         comparray->sparse_array[e] = comparray->size;

@@ -9,7 +9,7 @@
 
 
 
-bool Component_functions::init(Memory_pool *mm, Component_data *cdata)
+bool Component_functions::init(Component_data *cdata)
 {
     memset(cdata->m_array_init,           0, sizeof(cdata->m_array_init[0])           * MAX_COMPONENT_TYPES);
     memset(cdata->m_array_sizes,          0, sizeof(cdata->m_array_sizes[0])          * MAX_COMPONENT_TYPES);
