@@ -221,13 +221,13 @@ void delete_file(const char* src_path)
 
 
 
+#define BUFFER_SIZE 8192
 
 
 
-
-char stdout_old[2048];
-char stdout_new[2048];
-char stdout_diff[2048];
+char stdout_old[BUFFER_SIZE];
+char stdout_new[BUFFER_SIZE];
+char stdout_diff[BUFFER_SIZE];
 
 int run_test(const char *function, const char *program)
 {
@@ -273,7 +273,7 @@ int run_test(const char *function, const char *program)
         cmd_echo("cd ", tmp_path, " && ", "diff -q output_", function, ".txt", " ", path_to_test_file, "tests/", "output_", function, ".txt", "> diff_.txt");
         #endif
 
-        memset(stdout_diff, 0, 2048);
+        memset(stdout_diff, 0, BUFFER_SIZE);
 
         memset(buffer, 0, 512);
 
@@ -283,7 +283,7 @@ int run_test(const char *function, const char *program)
     FILE *fpDiff = fopen(buffer, "r");
     if(fpDiff)
     {
-        fread(stdout_diff, 2048, 1, fpDiff);
+        fread(stdout_diff, BUFFER_SIZE, 1, fpDiff);
         fclose(fpDiff);
     }
     #ifdef _WIN32
@@ -313,8 +313,8 @@ int run_test(const char *function, const char *program)
     if(diff)
     {
         memset(buffer, 0 , 512);
-        memset(stdout_new, 0, 2048);
-        memset(stdout_old, 0, 2048);
+        memset(stdout_new, 0, BUFFER_SIZE);
+        memset(stdout_old, 0, BUFFER_SIZE);
 
         strcat(buffer, tmp_path);
         strcat(buffer, "output_");
@@ -324,7 +324,7 @@ int run_test(const char *function, const char *program)
         FILE *fp_new = fopen(buffer, "r");
         if(fp_new)
         {
-            fread(stdout_new, 1, 2048, fp_new);
+            fread(stdout_new, 1, BUFFER_SIZE, fp_new);
             fclose(fp_new);
         }
         memset(buffer, 0 , 512);
@@ -337,7 +337,7 @@ int run_test(const char *function, const char *program)
         FILE *fp_old = fopen(buffer, "r");
         if(fp_old)
         {
-            fread(stdout_old, 1, 2048, fp_old);
+            fread(stdout_old, 1, BUFFER_SIZE, fp_old);
             fclose(fp_old);
         }
         std::cout << "[ERROR]: test " << function << " failed\n"
