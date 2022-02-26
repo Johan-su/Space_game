@@ -14,14 +14,14 @@ public:
     {
         this->size = size;
 
-        this->m_entities = Memory::alloc<Entity>(mm, size);
-        this->comparray  = Memory::alloc<T>(mm, size);
+        //this->m_entities = Memory::alloc<Entity>(mm, size);
+        //this->comparray  = Memory::alloc<T>(mm, size);
     }
 
     ~Collection()
     {
-        Memory::dealloc<Entity>(mm, m_entities, size);
-        Memory::dealloc<T>(mm, comparray, size);
+        //Memory::dealloc<Entity>(mm, m_entities, size);
+        //Memory::dealloc<T>(mm, comparray, size);
     }
 };
 
