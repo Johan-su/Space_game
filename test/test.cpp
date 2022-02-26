@@ -73,7 +73,7 @@ int64_t strrfind(char s, char *buf)
 {
     int64_t index = -1;
     size_t buf_len = strlen(buf);
-    for(size_t i = buf_len - 1; i > 0 ; --i)
+    for(int64_t i = buf_len - 1; i > 0 ; --i)
     {
         if(*(buf + i) == s)
         {
@@ -88,7 +88,7 @@ int64_t strfind(char s, char *buf)
 {
     int64_t index = -1;
     size_t buf_len = strlen(buf);
-    for(size_t i = 0; i < buf_len ; ++i)
+    for(int64_t i = 0; i < buf_len ; ++i)
     {
         if(*(buf + i) == s)
         {
@@ -122,7 +122,7 @@ void set_path_to_test_file()
 
     strcat(path_to_test_file, __FILE__);
 
-    int firstslash = strrfind('/', path_to_test_file);
+    int64_t firstslash = strrfind('/', path_to_test_file);
 
 
     path_to_test_file[firstslash + 1] = '\0';
@@ -288,7 +288,7 @@ int run_test(const char *function, const char *program)
     }
     #ifdef _WIN32
     size_t firstnewline = 0;
-    for(int i = 0; i < strlen(stdout_diff); ++i)
+    for(size_t i = 0; i < strlen(stdout_diff); ++i)
     {
         if(stdout_diff[i] == '\n')
         {
@@ -408,7 +408,7 @@ int run_function(std::function<int()> func)
 
 
 
-void usage(const char *program, const char *arg = "")
+void usage(const char *program)
 {
 
     std::cerr << "USAGE: [-TS function] [-r/-u] function for " << program << "\n"
@@ -423,6 +423,7 @@ char test_buffer[512];
 char rtest_buffer[512];
 int main(int argc, char *argv[])
 {
+    (void)argc;
     set_tmp_path();
 
     char *program = *argv++;
@@ -443,7 +444,7 @@ int main(int argc, char *argv[])
         {
             for(auto & it: str_to_func) // runs all tests
             {
-                auto return_code = run_test(it.first.c_str(), program);
+                run_test(it.first.c_str(), program);
             }
             return 0;  
         }
@@ -451,7 +452,7 @@ int main(int argc, char *argv[])
         {
             for(auto & it: str_to_func) // updates all tests
             {
-                auto return_code = update_test(it.first.c_str());
+                update_test(it.first.c_str());
             }
             return 0;  
         }
@@ -469,7 +470,7 @@ int main(int argc, char *argv[])
     {
         arg = *argv++;
         int it = 0;
-        for(auto & pair : str_to_func)
+        for(auto &pair : str_to_func)
         {
             if(arg == pair.first)
             {
