@@ -121,7 +121,7 @@ namespace Component_functions
         Entity laste = comparray->entity_list[comparray->size - 1];
 
         comparray->dense_array[comparray->sparse_array[e]] = comparray->dense_array[comparray->sparse_array[laste]];
-        comparray->sparse_array[laste] = comparray->sparse_array[e]
+        comparray->sparse_array[laste] = comparray->sparse_array[e];
         
         comparray->sparse_array[e] = ENTITY_NULL;
         --comparray->size;
