@@ -15,4 +15,5 @@ void health_system::clean()
 
 void health_system::update(Registry_data *rdata)
 {
+    (void)rdata;
 }
