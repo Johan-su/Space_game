@@ -11,7 +11,7 @@ namespace ecs_view_test
         auto *rd = new Registry_data();
         Registry_functions::init(rd);
 
-        auto &mm = rd->mm;
+        //auto &mm = rd->mm;
         auto &cdata = rd->cdata;
 
         Registry_functions::init_component<Position>(rd);
