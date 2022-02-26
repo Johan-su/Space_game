@@ -1,0 +1,1 @@
+ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer-12 LSAN_OPTIONS=verbosity=1:log_threads=1 ./build/Space_game_test -r
