@@ -7,12 +7,12 @@ void Memory::init(Memory_pool *mm)
     assert(mm != nullptr, "Memory pool cannot be NULL");
     assert(!mm->m_MemoryActive, "Memory pool already active");
 
-    mm->m_runTimeData    = malloc(MEMORY_POOL_SIZE);
+    mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
     if(mm->m_runTimeData != nullptr)
     {
-        mm->m_bytesAllocated = 0;
         memset(mm->m_runTimeData, 0, MEMORY_POOL_SIZE);
-        mm->m_MemoryActive   = true;
+        mm->m_bytesAllocated = 0;
+        mm->m_MemoryActive = true;
     }
     else
     {
