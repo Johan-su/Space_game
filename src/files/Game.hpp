@@ -1,12 +1,11 @@
 #pragma once
+#include "ecs/ecs.hpp"
+#include <SDL.h>
 
-
-
-class Game
+struct Game_data
 {
-public:
 
 
 
-private:
+    Registry_data *rd;
 };
