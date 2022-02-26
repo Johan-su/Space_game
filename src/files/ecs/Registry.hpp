@@ -49,7 +49,6 @@ namespace Registry_functions
         namespace C_F = Component_functions;
 
         auto *cdata = rdata->cdata;
-        auto *edata = rdata->edata;
 
         C_F::set_component<T>(cdata, e, comp);
     }
