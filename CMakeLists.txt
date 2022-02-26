@@ -12,9 +12,14 @@ project(Space_game VERSION 1.0.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
- if (MSVC)
- add_compile_options(/EHsc, /fsanitize=address)
- endif()
+if(MSVC)
+#    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+        add_compile_options(/Z7)
+        add_compile_options(/EHsc)
+        add_compile_options(/Wall)
+        add_compile_options(/analyze)
+#    endif()
+endif()
 
 if(WIN32)
 endif()
