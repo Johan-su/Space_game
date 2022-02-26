@@ -128,7 +128,31 @@ namespace Component_functions
     }
 
 
+    // garbage function
+    template<typename T1, typename... Ts>
+    void _set_min_comp_array_size(const Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
+    {
+        const size_t typeCount = 1 + sizeof...(Ts);
+        const size_t compid = Component_functions::get_unique_component_id<T1>();
+        assert(cdata->m_array_init[compid], "componentArray not initalized");
 
+        const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
+        const size_t size = comparray->size;
+
+        if(size < minsize)
+        {
+            minsize = size;
+            mincompid = compid;
+        }
+
+
+        compids[component_amount - typeCount] = compid;
+
+        if constexpr (typeCount - 1) // just works with constexpr
+        {
+            _set_min_comp_array_size<Ts...>(cdata, mincompid, compids, minsize, component_amount);
+        }
+    }
     
 
 
@@ -210,29 +234,5 @@ namespace Component_functions
 
 
 
-    // garbage function
-    template<typename T1, typename... Ts>
-    void _set_min_comp_array_size(const Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
-    {
-        const size_t typeCount = 1 + sizeof...(Ts);
-        const size_t compid = Component_functions::get_unique_component_id<T1>();
-        assert(cdata->m_array_init[compid], "componentArray not initalized");
 
-        const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
-        const size_t size = comparray->size;
-
-        if(size < minsize)
-        {
-            minsize = size;
-            mincompid = compid;
-        }
-
-
-        compids[component_amount - typeCount] = compid;
-
-        if constexpr (typeCount - 1) // just works with constexpr
-        {
-            _set_min_comp_array_size<Ts...>(cdata, mincompid, compids, minsize, component_amount);
-        }
-    }
 }
