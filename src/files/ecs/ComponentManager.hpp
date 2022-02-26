@@ -114,7 +114,7 @@ namespace Component_functions
         assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
         assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-        size_t compid = get_unique_component_id<T>();
+        //size_t compid = get_unique_component_id<T>();
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
         assert(comparray->size > 0, "array size is 0");
 
