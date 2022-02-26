@@ -15,7 +15,7 @@ namespace memory_alloc
 
         *data = UINT64_MAX;
 
-        for(int i = 0; i < 100; ++i)
+        for(size_t i = 0; i < 100; ++i)
         {
             *(data2 + i) = i;
         }
