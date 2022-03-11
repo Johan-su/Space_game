@@ -7,10 +7,9 @@ void Registry_functions::init(Registry_data *rdata)
 {
     assert(rdata != nullptr, "Registry_data cannot be NULL");
 
-    auto &mm      = rdata->mm;
-    auto &edata   = rdata->edata;
-    auto &cdata   = rdata->cdata;
-    auto &sysdata = rdata->sysdata;
+    auto &mm    = rdata->mm;
+    auto &edata = rdata->edata;
+    auto &cdata = rdata->cdata;
 
     mm = (Memory_pool*)malloc(sizeof(Memory_pool));
 
@@ -18,13 +17,11 @@ void Registry_functions::init(Registry_data *rdata)
 
     Memory::init(mm);
 
-    edata   = Memory::alloc<Entity_data>(mm);
-    cdata   = Memory::alloc<Component_data>(mm);
-    sysdata = Memory::alloc<System_data>(mm);
+    edata = Memory::alloc<Entity_data>(mm);
+    cdata = Memory::alloc<Component_data>(mm);
 
     Entity_functions::init(mm, edata);
     Component_functions::init(cdata);
-    System_functions::init(mm, sysdata);
 }
 
 
@@ -33,13 +30,10 @@ void Registry_functions::clean(Registry_data *rdata)
     auto &mm      = rdata->mm;
     auto &edata   = rdata->edata;
     auto &cdata   = rdata->cdata;
-    auto &sysdata = rdata->sysdata;
 
-    System_functions::clean(mm, sysdata);
     Component_functions::clean(mm, cdata);
     Entity_functions::clean(mm, edata);
 
-    Memory::dealloc(mm, sysdata, 1);
     Memory::dealloc(mm, cdata, 1);
     Memory::dealloc(mm, edata, 1);
     
@@ -49,7 +43,6 @@ void Registry_functions::clean(Registry_data *rdata)
     mm      = nullptr;
     edata   = nullptr;
     cdata   = nullptr;
-    sysdata = nullptr;
 }
 
 

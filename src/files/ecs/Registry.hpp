@@ -2,7 +2,6 @@
 #include "MemoryManager.hpp"
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
-#include "SystemManager.hpp"
 #include "View_Groups.hpp"
 
 struct Registry_data
@@ -10,7 +9,6 @@ struct Registry_data
     Memory_pool *mm;
     Entity_data *edata;
     Component_data *cdata;
-    System_data *sysdata;
 };
 
 namespace Registry_functions
