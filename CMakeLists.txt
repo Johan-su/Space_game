@@ -30,7 +30,6 @@ endif()
 
 
 
-
 if(WIN32)
 endif()
 
@@ -46,6 +45,10 @@ endif()
 
 find_package(SDL2 REQUIRED)
 
+include_directories(${SDL2_INCLUDE_DIRS})
+link_libraries(${SDL2_LIBRARIES})
+
+
 
 FILE(GLOB_RECURSE SRCFILES ./src/files/*.cpp )
 FILE(GLOB_RECURSE HEADFILES ./src/files/*.hpp)
@@ -57,8 +60,6 @@ FILE(GLOB TESTHEADFILES ./test/*.hpp)
 
 
 add_executable(Space_game ${MAIN} ${SRCFILES} ${HEADFILES})
-target_include_directories(Space_game PUBLIC ${SDL2_INCLUDE_DIRS})
-target_link_libraries(Space_game PUBLIC ${SDL2_LIBRARIES})
 
 
 add_executable(Space_game_test ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
