@@ -27,31 +27,31 @@ game_data *Game::create_game()
 
 
 
-void Game::ecs_init(Registry_data *registry)
+void Game::ecs_init(game_data *game)
 {
-    registry = alloc<Registry_data>();
-    Registry_functions::init(registry);
+    game->registry = alloc<Registry_data>();
+    Registry_functions::init(game->registry);
 
-    Registry_functions::init_component<Position>(registry);
-    Registry_functions::init_component<Size>(registry);
-    Registry_functions::init_component<Velocity>(registry);
-    Registry_functions::init_component<Player>(registry);
+    Registry_functions::init_component<Position>(game->registry);
+    Registry_functions::init_component<Size>(game->registry);
+    Registry_functions::init_component<Velocity>(game->registry);
+    Registry_functions::init_component<Player>(game->registry);
 
 
 }
 
 
-void Game::ecs_clean(Registry_data *registry)
+void Game::ecs_clean(game_data *game)
 {
-    assert(registry != NULL, "Registry is null");
+    assert(game->registry != NULL, "Registry is null");
 
-    Registry_functions::clean(registry);
-    free(registry);
-    registry = NULL;
+    Registry_functions::clean(game->registry);
+    free(game->registry);
+    game->registry = NULL;
 }
 
 
-void Game::sdl_init(SDL_Renderer *renderer, SDL_Window *window)
+void Game::sdl_init(game_data *game)
 {
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
@@ -59,17 +59,16 @@ void Game::sdl_init(SDL_Renderer *renderer, SDL_Window *window)
         exit(1);
     }
 
-    window = SDL_CreateWindow("Space_game", 0, 0, 100, 100, NULL);
-
-    if(!window)
+    int flags = 0;
+    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, flags);
+    if(!game->window)
     {
         fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s", SDL_GetError());
         exit(1);
     }
 
-    renderer = SDL_CreateRenderer(window, -1, NULL);
-
-    if(!renderer)
+    game->renderer = SDL_CreateRenderer(game->window, -1, SDL_RENDERER_ACCELERATED);
+    if(!game->renderer)
     {
         fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s", SDL_GetError());
         exit(1);
@@ -77,15 +76,13 @@ void Game::sdl_init(SDL_Renderer *renderer, SDL_Window *window)
 }
 
 
-void Game::sdl_clean(SDL_Renderer *renderer, SDL_Window *window)
+void Game::sdl_clean(game_data *game)
 {
-    assert(renderer, "renderer is NULL");
-    assert(window, "window is NULL");
+    assert(game->renderer, "renderer is NULL");
+    assert(game->window, "window is NULL");
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-
-
+    SDL_DestroyRenderer(game->renderer);
+    SDL_DestroyWindow(game->window);
 
 
     SDL_Quit();
@@ -95,8 +92,8 @@ void Game::sdl_clean(SDL_Renderer *renderer, SDL_Window *window)
 
 void Game::init(game_data *game)
 {
-    ecs_init(game->registry);
-    sdl_init(game->renderer, game->window);
+    ecs_init(game);
+    sdl_init(game);
 
     game->active = true;
     
@@ -105,8 +102,8 @@ void Game::init(game_data *game)
 
 void Game::clean(game_data *game)
 {
-    ecs_clean(game->registry);
-    sdl_clean(game->renderer, game->window);
+    ecs_clean(game);
+    sdl_clean(game);
 }
 
 
@@ -130,15 +127,19 @@ void Game::handle_events(game_data *game)
                 break;
 
             case SDL_KEYDOWN:
-                switch(event.key.keysym.sym) //TODO(johan) implemented hash table for keys
+                switch(event.key.keysym.sym)
                 {
-                    case SDLK_w:
+                   /*case SDLK_w:
                     break;
                     case SDLK_a:
                     break;
                     case SDLK_s:
                     break;
                     case SDLK_d:
+                    break;*/
+
+                    default:
+                    printf("%d\n", event.key.keysym.sym);
                     break;
                 }
                 break;
@@ -157,13 +158,23 @@ void Game::handle_events(game_data *game)
                 break;
         }
     }
-
 }
 
 
 void Game::render(game_data *game)
 {
-    
+    SDL_RenderClear(game->renderer);
+
+
+
+
+
+
+
+
+
+
+    SDL_RenderPresent(game->renderer);
 }
 
 

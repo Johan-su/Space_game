@@ -11,9 +11,9 @@ struct game_data
     bool active;
 };
 
-struct settings
+struct key_settings
 {
-
+    
 };
 
 
@@ -22,11 +22,11 @@ namespace Game
     game_data *create_game();
     void destroy_game(game_data *game);
 
-    void ecs_init(Registry_data *registry);
-    void ecs_clean(Registry_data *registry);
+    void ecs_init(game_data *game);
+    void ecs_clean(game_data *game);
 
-    void sdl_init(SDL_Renderer *renderer, SDL_Window *window);
-    void sdl_clean(SDL_Renderer *renderer, SDL_Window *window);
+    void sdl_init(game_data *game);
+    void sdl_clean(game_data *game);
 
     void init(game_data *game);
     void clean(game_data *game);
