@@ -1,5 +1,6 @@
 #include "Components.hpp"
 #include "./ecs/ecs.hpp"
+#include "../datastructures/hashmap.hpp"
 #include "Game.hpp"
 
 #include <SDL.h>
@@ -19,9 +20,9 @@ T *alloc(size_t amount = 1)
 }
 
 
-Game_data *Game::create_game()
+game_data *Game::create_game()
 {
-    return alloc<Game_data>();
+    return alloc<game_data>();
 }
 
 
@@ -92,7 +93,7 @@ void Game::sdl_clean(SDL_Renderer *renderer, SDL_Window *window)
 
 
 
-void Game::init(Game_data *game)
+void Game::init(game_data *game)
 {
     ecs_init(game->registry);
     sdl_init(game->renderer, game->window);
@@ -102,21 +103,21 @@ void Game::init(Game_data *game)
 }
 
 
-void Game::clean(Game_data *game)
+void Game::clean(game_data *game)
 {
     ecs_clean(game->registry);
     sdl_clean(game->renderer, game->window);
 }
 
 
-void Game::update(Game_data *game)
+void Game::update(game_data *game)
 {
 
 
 }
 
 
-void Game::handle_events(Game_data *game)
+void Game::handle_events(game_data *game)
 {
     SDL_Event event;
 
@@ -160,13 +161,13 @@ void Game::handle_events(Game_data *game)
 }
 
 
-void Game::render(Game_data *game)
+void Game::render(game_data *game)
 {
     
 }
 
 
-void Game::run(Game_data *game)
+void Game::run(game_data *game)
 {
 
     while(game->active)
