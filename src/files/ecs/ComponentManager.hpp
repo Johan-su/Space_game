@@ -12,7 +12,6 @@ struct Component_data
 {
     void *m_componentArrays[MAX_COMPONENT_TYPES];
 
-    size_t m_array_sizes[MAX_COMPONENT_TYPES];
     size_t m_component_sizes[MAX_COMPONENT_TYPES];
     size_t m_component_alignments[MAX_COMPONENT_TYPES];
 
@@ -44,9 +43,9 @@ namespace Component_functions
 {
 
     template<typename T>
-    size_t get_unique_component_id()
+    size_t get_unique_component_id(Component_data *cdata)
     {
-        static size_t id = get_id();
+        static size_t id = cdata->m_componentTypesCount++;
         return id;
     }
 
@@ -54,7 +53,7 @@ namespace Component_functions
     template<typename T>
     void init_component(Memory_pool *mm, Component_data *cdata)
     {
-        const size_t compid = get_unique_component_id<T>();
+        const size_t compid = get_unique_component_id<T>(cdata);
 
         ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
 
@@ -68,7 +67,6 @@ namespace Component_functions
         }
 
         cdata->m_array_init[compid]           = true;
-        cdata->m_array_sizes[compid]          = sizeof(ComponentArray<T>);
         cdata->m_component_alignments[compid] = alignof(T);
         cdata->m_component_sizes[compid]      = sizeof(T);
         cdata->m_componentArrays[compid]      = comparray;
@@ -82,7 +80,7 @@ namespace Component_functions
     template<typename T>
     ComponentArray<T> *get_component_array(Component_data *cdata)
     {
-        size_t compid = get_unique_component_id<T>();
+        size_t compid = get_unique_component_id<T>(cdata);
         assert(cdata->m_array_init[compid], "Component_array was not initalized");
 
         auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];
@@ -130,10 +128,10 @@ namespace Component_functions
 
     // garbage function
     template<typename T1, typename... Ts>
-    void _set_min_comp_array_size(const Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
+    void _set_min_comp_array_size(Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
     {
         const size_t typeCount = 1 + sizeof...(Ts);
-        const size_t compid = Component_functions::get_unique_component_id<T1>();
+        const size_t compid = Component_functions::get_unique_component_id<T1>(cdata);
         assert(cdata->m_array_init[compid], "componentArray not initalized");
 
         const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);

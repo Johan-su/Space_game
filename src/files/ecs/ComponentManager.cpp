@@ -9,10 +9,9 @@
 
 
 
-bool Component_functions::init(Component_data *cdata)
+bool Component_functions::init(Component_data *cdata) // TODO(johan) check if alignment actually works
 {
     memset(cdata->m_array_init,           0, sizeof(cdata->m_array_init[0])           * MAX_COMPONENT_TYPES);
-    memset(cdata->m_array_sizes,          0, sizeof(cdata->m_array_sizes[0])          * MAX_COMPONENT_TYPES);
     memset(cdata->m_component_alignments, 0, sizeof(cdata->m_component_alignments[0]) * MAX_COMPONENT_TYPES);
     memset(cdata->m_component_sizes,      0, sizeof(cdata->m_component_sizes[0])      * MAX_COMPONENT_TYPES);
     memset(cdata->m_componentArrays,      0, sizeof(cdata->m_componentArrays[0])      * MAX_COMPONENT_TYPES);
@@ -30,9 +29,9 @@ bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
     for(size_t i = 0; i < MAX_COMPONENT_TYPES; ++i)
     {
-        if(cdata->m_array_sizes[i])
+        if(cdata->m_array_init[i])
         {
-            Memory::dealloc(mm, (char*)(cdata->m_componentArrays + i), cdata->m_array_sizes[i]);
+            Memory::dealloc(mm, (char*)(cdata->m_componentArrays + i), cdata->m_component_sizes[i] * MAX_COMPONENT_TYPES);
         }
     }
     
@@ -75,10 +74,4 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         --size;
     }
 
-}
-
-size_t Component_functions::get_id()
-{
-    static size_t id_counter = 0;
-    return id_counter++;
 }
