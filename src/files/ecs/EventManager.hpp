@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "ecs_constants.hpp"
+#include "MemoryManager.hpp"
 
 struct event_data
 {
