@@ -8,6 +8,7 @@
 
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
+#include "EventManager.hpp"
 #include "EntityManager.hpp"
 
 #include "Registry.hpp"
