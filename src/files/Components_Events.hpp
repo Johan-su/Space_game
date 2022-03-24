@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-
+// components
 struct Position
 {
     float x;
@@ -31,3 +31,13 @@ struct Player
 };
 
 
+// events
+
+
+
+
+struct CollisionEvent
+{
+    Entity e1;
+    Entity e2;
+};
