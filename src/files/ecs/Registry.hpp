@@ -3,11 +3,13 @@
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
 #include "View_Groups.hpp"
+#include "EventManager.hpp"
 
 struct Registry_data
 {
     Memory_pool *mm;
     Entity_data *edata;
+    event_data *evdata;
     Component_data *cdata;
 };
 
@@ -61,5 +63,10 @@ namespace Registry_functions
         C_F::destroy_component<T>(cdata, e);
     }
 
+    template<typename T>
+    void init_event(Registry_data *rdata)
+    {
 
+        Event_functions::init_event<T>(rdata->);
+    }
 }
