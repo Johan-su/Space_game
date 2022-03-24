@@ -38,3 +38,10 @@ namespace Game
 
     void run(game_data *game);
 }
+
+
+namespace Entity_creator
+{
+    Entity create_player(float x, float y);
+    Entity create_planet(float x, float y);
+}
