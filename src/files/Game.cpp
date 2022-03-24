@@ -10,7 +10,7 @@
 template<typename T>
 T *alloc(size_t amount = 1)
 {
-    T *mem = (T *)malloc(sizeof(T) * amount);
+    T *mem = (T*)malloc(sizeof(T) * amount);
     if(mem == NULL)
     {
         fprintf(stderr, "ERROR: not enough memory");
@@ -94,8 +94,6 @@ void Game::init(game_data *game)
 {
     ecs_init(game);
     sdl_init(game);
-
-    game->active = true;
     
 }
 
@@ -120,55 +118,98 @@ void Game::handle_events(game_data *game)
 
     while(SDL_PollEvent(&event))
     {
+        //printf("event type: %d\n", event.type);
         switch (event.type)
         {
             case SDL_QUIT:
                 game->active = false;
                 break;
 
+            case SDL_MOUSEBUTTONDOWN:
+                switch (event.button.button)
+                {
+
+                    default:
+                        printf("%d\n", event.button.button);
+                        break;
+                }
+                break;
+            case SDL_MOUSEBUTTONUP:
+                switch (event.button.button)
+                {
+
+                    default:
+                        printf("%d\n", event.button.button);
+                        break;
+                }
+                break;
+
+            case SDL_MOUSEWHEEL:
+                if(event.wheel.y > 0)
+                {
+                    printf("scroll up: %d\n", event.wheel.y);
+                }
+                else
+                {
+                    printf("scroll down: %d\n", event.wheel.y);
+                }
+                break;
+
+            case SDL_MOUSEMOTION:
+
+                printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
+
+                break;
+
+
+            //
+
+
+
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym)
                 {
                    /*case SDLK_w:
-                    break;
+                        break;
                     case SDLK_a:
-                    break;
+                        break;
                     case SDLK_s:
-                    break;
+                        break;
                     case SDLK_d:
-                    break;*/
+                        break;*/
 
                     default:
-                    printf("%d\n", event.key.keysym.sym);
-                    break;
+                        printf("%d\n", event.key.keysym.sym);
+                        break;
                 }
                 break;
             case SDL_KEYUP:
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_w:
-                    break;
+                        break;
                     case SDLK_a:
-                    break;
+                        break;
                     case SDLK_s:
-                    break;
+                        break;
                     case SDLK_d:
-                    break;
+                        break;
                 }
                 break;
         }
     }
 }
 
-
 void Game::render(game_data *game)
 {
     SDL_RenderClear(game->renderer);
 
+    SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
+
+    SDL_RenderDrawLineF(game->renderer, 0.0f, 0.0f, 100.0f, 100.0f);
 
 
-
-
+    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
 
 
@@ -180,6 +221,7 @@ void Game::render(game_data *game)
 
 void Game::run(game_data *game)
 {
+    game->active = true;
 
     while(game->active)
     {
@@ -187,4 +229,22 @@ void Game::run(game_data *game)
         handle_events(game);
         render(game);
     }
+}
+
+
+
+
+
+
+
+
+Entity Entity_creator::create_player(float x, float y)
+{
+
+}
+
+
+Entity Entity_creator::create_planet(float x, float y)
+{
+
 }
