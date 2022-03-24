@@ -1,4 +1,4 @@
-#include "Components.hpp"
+#include "Components_Events.hpp"
 #include "./ecs/ecs.hpp"
 #include "../datastructures/hashmap.hpp"
 #include "Game.hpp"
@@ -119,14 +119,14 @@ void Game::handle_events(game_data *game)
     while(SDL_PollEvent(&event))
     {
         //printf("event type: %d\n", event.type);
-        switch (event.type)
+        switch(event.type)
         {
             case SDL_QUIT:
                 game->active = false;
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                switch (event.button.button)
+                switch(event.button.button)
                 {
 
                     default:
@@ -135,7 +135,7 @@ void Game::handle_events(game_data *game)
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
-                switch (event.button.button)
+                switch(event.button.button)
                 {
 
                     default:
@@ -158,13 +158,11 @@ void Game::handle_events(game_data *game)
             case SDL_MOUSEMOTION:
 
                 printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
-
+                
                 break;
 
 
             //
-
-
 
             case SDL_KEYDOWN:
                 switch(event.key.keysym.sym)
@@ -225,8 +223,8 @@ void Game::run(game_data *game)
 
     while(game->active)
     {
-        update(game);
         handle_events(game);
+        update(game);
         render(game);
     }
 }
@@ -240,11 +238,11 @@ void Game::run(game_data *game)
 
 Entity Entity_creator::create_player(float x, float y)
 {
-
+    return 0;
 }
 
 
 Entity Entity_creator::create_planet(float x, float y)
 {
-
+    return 0;
 }
