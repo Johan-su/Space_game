@@ -1,7 +1,6 @@
 #pragma once
 #include "ecs_constants.hpp"
 
-#include "Components.hpp"
 #include "View_Groups.hpp"
 
 #include "system.hpp"

@@ -1,6 +1,5 @@
 #include "ecs_constants.hpp"
 #include "ecs_assert.hpp"
-#include "Components.hpp"
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
 
