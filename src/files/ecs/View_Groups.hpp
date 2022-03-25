@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.hpp"
-#include "Components.hpp"
+#include "ecs_constants.hpp"
 
 template<typename T>
 class Collection
