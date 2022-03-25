@@ -3,11 +3,23 @@
 #include "ecs_constants.hpp"
 #include "MemoryManager.hpp"
 
+
+
+template<typename T>
+struct event_array
+{
+    T eventlist[EVENT_QUEUE_SIZE];
+    bool activelist[EVENT_QUEUE_SIZE];
+    size_t queue_start_index;
+    size_t size;
+
+};
+
+
 struct event_data
 {
     void *event_arrays[MAX_EVENT_TYPES];
 
-    size_t array_sizes[MAX_EVENT_TYPES];
     size_t event_sizes[MAX_EVENT_TYPES];
     size_t event_alignments[MAX_EVENT_TYPES];
 
@@ -37,28 +49,27 @@ namespace Event_functions
 
 
     template<typename T>
-    void init_event(event_data *ed) //TODO(johan) implemented with eventArrays
+    void init_event(event_data *ed)
     {
         const size_t eventid = get_unique_event_id<T>(ed);
 
-        ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
+        event_array<T> *eventarray = (event_array<T>*)ed->event_arrays[eventid];
+        eventarray = Memory::alloc<event_array<T>>(mm);
 
-        comparray = Memory::alloc<ComponentArray<T>>(mm);
+        eventarray->size = 0;
+        eventarray->queue_start_index = 0;
 
-        comparray->size = 0;
-        for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)
+        for(size_t i = 0; i < EVENT_QUEUE_SIZE; ++i)
         {
-            comparray->sparse_array[i] = ENTITY_NULL;
-            comparray->entity_list[i]  = ENTITY_NULL;
+            eventarray->activelist[i] = false; 
         }
 
-        cdata->m_array_init[compid]           = true;
-        cdata->m_component_alignments[compid] = alignof(T);
-        cdata->m_component_sizes[compid]      = sizeof(T);
-        cdata->m_componentArrays[compid]      = comparray;
-        cdata->m_componentTypesCount         += 1;
+        ed->event_sizes[eventid]      = sizeof(T);
+        ed->event_alignments[eventid] = alignof(T);
+        ed->array_init[eventid]       = true;
 
-        dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
+
+        dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(event_array<T>) << "\n");
     }
 
 }
