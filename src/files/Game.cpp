@@ -20,6 +20,7 @@ T *alloc(size_t amount = 1)
 }
 
 
+
 game_data *Game::create_game()
 {
     return alloc<game_data>();
@@ -30,7 +31,7 @@ game_data *Game::create_game()
 void Game::ecs_init(game_data *game)
 {
     game->registry = alloc<Registry_data>();
-    Registry_functions::init(game->registry);
+    Registry_functions::init(game->registry, GameEvents::event_listener);
 
     Registry_functions::init_component<Position>(game->registry);
     Registry_functions::init_component<Size>(game->registry);
@@ -89,9 +90,10 @@ void Game::sdl_clean(game_data *game)
 }
 
 
-
+static game_data *game_for_event_listener;
 void Game::init(game_data *game)
 {
+    game_for_event_listener = game;
     ecs_init(game);
     sdl_init(game);
     
@@ -112,7 +114,7 @@ void Game::update(game_data *game)
 }
 
 
-void Game::handle_events(game_data *game)
+void Game::handle_input_events(game_data *game)
 {
     SDL_Event event;
 
@@ -198,6 +200,11 @@ void Game::handle_events(game_data *game)
     }
 }
 
+void Game::handle_ecs_events(game_data *game)
+{
+
+}
+
 void Game::render(game_data *game)
 {
     SDL_RenderClear(game->renderer);
@@ -223,13 +230,28 @@ void Game::run(game_data *game)
 
     while(game->active)
     {
-        handle_events(game);
+        handle_input_events(game);
         update(game);
+        handle_ecs_events(game);
         render(game);
     }
 }
 
 
+void GameEvents::event_listener(size_t eventid) //todo(johan) maybe use macros for eventid literals
+{
+    game_data *game = game_for_event_listener;
+
+    switch (eventid)
+    {
+        case /* constant-expression */0:
+            /* code */
+            break;
+        
+        default:
+            break;
+    }
+}
 
 
 
@@ -246,3 +268,6 @@ Entity Entity_creator::create_planet(float x, float y)
 {
     return 0;
 }
+
+
+
