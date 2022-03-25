@@ -2,7 +2,7 @@
 
 
 
-void Registry_functions::init(Registry_data *rdata)
+void Registry_functions::init(Registry_data *rdata, void (event_listener)(size_t))
 {
     assert(rdata != nullptr, "Registry_data cannot be NULL");
 
@@ -22,7 +22,7 @@ void Registry_functions::init(Registry_data *rdata)
     cdata  = Memory::alloc<Component_data>(mm);
 
     Entity_functions::init(mm, edata);
-    Event_functions::init(evdata);
+    Event_functions::init(evdata, event_listener);
     Component_functions::init(cdata);
 }
 

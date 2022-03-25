@@ -16,7 +16,7 @@ struct Registry_data
 namespace Registry_functions
 {
 
-    void init(Registry_data *rdata);
+    void init(Registry_data *rdata, void (event_listener)(size_t));
     void clean(Registry_data *rdata);
 
     Entity create_entity(Registry_data *rdata);

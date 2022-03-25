@@ -15,7 +15,7 @@ struct Size
     float height;
 };
 
-
+void noop(size_t t){}
 
 namespace ecs_view_test
 {
@@ -24,7 +24,7 @@ namespace ecs_view_test
     int test()
     {
         auto *rd = new Registry_data();
-        Registry_functions::init(rd);
+        Registry_functions::init(rd, noop);
 
         //auto &mm = rd->mm;
         auto &cdata = rd->cdata;
