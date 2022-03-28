@@ -2,6 +2,12 @@
 #include "ecs/ecs.hpp"
 #include <SDL.h>
 
+
+
+
+
+
+
 struct game_data
 {
     SDL_Renderer *renderer;
@@ -34,17 +40,15 @@ namespace Game
 
     void update(game_data *game);
     void handle_input_events(game_data *game);
-    void handle_ecs_events(game_data *game);
     void render(game_data *game);
 
     void run(game_data *game);
 }
 
-
 namespace GameEvents
 {
     
-    void event_listener(size_t eventid);
+    void event_listener(size_t eventid, const void *event);
 }
 
 

@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+
+
 template<typename T>
 T *alloc(size_t amount = 1)
 {
@@ -28,6 +30,10 @@ game_data *Game::create_game()
 
 
 
+
+ECS_DECLARE_EVENT(CollisionEvent);
+
+
 void Game::ecs_init(game_data *game)
 {
     game->registry = alloc<Registry_data>();
@@ -37,6 +43,8 @@ void Game::ecs_init(game_data *game)
     Registry_functions::init_component<Size>(game->registry);
     Registry_functions::init_component<Velocity>(game->registry);
     Registry_functions::init_component<Player>(game->registry);
+
+    ECS_INIT_EVENT(game->registry, CollisionEvent);
 
 
 }
@@ -85,6 +93,8 @@ void Game::sdl_clean(game_data *game)
     SDL_DestroyRenderer(game->renderer);
     SDL_DestroyWindow(game->window);
 
+    game->renderer = NULL;
+    game->window = NULL;
 
     SDL_Quit();
 }
@@ -110,7 +120,7 @@ void Game::clean(game_data *game)
 void Game::update(game_data *game)
 {
 
-
+    ECS_BROADCAST_EVENT(game->registry, CollisionEvent, {0, 1}); //TODO(johan) fix
 }
 
 
@@ -200,11 +210,6 @@ void Game::handle_input_events(game_data *game)
     }
 }
 
-void Game::handle_ecs_events(game_data *game)
-{
-
-}
-
 void Game::render(game_data *game)
 {
     SDL_RenderClear(game->renderer);
@@ -232,21 +237,24 @@ void Game::run(game_data *game)
     {
         handle_input_events(game);
         update(game);
-        handle_ecs_events(game);
         render(game);
     }
 }
 
 
-void GameEvents::event_listener(size_t eventid) //todo(johan) maybe use macros for eventid literals
+void GameEvents::event_listener(size_t eventid, const void *event)
 {
-    game_data *game = game_for_event_listener;
 
     switch (eventid)
     {
-        case /* constant-expression */0:
-            /* code */
+        case ECS_ID(CollisionEvent):
+        {
+            dbg(printf("event_listener with CollisionEvent"));
+            auto *coll_event = (CollisionEvent*)event;
+
+        }
             break;
+            
         
         default:
             break;

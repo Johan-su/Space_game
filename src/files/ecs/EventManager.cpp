@@ -1,9 +1,8 @@
 #include "EventManager.hpp"
 #include "MemoryManager.hpp"
 
-void Event_functions::init(event_data *ed, void (event_listener)(size_t))
+void Event_functions::init(event_data *ed, void (event_listener)(size_t, const void*))
 {
-    memset(ed->events,      0, sizeof(ed->events[0])      * MAX_EVENT_TYPES);
     memset(ed->event_sizes, 0, sizeof(ed->event_sizes[0]) * MAX_EVENT_TYPES);
 
 
@@ -15,11 +14,23 @@ void Event_functions::init(event_data *ed, void (event_listener)(size_t))
 
 void Event_functions::clean(Memory_pool *mm, event_data *ed)
 {
-    for(size_t i = 0; i < ed->event_types_count; ++i)
-    {
-        if(ed->event_sizes[i] > 0)
-        {
-            Memory::dealloc(mm, (char*)(ed->events + i), ed->event_sizes[i]);
-        }
-    }
+}
+
+
+void Event_functions::init_event(event_data *ed, size_t event_id, size_t event_size, size_t event_alignment)
+{
+    assert(event_id <= ed->event_types_count, "non increasing event_id");
+    assert(ed->event_types_count != MAX_EVENT_TYPES, "MAX_EVENT_TYPES EXCEEDED");
+
+    ed->event_sizes[event_id] = event_size;
+
+
+}
+
+
+void Event_functions::broadcast_event(event_data *ed, size_t event_id, size_t event_size, size_t event_alignment, const void *event)
+{
+    assert(ed->event_sizes[event_id] == event_size, "mismatch between declared event_size and parameter event_size");
+
+    (*ed->event_listener)(event_id, event);
 }
