@@ -15,7 +15,7 @@ struct Size
     float height;
 };
 
-void noop(size_t t){}
+void noop(size_t t, const void *r){}
 
 namespace ecs_view_test
 {
