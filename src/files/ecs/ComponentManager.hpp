@@ -173,15 +173,6 @@ namespace Component_functions
 
         _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
 
-        std::cout << "compids: ";
-        for(int i = 0; i < typeCount; ++i)
-        {
-            std::cout << compids[i] << ", ";
-        }
-        std::cout << "\n";
-
-        std::cout << "mincompid " << mincompid << "\n";
-        std::cout << "minsize " << minsize << "\n";
 
         auto view = View<T1>();
 
@@ -227,12 +218,10 @@ namespace Component_functions
         for(size_t i = 0; i < view.size; ++i)
         {
             Entity e = view.entity_list[i];
-            std::cout << "entity, " << e << "\n";
 
             view.comparray[i] = comparray->dense_array[comparray->sparse_array[e]];
         }
 
-        std::cout << "size: " << view.size << "\n";
 
 
         return view;
