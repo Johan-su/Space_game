@@ -50,9 +50,6 @@ namespace Game
     void clean(game_data *game);
 
 
-    void load_texture(game_data *game, uint32_t enum_id,  const char *path);
-    SDL_Texture *get_texture(game_data *game, uint32_t enum_id);
-
     void update(game_data *game);
     void render(game_data *game);
     void handle_input_events(game_data *game);

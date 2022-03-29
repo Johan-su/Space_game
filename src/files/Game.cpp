@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "assert.hpp"
 #include "Camera.hpp"
+#include "RenderSystem.hpp"
 
 #include "./ecs/ecs.hpp"
 
@@ -52,6 +53,7 @@ void Game::ecs_init(game_data *game)
     Registry_functions::init_component<RigidCollision>(game->registry);
     Registry_functions::init_component<Collision>(game->registry);
     Registry_functions::init_component<Player>(game->registry);
+    Registry_functions::init_component<Sprite>(game->registry);
     
 
     ECS_INIT_EVENT(game->registry, CollisionEvent);
@@ -162,17 +164,6 @@ void Game::clean(game_data *game)
 }
 
 
-void Game::load_texture(game_data *game, uint32_t enum_id,  const char *path)
-{
-    Texture::load_texture(game->renderer, game->texture, enum_id, path);
-}
-
-
-SDL_Texture *Game::get_texture(game_data *game, uint32_t enum_id)
-{
-    return Texture::get_texture(game->texture, enum_id);
-}
-
 
 void Game::update(game_data *game)
 {
@@ -192,8 +183,8 @@ void Game::render(game_data *game)
 
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
-
-
+    
+    RenderSystem::render(game);
 
 
     SDL_RenderPresent(game->renderer);
@@ -303,8 +294,8 @@ void Game::run(game_data *game)
 
 void Game::setup_game_state(game_data *game)
 {
-    Game::load_texture(game, SHIP1, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
-
+    Texture::load_texture(game->renderer, game->texture, SHIP_texture, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
+    Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
     game->player_e = Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
     
@@ -377,6 +368,7 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
     Registry_functions::set_component(game->registry, e, size_comp);
     Registry_functions::set_component(game->registry, e, angle_comp);
     Registry_functions::set_component(game->registry, e, angleVel_comp);
+    Registry_functions::set_component(game->registry, e, sprite_comp);
 
 
     return e;
