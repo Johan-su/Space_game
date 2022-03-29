@@ -25,10 +25,10 @@ do                          \
 
 
 #else
-#define assert(condition, message) \
+#define ECS_assert(condition, message) \
 do {} while(0)
 
-#define dbg(expression) \
+#define ECS_dbg(expression) \
 do {} while(0)
 
 
