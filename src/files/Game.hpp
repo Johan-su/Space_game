@@ -13,11 +13,14 @@ struct game_data
     SDL_Renderer *renderer;
     SDL_Window *window;
 
-    Camera *camera;
     textures_data *texture;
     Registry_data *registry;
 
     bool active;
+
+
+    Camera *camera;
+    Entity player_e;
 };
 
 struct key_settings

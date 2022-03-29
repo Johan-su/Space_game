@@ -304,6 +304,10 @@ void Game::run(game_data *game)
 void Game::setup_game_state(game_data *game)
 {
     Game::load_texture(game, SHIP1, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
+
+
+    game->player_e = Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+    
 }
 
 
@@ -346,8 +350,11 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
     auto position_comp  = Position();
     auto velocity_comp  = Velocity();
     auto size_comp      = Size();
+
     auto angle_comp     = Angle();
     auto angleVel_comp  = AnglularVelocity();
+    
+    auto sprite_comp    = Sprite();
 
     position_comp.x = x;
     position_comp.y = y;
@@ -359,8 +366,9 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
     size_comp.height = height;
 
     angle_comp.angle = 0.0f;
-
     angleVel_comp.angleV = 0.0f;
+
+    sprite_comp.texture_id = ship_type;
 
     Registry_functions::set_component(game->registry, e, player_comp);
     Registry_functions::set_component(game->registry, e, collision_comp);
