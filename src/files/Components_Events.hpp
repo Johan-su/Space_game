@@ -35,7 +35,7 @@ struct Angle
 struct AnglularVelocity
 {
     float angleV;
-}
+};
 
 
 struct RigidCollision
