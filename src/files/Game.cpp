@@ -47,7 +47,12 @@ void Game::ecs_init(game_data *game)
     Registry_functions::init_component<Position>(game->registry);
     Registry_functions::init_component<Size>(game->registry);
     Registry_functions::init_component<Velocity>(game->registry);
+    Registry_functions::init_component<Angle>(game->registry);
+    Registry_functions::init_component<AnglularVelocity>(game->registry);
+    Registry_functions::init_component<RigidCollision>(game->registry);
+    Registry_functions::init_component<Collision>(game->registry);
     Registry_functions::init_component<Player>(game->registry);
+    
 
     ECS_INIT_EVENT(game->registry, CollisionEvent);
     ECS_INIT_EVENT(game->registry, SpawnEvent);
@@ -298,14 +303,13 @@ void Game::run(game_data *game)
 
 void Game::setup_game_state(game_data *game)
 {
-    
+    Game::load_texture(game, SHIP1, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
 }
 
 
 
 void GameEvents::event_listener(size_t eventid, const void *event)
 {
-
     switch (eventid)
     {
         case ECS_ID(CollisionEvent):
