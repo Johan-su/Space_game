@@ -14,8 +14,8 @@ struct Position
 
 struct Size
 {
-    float x;
-    float y;
+    float width;
+    float height;
 };
 
 
@@ -26,18 +26,42 @@ struct Velocity
 };
 
 
+struct Angle
+{
+    float angle;
+};
+
+
+struct AnglularVelocity
+{
+    float angleV;
+}
+
+
+struct RigidCollision
+{
+};
+
+
+struct Collision
+{
+};
+
+
 struct Player
 {
 };
 
 
 // events
-
-
-
-
 struct CollisionEvent
 {
     Entity e1;
     Entity e2;
+};
+
+struct SpawnEvent
+{
+    float x;
+    float y;
 };
