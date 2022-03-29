@@ -1,11 +1,14 @@
 #include "Components_Events.hpp"
 #include "./ecs/ecs.hpp"
-#include "../datastructures/hashmap.hpp"
 #include "Game.hpp"
+
+#include "assert.hpp"
 
 #include <SDL.h>
 #include <stdio.h>
 #include <stdint.h>
+
+
 
 
 
@@ -30,8 +33,8 @@ game_data *Game::create_game()
 
 
 
-
 ECS_DECLARE_EVENT(CollisionEvent);
+ECS_DECLARE_EVENT(SpawnEvent);
 
 
 void Game::ecs_init(game_data *game)
@@ -45,6 +48,7 @@ void Game::ecs_init(game_data *game)
     Registry_functions::init_component<Player>(game->registry);
 
     ECS_INIT_EVENT(game->registry, CollisionEvent);
+    ECS_INIT_EVENT(game->registry, SpawnEvent);
 
 
 }
@@ -87,8 +91,8 @@ void Game::sdl_init(game_data *game)
 
 void Game::sdl_clean(game_data *game)
 {
-    assert(game->renderer, "renderer is NULL");
-    assert(game->window, "window is NULL");
+    assert(game->renderer, "renderer cannot be NULL");
+    assert(game->window, "window cannot be NULL");
 
     SDL_DestroyRenderer(game->renderer);
     SDL_DestroyWindow(game->window);
@@ -100,12 +104,30 @@ void Game::sdl_clean(game_data *game)
 }
 
 
-static game_data *game_for_event_listener;
+void Game::texture_init(game_data *game)
+{   
+    assert(game, "game cannot be null");
+    game->texture = alloc<textures_data>();
+
+    Texture::init(game->texture);
+}
+
+
+void Game::texture_clean(game_data *game)
+{
+    assert(game, "game cannot be null");
+
+    Texture::clean(game->texture);
+    free(game->texture);
+    game->texture = NULL;
+}
+
+
 void Game::init(game_data *game)
 {
-    game_for_event_listener = game;
     ecs_init(game);
     sdl_init(game);
+    texture_init(game);
     
 }
 
@@ -114,13 +136,46 @@ void Game::clean(game_data *game)
 {
     ecs_clean(game);
     sdl_clean(game);
+    texture_clean(game);
+
+}
+
+
+void Game::load_texture(game_data *game, uint32_t enum_id,  const char *path)
+{
+    Texture::load_texture(game->renderer, game->texture, enum_id, path);
+}
+
+
+SDL_Texture *Game::get_texture(game_data *game, uint32_t enum_id)
+{
+    return Texture::get_texture(game->texture, enum_id);
 }
 
 
 void Game::update(game_data *game)
 {
 
-    ECS_BROADCAST_EVENT(game->registry, CollisionEvent, {0, 1}); //TODO(johan) fix
+
+}
+
+
+void Game::render(game_data *game)
+{
+    SDL_RenderClear(game->renderer);
+
+    SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
+
+    SDL_RenderDrawLineF(game->renderer, 0.0f, 0.0f, 100.0f, 100.0f);
+
+
+    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
+
+
+
+
+
+    SDL_RenderPresent(game->renderer);
 }
 
 
@@ -210,23 +265,7 @@ void Game::handle_input_events(game_data *game)
     }
 }
 
-void Game::render(game_data *game)
-{
-    SDL_RenderClear(game->renderer);
 
-    SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
-
-    SDL_RenderDrawLineF(game->renderer, 0.0f, 0.0f, 100.0f, 100.0f);
-
-
-    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-
-
-
-
-
-    SDL_RenderPresent(game->renderer);
-}
 
 
 void Game::run(game_data *game)
@@ -241,6 +280,12 @@ void Game::run(game_data *game)
     }
 }
 
+void Game::setup_game_state(game_data *game)
+{
+    
+}
+
+
 
 void GameEvents::event_listener(size_t eventid, const void *event)
 {
@@ -249,11 +294,16 @@ void GameEvents::event_listener(size_t eventid, const void *event)
     {
         case ECS_ID(CollisionEvent):
         {
-            dbg(printf("event_listener with CollisionEvent"));
             auto *coll_event = (CollisionEvent*)event;
-
-        }
+            dbg(printf("event_listener with CollisionEvent val: %lld , %lld\n", coll_event->e1, coll_event->e2));
             break;
+        }
+        case ECS_ID(SpawnEvent):
+        {
+            auto *spawn_event = (SpawnEvent*)event;
+            dbg(printf("event_listener with SpawnEvent\n val: %f , %f\n", spawn_event->x, spawn_event->y));
+            break;
+        }
             
         
         default:
