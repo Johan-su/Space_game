@@ -1,15 +1,17 @@
 #include "Components_Events.hpp"
-#include "./ecs/ecs.hpp"
 #include "Game.hpp"
-
 #include "assert.hpp"
+#include "Camera.hpp"
+
+#include "./ecs/ecs.hpp"
 
 #include <SDL.h>
 #include <stdio.h>
 #include <stdint.h>
 
 
-
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 
 template<typename T>
@@ -73,7 +75,7 @@ void Game::sdl_init(game_data *game)
     }
 
     int flags = 0;
-    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, flags);
+    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, flags);
     if(!game->window)
     {
         fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s", SDL_GetError());
@@ -123,12 +125,26 @@ void Game::texture_clean(game_data *game)
 }
 
 
+void Game::camera_init(game_data *game)
+{
+    game->camera = alloc<Camera>();
+
+    Camera_functions::init(game->camera, SCREEN_WIDTH, SCREEN_HEIGHT);
+}
+
+
+void Game::camera_clean(game_data *game)
+{
+    Camera_functions::clean(game->camera);
+}
+
+
 void Game::init(game_data *game)
 {
     ecs_init(game);
     sdl_init(game);
     texture_init(game);
-    
+    camera_init(game);
 }
 
 
@@ -137,7 +153,7 @@ void Game::clean(game_data *game)
     ecs_clean(game);
     sdl_clean(game);
     texture_clean(game);
-
+    camera_clean(game);
 }
 
 
@@ -316,13 +332,46 @@ void GameEvents::event_listener(size_t eventid, const void *event)
 
 
 
-Entity Entity_creator::create_player(float x, float y)
+Entity Entity_creator::create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type)
 {
-    return 0;
+    Entity e = Registry_functions::create_entity(game->registry);
+
+    auto player_comp    = Player();
+    auto collision_comp = Collision();
+    
+    auto position_comp  = Position();
+    auto velocity_comp  = Velocity();
+    auto size_comp      = Size();
+    auto angle_comp     = Angle();
+    auto angleVel_comp  = AnglularVelocity();
+
+    position_comp.x = x;
+    position_comp.y = y;
+
+    velocity_comp.x = 0.0f;
+    velocity_comp.y = 0.0f;
+
+    size_comp.width = width;
+    size_comp.height = height;
+
+    angle_comp.angle = 0.0f;
+
+    angleVel_comp.angleV = 0.0f;
+
+    Registry_functions::set_component(game->registry, e, player_comp);
+    Registry_functions::set_component(game->registry, e, collision_comp);
+    Registry_functions::set_component(game->registry, e, position_comp);
+    Registry_functions::set_component(game->registry, e, velocity_comp);
+    Registry_functions::set_component(game->registry, e, size_comp);
+    Registry_functions::set_component(game->registry, e, angle_comp);
+    Registry_functions::set_component(game->registry, e, angleVel_comp);
+
+
+    return e;
 }
 
 
-Entity Entity_creator::create_planet(float x, float y)
+Entity Entity_creator::create_planet(game_data *game, float x, float y)
 {
     return 0;
 }

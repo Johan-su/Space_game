@@ -1,12 +1,10 @@
 #pragma once
-#include "ecs/ecs.hpp"
 #include "Texture.hpp"
+#include "Camera.hpp"
+
+#include "ecs/ecs.hpp"
 
 #include <SDL.h>
-
-
-
-
 
 
 
@@ -14,6 +12,8 @@ struct game_data
 {
     SDL_Renderer *renderer;
     SDL_Window *window;
+
+    Camera *camera;
     textures_data *texture;
     Registry_data *registry;
 
@@ -39,6 +39,9 @@ namespace Game
 
     void texture_init(game_data *game);
     void texture_clean(game_data *game);
+
+    void camera_init(game_data *game);
+    void camera_clean(game_data *game);
 
     void init(game_data *game);
     void clean(game_data *game);
@@ -66,6 +69,12 @@ namespace GameEvents
 
 namespace Entity_creator
 {
-    Entity create_player(float x, float y);
-    Entity create_planet(float x, float y);
+    Entity create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type);
+
+    Entity create_planet(game_data *game, float x, float y);
 }
+
+
+
+
+
