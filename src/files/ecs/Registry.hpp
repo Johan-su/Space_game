@@ -42,34 +42,30 @@ namespace Registry_functions
     template<typename T>
     void init_component(Registry_data *rdata)
     {
-        namespace C_F = Component_functions;
 
         auto *cdata = rdata->cdata;
         auto *mm = rdata->mm;
 
 
-        C_F::init_component<T>(mm, cdata);        
+        Component_functions::init_component<T>(mm, cdata);        
     }
 
     template <typename T>
     void set_component(Registry_data *rdata, Entity e, T& comp)
     {
-        namespace E_F = Entity_functions;
-        namespace C_F = Component_functions;
 
         auto *cdata = rdata->cdata;
 
-        C_F::set_component<T>(cdata, e, comp);
+        Component_functions::set_component<T>(cdata, e, comp);
     }
 
     template<typename T>
     void destroy_component(Registry_data *rdata, Entity e) //TODO(Johan) add all necessary deletions
     {
-        namespace C_F = Component_functions;
         
         auto *cdata = rdata->cdata;
 
-        C_F::destroy_component<T>(cdata, e);
+        Component_functions::destroy_component<T>(cdata, e);
     }
 }
 
