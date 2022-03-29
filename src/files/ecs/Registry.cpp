@@ -68,7 +68,6 @@ void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
 }
 
 
-
 void Registry_functions::init_event(Registry_data *rdata, size_t event_id, size_t event_size, size_t event_alignment)
 {
     Event_functions::init_event(rdata->evdata, event_id, event_size, event_alignment);
