@@ -3,7 +3,7 @@
 
 
 #ifdef _DEBUG
-#define assert(condition, message)                         \
+#define ECS_assert(condition, message)                     \
 do                                                         \
 {                                                          \
    if(!(condition))                                        \
@@ -15,10 +15,10 @@ do                                                         \
    }                                                       \
 } while(0)
 
-#define dbg(expression) \
-do                      \
-{                       \
-   expression;          \
+#define ECS_dbg(expression) \
+do                          \
+{                           \
+   expression;              \
 } while (0) 
 
 

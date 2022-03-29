@@ -40,11 +40,11 @@ bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 {
-    assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
+    ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
     for(size_t i = 0; i < cdata->m_componentTypesCount; ++i)
     {
-        assert(cdata->m_array_init[i], "disordered/uninitalized componentArrays");
+        ECS_assert(cdata->m_array_init[i], "disordered/uninitalized componentArrays");
 
         void *comparray      = cdata->m_componentArrays[i];
         size_t &compsize     = cdata->m_component_sizes[i];
@@ -57,7 +57,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
 
         if(size == 0) {
-            dbg(std::cout << "DEBUG: Ignoring destroy entity on empty array\n");
+            ECS_dbg(std::cout << "DEBUG: Ignoring destroy entity on empty array\n");
             break;
         }
 

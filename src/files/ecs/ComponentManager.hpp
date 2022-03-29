@@ -80,7 +80,7 @@ namespace Component_functions
         cdata->m_component_sizes[compid]      = sizeof(T);
         cdata->m_componentArrays[compid]      = comparray;
 
-        dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
+        ECS_dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
 
     }
 
@@ -89,10 +89,10 @@ namespace Component_functions
     ComponentArray<T> *get_component_array(Component_data *cdata)
     {
         size_t compid = get_unique_component_id<T>(cdata);
-        assert(cdata->m_array_init[compid], "Component_array was not initalized");
+        ECS_assert(cdata->m_array_init[compid], "Component_array was not initalized");
 
         auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];
-        assert(comparray != nullptr, "ComponentArray is null");
+        ECS_assert(comparray != nullptr, "ComponentArray is null");
 
         return comparray;
     }
@@ -100,8 +100,8 @@ namespace Component_functions
     template<typename T>
     void set_component(Component_data *cdata, Entity e, T comp)
     {
-        assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
-        assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
+        ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
+        ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
 
@@ -117,12 +117,12 @@ namespace Component_functions
     template<typename T>
     void destroy_component(Component_data *cdata, Entity e) // TODO(Johan) add lookup to check if entity exists in componentarray
     {
-        assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
-        assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
+        ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
+        ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
         //size_t compid = get_unique_component_id<T>();
         ComponentArray<T> *comparray = get_component_array<T>(cdata);
-        assert(comparray->size > 0, "array size is 0");
+        ECS_assert(comparray->size > 0, "array size is 0");
 
         Entity laste = comparray->entity_list[comparray->size - 1];
 
@@ -140,7 +140,7 @@ namespace Component_functions
     {
         const size_t typeCount = 1 + sizeof...(Ts);
         const size_t compid = Component_functions::get_unique_component_id<T1>(cdata);
-        assert(cdata->m_array_init[compid], "componentArray not initalized");
+        ECS_assert(cdata->m_array_init[compid], "componentArray not initalized");
 
         const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
         const size_t size = comparray->size;

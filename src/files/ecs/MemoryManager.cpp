@@ -4,8 +4,8 @@
 
 void Memory::init(Memory_pool *mm)
 {
-    assert(mm != nullptr, "Memory pool cannot be NULL");
-    assert(!mm->m_MemoryActive, "Memory pool already active");
+    ECS_assert(mm != nullptr, "Memory pool cannot be NULL");
+    ECS_assert(!mm->m_MemoryActive, "Memory pool already active");
 
     mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
     if(mm->m_runTimeData != nullptr)
@@ -23,7 +23,7 @@ void Memory::init(Memory_pool *mm)
 
 void Memory::clean(Memory_pool *mm)
 {
-    assert(mm->m_MemoryActive, "Memory pool already inactive");
+    ECS_assert(mm->m_MemoryActive, "Memory pool already inactive");
     free(mm->m_runTimeData);
     mm->m_runTimeData = nullptr;
     mm->m_MemoryActive = false;
@@ -31,8 +31,8 @@ void Memory::clean(Memory_pool *mm)
 
 void Memory::dump(Memory_pool *mm, const size_t size = 512, bool addr = true)
 {
-    assert(mm->m_MemoryActive, "uninitalized memory pool");
-    assert(size < MEMORY_POOL_SIZE, "Dump size greater than pool size");
+    ECS_assert(mm->m_MemoryActive, "uninitalized memory pool");
+    ECS_assert(size < MEMORY_POOL_SIZE, "Dump size greater than pool size");
 
     if(addr)
     {

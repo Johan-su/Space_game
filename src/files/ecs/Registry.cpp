@@ -4,7 +4,7 @@
 
 void Registry_functions::init(Registry_data *rdata, void (event_listener)(size_t, const void*))
 {
-    assert(rdata != nullptr, "Registry_data cannot be NULL");
+    ECS_assert(rdata != nullptr, "Registry_data cannot be NULL");
 
 
     rdata->mm = (Memory_pool*)malloc(sizeof(Memory_pool));
@@ -75,7 +75,7 @@ void Registry_functions::init_event(Registry_data *rdata, size_t event_id, size_
 }
 
 
-void broadcast_event(Registry_data *rdata, size_t event_id, size_t event_size, size_t event_alignment, const void *event)
+void Registry_functions::broadcast_event(Registry_data *rdata, size_t event_id, size_t event_size, size_t event_alignment, const void *event)
 {
     Event_functions::broadcast_event(rdata->evdata, event_id, event_size, event_alignment, event);
 }

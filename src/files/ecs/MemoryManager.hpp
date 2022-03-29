@@ -31,10 +31,10 @@ namespace Memory
     template <typename T>  
     T *alloc(Memory_pool *mm, size_t amount = 1)
     {
-        assert(amount > 0, "Cannot allocate 0 bytes");
-        assert(mm->m_MemoryActive, "Inactive memory pool");
+        ECS_assert(amount > 0, "Cannot allocate 0 bytes");
+        ECS_assert(mm->m_MemoryActive, "Inactive memory pool");
         const size_t type_size = sizeof(T);
-        assert(type_size * amount + mm->m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
+        ECS_assert(type_size * amount + mm->m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
       
         uint64_t padding = mm->m_bytesAllocated % type_size;
 
@@ -49,14 +49,14 @@ namespace Memory
     template <typename T>
     void dealloc(Memory_pool *mm, T *pointer, size_t amount = 1)
     {
-        assert(amount > 0, "Cannot deallocate 0 bytes");
-        assert(mm->m_MemoryActive, "Inactive memory pool");
+        ECS_assert(amount > 0, "Cannot deallocate 0 bytes");
+        ECS_assert(mm->m_MemoryActive, "Inactive memory pool");
         const size_t size = sizeof(T);
         
-        assert(mm->m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
+        ECS_assert(mm->m_bytesAllocated - size * amount > 0, "Deallocation outside memory pool");
         
-        assert(pointer >= mm->m_runTimeData, "Pointer outside memory pool");
-        assert((char*)pointer < (char*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
+        ECS_assert(pointer >= mm->m_runTimeData, "Pointer outside memory pool");
+        ECS_assert((char*)pointer < (char*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
         
         for(size_t i = 0; i < size * amount; ++i)
         {
