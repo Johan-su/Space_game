@@ -26,7 +26,11 @@ void Texture::load_texture(SDL_Renderer *renderer, textures_data *td, uint32_t e
     
 
     SDL_Surface *surface = SDL_LoadBMP(path);
-    if(!surface)
+    if(surface)
+    {
+        printf("NOTE: Loaded texture file from %s\n", path);
+    } 
+    else
     {
         fprintf(stderr, "ERROR: failed to load surface : %s\n", SDL_GetError());
     }
