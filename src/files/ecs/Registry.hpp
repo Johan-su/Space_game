@@ -67,5 +67,11 @@ namespace Registry_functions
 
         Component_functions::destroy_component<T>(cdata, e);
     }
+
+    template<typename T1, typename... Ts>
+    View<T1> get_view(Registry_data *rd)
+    {
+        return Component_functions::get_view<T1, Ts...>(rd->cdata);
+    }
 }
 
