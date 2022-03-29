@@ -12,7 +12,7 @@
 #define ECS_ID(T) ECS_ID_EVENT##T
 #define ECS_DECLARE_EVENT(T) static const size_t ECS_ID_EVENT##T = __COUNTER__; static_assert(sizeof(T) > 0, "cannot declare zero size types")
 #define ECS_INIT_EVENT(registry, T) Registry_functions::init_event(registry, ECS_ID(T), sizeof(T), alignof(T))
-#define ECS_BROADCAST_EVENT(registry, T, ...) Registry_functions::broadcast_event(registry, ECS_ID(T), sizeof(T), alignof(T), &(T)__VA_ARGS__)
+#define ECS_BROADCAST_EVENT(registry, T, ...) Registry_functions::broadcast_event(registry, ECS_ID(T), sizeof(T), alignof(T), __VA_ARGS__)
 
 struct Registry_data
 {
@@ -72,3 +72,4 @@ namespace Registry_functions
         C_F::destroy_component<T>(cdata, e);
     }
 }
+
