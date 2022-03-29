@@ -52,6 +52,11 @@ struct Player
 {
 };
 
+struct Sprite
+{
+    uint32_t texture_id;
+};
+
 
 // events
 struct CollisionEvent
