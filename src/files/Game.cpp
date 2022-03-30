@@ -170,24 +170,9 @@ void Game::clean(game_data *game)
 }
 
 
-static float update_timer = 0.0f;
 void Game::update(game_data *game, float dt)
 {
-    update_timer += dt;
 
-    double sum = 0;
-    for(size_t i = 0; i < (1.0f/(dt + 0.01) * 500000); ++i)
-    {
-        sum += sqrt(dt * i);
-    }
-
-    if(update_timer > 1.0f)
-    {
-        printf("fps: %f, frametime: %f", 1.0f / dt, dt);
-        printf("    sum_sqrt: %f\n", sum);
-        update_timer -= 1.0f;
-    }
-    
 }
 
 
@@ -312,22 +297,35 @@ void Game::handle_input_events(game_data *game, float dt) //TODO(Johan) move to 
 
 
 
-
+static float print_timer = 0.0f;
 void Game::run(game_data *game)
 {
     game->active = true;
     uint64_t curr;
     uint64_t prev = deltaTime::get_milis_time();
-    float delta_time;
+    float dt;
     while(game->active)
     {
         curr = deltaTime::get_milis_time();
-        delta_time = (float)(curr - prev) / 1000.0f;
+        dt = (float)(curr - prev) / 1000.0f;
         prev = curr;
 
-        handle_input_events(game, delta_time);
-        update(game, delta_time);
-        render(game, delta_time);
+        while(dt < 1.0f / FPS_TARGET)
+        {
+            curr = deltaTime::get_milis_time();
+            dt = (float)(curr - prev) / 1000.0f;
+        }
+
+        print_timer += dt;
+        if(print_timer > 1.0f)
+        {
+            printf("fps: %f, frametime: %f\n", 1.0f / dt, dt);
+            print_timer -= 1.0f;
+        }
+
+        handle_input_events(game, dt);
+        update(game, dt);
+        render(game, dt);
     }
 }
 
