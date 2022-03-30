@@ -9,6 +9,7 @@
 
 #include <SDL.h>
 
+#include <string>
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
@@ -169,20 +170,24 @@ void Game::clean(game_data *game)
 }
 
 
-
+static float update_timer = 0.0f;
 void Game::update(game_data *game, float dt)
 {
-    printf("frametime: %f\n", dt);
-    printf("fps: %f\n", 1.0f / dt);
-    printf("---------\n");
-    /*
+    update_timer += dt;
+
     double sum = 0;
-    for(size_t i = 0; i < (1.0f/(dt + 0.01) * 1000000); ++i)
+    for(size_t i = 0; i < (1.0f/(dt + 0.01) * 500000); ++i)
     {
         sum += sqrt(dt * i);
     }
-    printf("sum_sqrt: %f\n", sum);
-    */
+
+    if(update_timer > 1.0f)
+    {
+        printf("fps: %f, frametime: %f", 1.0f / dt, dt);
+        printf("    sum_sqrt: %f\n", sum);
+        update_timer -= 1.0f;
+    }
+    
 }
 
 
@@ -194,7 +199,7 @@ void Game::render(game_data *game, float dt)
 
     SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
 
-    SDL_RenderDrawPointF(game->renderer, (float)(SCREEN_WIDTH / 2), (float)(SCREEN_HEIGHT / 2));
+    SDL_RenderDrawPoint(game->renderer, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2));
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
 
@@ -328,7 +333,10 @@ void Game::run(game_data *game)
 
 void Game::setup_game_state(game_data *game, const char *resources_path)
 {
-    Texture::load_texture(game->renderer, game->texture, SHIP_texture, strcat()); //TODO(Johan) change to relative path
+    std::string r_path = resources_path; //TODO(Johan) remove std::string
+    std::string ship_path = r_path + "/ships/placeholder.bmp";
+
+    Texture::load_texture(game->renderer, game->texture, SHIP_texture, ship_path.c_str());
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
     Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
