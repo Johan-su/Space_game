@@ -37,11 +37,13 @@ void Texture::load_texture(SDL_Renderer *renderer, textures_data *td, uint32_t e
     else
     {
         fprintf(stderr, "ERROR: failed to load surface : %s\n", SDL_GetError());
+        exit(1);
     }
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     if(!texture)
     {
         fprintf(stderr, "ERROR: failed to load texture : %s\n", SDL_GetError());
+        exit(1);
     }
 
     td->enum_to_texture[enum_id] = td->texture_count;
