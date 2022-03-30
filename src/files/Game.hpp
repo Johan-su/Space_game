@@ -20,7 +20,6 @@ struct game_data
 
 
     Camera *camera;
-    Entity player_e;
 };
 
 struct key_settings
