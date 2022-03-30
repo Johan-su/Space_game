@@ -56,7 +56,7 @@ namespace Game
     void run(game_data *game);
 
     
-    void setup_game_state(game_data *game);
+    void setup_game_state(game_data *game, const char *resources_path);
 }
 
 namespace GameEvents
