@@ -28,9 +28,6 @@ struct Component_data
 
     bool m_array_init[MAX_COMPONENT_TYPES];
 
-
-
-
 };
 
 
