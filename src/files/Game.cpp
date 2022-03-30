@@ -14,6 +14,7 @@
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
+#define MOUSE_ZOOM_SCALE_SPEED 1.4f
 
 template<typename T>
 T *alloc(size_t amount = 1)
@@ -168,33 +169,34 @@ void Game::clean(game_data *game)
 void Game::update(game_data *game)
 {
 
-
 }
 
 
 void Game::render(game_data *game)
 {
     SDL_RenderClear(game->renderer);
+    RenderSystem::render(game);
+
 
     SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
 
-    SDL_RenderDrawLineF(game->renderer, 0.0f, 0.0f, 100.0f, 100.0f);
-
-
+    SDL_RenderDrawPointF(game->renderer, (float)(SCREEN_WIDTH / 2), (float)(SCREEN_HEIGHT / 2));
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
+
+
     
-    RenderSystem::render(game);
 
 
     SDL_RenderPresent(game->renderer);
 }
 
 
-void Game::handle_input_events(game_data *game)
+bool middle_mouse_button = false;
+
+void Game::handle_input_events(game_data *game) //TODO(Johan) move to different file
 {
     SDL_Event event;
-
     while(SDL_PollEvent(&event))
     {
         //printf("event type: %d\n", event.type);
@@ -207,7 +209,10 @@ void Game::handle_input_events(game_data *game)
             case SDL_MOUSEBUTTONDOWN:
                 switch(event.button.button)
                 {
-
+                    case SDL_BUTTON_MIDDLE:
+                        middle_mouse_button = true;
+                        printf("%d\n", event.button.button);
+                        break;
                     default:
                         printf("%d\n", event.button.button);
                         break;
@@ -216,7 +221,10 @@ void Game::handle_input_events(game_data *game)
             case SDL_MOUSEBUTTONUP:
                 switch(event.button.button)
                 {
-
+                    case SDL_BUTTON_MIDDLE:
+                        middle_mouse_button = false;
+                        printf("%d\n", event.button.button);
+                        break;
                     default:
                         printf("%d\n", event.button.button);
                         break;
@@ -226,16 +234,20 @@ void Game::handle_input_events(game_data *game)
             case SDL_MOUSEWHEEL:
                 if(event.wheel.y > 0)
                 {
-                    printf("scroll up: %d\n", event.wheel.y);
+                    Camera_functions::zoom(game->camera, MOUSE_ZOOM_SCALE_SPEED);
                 }
                 else
                 {
-                    printf("scroll down: %d\n", event.wheel.y);
+                    Camera_functions::zoom(game->camera, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
                 }
                 break;
 
             case SDL_MOUSEMOTION:
-
+                if(middle_mouse_button)
+                {
+                    game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
+                    game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
+                }
                 printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
                 
                 break;
@@ -297,7 +309,9 @@ void Game::setup_game_state(game_data *game)
     Texture::load_texture(game->renderer, game->texture, SHIP_texture, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
-    game->player_e = Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+    Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+
+    Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
     
 }
 
@@ -347,8 +361,8 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
     
     auto sprite_comp    = Sprite();
 
-    position_comp.x = x;
-    position_comp.y = y;
+    position_comp.x = x - width / 2;
+    position_comp.y = y - height / 2;
 
     velocity_comp.x = 0.0f;
     velocity_comp.y = 0.0f;
