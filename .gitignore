@@ -9,4 +9,10 @@
 *.obj
 *~*
 *.*~
+
+
+
+
 /distribution
+distribution.zip
+distribution.rar
