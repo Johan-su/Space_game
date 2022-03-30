@@ -3,18 +3,22 @@
 #include "assert.hpp"
 #include "Camera.hpp"
 #include "RenderSystem.hpp"
+#include "deltatime.hpp"
 
 #include "./ecs/ecs.hpp"
 
 #include <SDL.h>
+
 #include <stdio.h>
 #include <stdint.h>
+#include <limits.h>
 
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
 #define MOUSE_ZOOM_SCALE_SPEED 1.4f
+#define FPS_TARGET 144
 
 template<typename T>
 T *alloc(size_t amount = 1)
@@ -166,13 +170,23 @@ void Game::clean(game_data *game)
 
 
 
-void Game::update(game_data *game)
+void Game::update(game_data *game, float dt)
 {
-
+    printf("frametime: %f\n", dt);
+    printf("fps: %f\n", 1.0f / dt);
+    printf("---------\n");
+    /*
+    double sum = 0;
+    for(size_t i = 0; i < (1.0f/(dt + 0.01) * 1000000); ++i)
+    {
+        sum += sqrt(dt * i);
+    }
+    printf("sum_sqrt: %f\n", sum);
+    */
 }
 
 
-void Game::render(game_data *game)
+void Game::render(game_data *game, float dt)
 {
     SDL_RenderClear(game->renderer);
     RenderSystem::render(game);
@@ -192,9 +206,10 @@ void Game::render(game_data *game)
 }
 
 
-bool middle_mouse_button = false;
+bool mouse_buttons[100] = {0};
+bool shift_button = false;
 
-void Game::handle_input_events(game_data *game) //TODO(Johan) move to different file
+void Game::handle_input_events(game_data *game, float dt) //TODO(Johan) move to different file
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -209,28 +224,21 @@ void Game::handle_input_events(game_data *game) //TODO(Johan) move to different 
             case SDL_MOUSEBUTTONDOWN:
                 switch(event.button.button)
                 {
-                    case SDL_BUTTON_MIDDLE:
-                        middle_mouse_button = true;
-                        printf("%d\n", event.button.button);
-                        break;
                     default:
-                        printf("%d\n", event.button.button);
                         break;
                 }
+                mouse_buttons[event.button.button] = true;
+                printf("keydown: %d\n", event.button.button);
                 break;
             case SDL_MOUSEBUTTONUP:
                 switch(event.button.button)
                 {
-                    case SDL_BUTTON_MIDDLE:
-                        middle_mouse_button = false;
-                        printf("%d\n", event.button.button);
-                        break;
                     default:
-                        printf("%d\n", event.button.button);
                         break;
                 }
+                mouse_buttons[event.button.button] = false;
+                printf("keyup: %d\n", event.button.button);
                 break;
-
             case SDL_MOUSEWHEEL:
                 if(event.wheel.y > 0)
                 {
@@ -243,12 +251,12 @@ void Game::handle_input_events(game_data *game) //TODO(Johan) move to different 
                 break;
 
             case SDL_MOUSEMOTION:
-                if(middle_mouse_button)
+                if(shift_button && mouse_buttons[SDL_BUTTON_LEFT])
                 {
                     game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
                     game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
                 }
-                printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
+                //printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
                 
                 break;
 
@@ -266,6 +274,10 @@ void Game::handle_input_events(game_data *game) //TODO(Johan) move to different 
                         break;
                     case SDLK_d:
                         break;*/
+                    
+                    case SDLK_LSHIFT:
+                        shift_button = true;
+                        break;
 
                     default:
                         printf("%d\n", event.key.keysym.sym);
@@ -283,6 +295,10 @@ void Game::handle_input_events(game_data *game) //TODO(Johan) move to different 
                         break;
                     case SDLK_d:
                         break;
+
+                    case SDLK_LSHIFT:
+                        shift_button = false;
+                        break;
                 }
                 break;
         }
@@ -295,18 +311,24 @@ void Game::handle_input_events(game_data *game) //TODO(Johan) move to different 
 void Game::run(game_data *game)
 {
     game->active = true;
-
+    uint64_t curr;
+    uint64_t prev = deltaTime::get_milis_time();
+    float delta_time;
     while(game->active)
     {
-        handle_input_events(game);
-        update(game);
-        render(game);
+        curr = deltaTime::get_milis_time();
+        delta_time = (float)(curr - prev) / 1000.0f;
+        prev = curr;
+
+        handle_input_events(game, delta_time);
+        update(game, delta_time);
+        render(game, delta_time);
     }
 }
 
-void Game::setup_game_state(game_data *game)
+void Game::setup_game_state(game_data *game, const char *resources_path)
 {
-    Texture::load_texture(game->renderer, game->texture, SHIP_texture, "C:/Users/jsbol/repos/Space_game/resources/ships/placeholder.bmp"); //TODO(Johan) change to relative path
+    Texture::load_texture(game->renderer, game->texture, SHIP_texture, strcat()); //TODO(Johan) change to relative path
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
     Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);

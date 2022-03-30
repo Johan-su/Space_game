@@ -49,9 +49,9 @@ namespace Game
     void clean(game_data *game);
 
 
-    void update(game_data *game);
-    void render(game_data *game);
-    void handle_input_events(game_data *game);
+    void update(game_data *game, float dt);
+    void render(game_data *game, float dt);
+    void handle_input_events(game_data *game, float dt);
 
     void run(game_data *game);
 
