@@ -313,11 +313,11 @@ void Game::run(game_data *game)
         dt = curr - prev;
         prev = curr;
 
-        /*while(dt < target_time)
+        while(dt < target_time)
         {
             curr = deltaTime::get_micro_time();
             dt = curr - prev;
-        }*/
+        }
 
         print_timer += dt / 1000000.0f;
         if(print_timer > 1.0f)
