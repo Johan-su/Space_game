@@ -3,7 +3,7 @@
 #include "assert.hpp"
 #include "Camera.hpp"
 #include "RenderSystem.hpp"
-#include "deltatime.hpp"
+#include "./platform/deltatime.hpp"
 
 #include "./ecs/ecs.hpp"
 
@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
+
 
 
 #define SCREEN_WIDTH 1920
@@ -296,38 +297,43 @@ void Game::handle_input_events(game_data *game, float dt) //TODO(Johan) move to 
 }
 
 
-
 static float print_timer = 0.0f;
 void Game::run(game_data *game)
 {
     game->active = true;
+    
+    uint64_t target_time = 1000000 / FPS_TARGET;
+    
     uint64_t curr;
-    uint64_t prev = deltaTime::get_milis_time();
-    float dt;
+    uint64_t prev = deltaTime::get_micro_time();
+    uint64_t dt; // dt in microseconds 10^-6 seconds
     while(game->active)
     {
-        curr = deltaTime::get_milis_time();
-        dt = (float)(curr - prev) / 1000.0f;
+        curr = deltaTime::get_micro_time();
+        dt = curr - prev;
         prev = curr;
 
-        while(dt < 1.0f / FPS_TARGET)
+        /*while(dt < target_time)
         {
-            curr = deltaTime::get_milis_time();
-            dt = (float)(curr - prev) / 1000.0f;
-        }
+            curr = deltaTime::get_micro_time();
+            dt = curr - prev;
+        }*/
 
-        print_timer += dt;
+        print_timer += dt / 1000000.0f;
         if(print_timer > 1.0f)
         {
-            printf("fps: %f, frametime: %f\n", 1.0f / dt, dt);
+            printf("fps: %12.6f, frametime: %f\n", 1000000.0f / dt, dt / 1000000.0f);
             print_timer -= 1.0f;
         }
 
-        handle_input_events(game, dt);
-        update(game, dt);
-        render(game, dt);
+        float ts = dt * 1000.0f; // time step in miliseconds
+
+        handle_input_events(game, ts);
+        update(game, ts);
+        render(game, ts);
     }
 }
+
 
 void Game::setup_game_state(game_data *game, const char *resources_path)
 {
@@ -342,6 +348,7 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
     
 }
+
 
 
 
