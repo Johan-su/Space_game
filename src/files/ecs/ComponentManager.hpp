@@ -112,7 +112,15 @@ namespace Component_functions
     }
 
     template<typename T>
-    void destroy_component(Component_data *cdata, Entity e) // TODO(Johan) add lookup to check if entity exists in componentarray
+    Entity lookup_entity(Component_data *cdata, Entity e)
+    {
+        auto *comparray = get_component_array<T>(cdata);
+
+        return comparray->sparse_array[e];
+    }
+
+    template<typename T>
+    void destroy_component(Component_data *cdata, Entity e)
     {
         ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
         ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
@@ -128,6 +136,15 @@ namespace Component_functions
         
         comparray->sparse_array[e] = ENTITY_NULL;
         --comparray->size;
+    }
+
+
+    template<typename T>
+    T get_component(Component_data *cdata, Entity e)
+    {
+        auto *comparray = get_component_array<T>(cdata);
+
+        return comparray->dense_array[comparray->sparse_array[e]];
     }
 
 

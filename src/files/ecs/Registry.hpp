@@ -50,6 +50,7 @@ namespace Registry_functions
         Component_functions::init_component<T>(mm, cdata);        
     }
 
+
     template <typename T>
     void set_component(Registry_data *rdata, Entity e, T& comp)
     {
@@ -58,6 +59,20 @@ namespace Registry_functions
 
         Component_functions::set_component<T>(cdata, e, comp);
     }
+
+
+    template<typename T>
+    Entity lookup_entity(Registry_data *rdata, Entity e)
+    {
+        return Component_functions::lookup_entity<T>(rdata->cdata, e);
+    }
+
+    template<typename T>
+    T get_component(Registry_data *rdata, Entity e)
+    {
+        return Component_functions::get_component<T>(rdata->cdata, e);
+    }
+
 
     template<typename T>
     void destroy_component(Registry_data *rdata, Entity e) //TODO(Johan) add all necessary deletions
