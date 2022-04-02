@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 
+#include <unordered_map>
 
 
 struct game_data
@@ -18,7 +19,11 @@ struct game_data
 
     bool active;
 
+    std::unordered_map<uint64_t, bool> key_bool_map; //TODO(Johan) change from c++ STL
+    std::unordered_map<uint64_t, bool> mouse_button_bool_map;
 
+
+    Entity trackedEntity = ENTITY_NULL;
     Camera *camera;
 };
 
@@ -36,18 +41,20 @@ namespace Game
     void ecs_init(game_data *game);
     void ecs_clean(game_data *game);
 
+
     void sdl_init(game_data *game);
     void sdl_clean(game_data *game);
 
+
     void texture_init(game_data *game);
     void texture_clean(game_data *game);
+
 
     void camera_init(game_data *game);
     void camera_clean(game_data *game);
 
     void init(game_data *game);
     void clean(game_data *game);
-
 
     void update(game_data *game, float Ts);
     void fixed_update(game_data *game, float Ts);

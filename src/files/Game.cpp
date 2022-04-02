@@ -4,6 +4,7 @@
 #include "Camera.hpp"
 #include "systems/RenderSystem.hpp"
 #include "/platform/deltatime.hpp"
+#include "Input.hpp"
 
 #include "/ecs/ecs.hpp"
 
@@ -14,12 +15,12 @@
 #include <stdint.h>
 #include <limits.h>
 
+#include <unordered_map>
 
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
-#define MOUSE_ZOOM_SCALE_SPEED 1.4f
 #define FPS_TARGET 144
 #define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
@@ -190,10 +191,10 @@ void Game::render(game_data *game, float Ts)
 {
     SDL_RenderClear(game->renderer);
     RenderSystem::render(game);
+    RenderSystem::render_tracked_entity(game);
 
 
     SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
-
     SDL_RenderDrawPoint(game->renderer, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2));
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
@@ -206,103 +207,11 @@ void Game::render(game_data *game, float Ts)
 }
 
 
-static bool mouse_buttons[100] = {0};
-static bool shift_button = false;
+
 
 void Game::handle_input_events(game_data *game, float Ts) //TODO(Johan) move to different file
 {
-    SDL_Event event;
-    while(SDL_PollEvent(&event))
-    {
-        //printf("event type: %d\n", event.type);
-        switch(event.type)
-        {
-            case SDL_QUIT:
-                game->active = false;
-                break;
-
-            case SDL_MOUSEBUTTONDOWN:
-                switch(event.button.button)
-                {
-                    default:
-                        break;
-                }
-                mouse_buttons[event.button.button] = true;
-                printf("keydown: %d\n", event.button.button);
-                break;
-            case SDL_MOUSEBUTTONUP:
-                switch(event.button.button)
-                {
-                    default:
-                        break;
-                }
-                mouse_buttons[event.button.button] = false;
-                printf("keyup: %d\n", event.button.button);
-                break;
-            case SDL_MOUSEWHEEL:
-                if(event.wheel.y > 0)
-                {
-                    Camera_functions::zoom(game->camera, MOUSE_ZOOM_SCALE_SPEED);
-                }
-                else
-                {
-                    Camera_functions::zoom(game->camera, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
-                }
-                break;
-
-            case SDL_MOUSEMOTION:
-                if(shift_button && mouse_buttons[SDL_BUTTON_LEFT])
-                {
-                    game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
-                    game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
-                }
-                //printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
-                
-                break;
-
-
-            //
-
-            case SDL_KEYDOWN:
-                switch(event.key.keysym.sym)
-                {
-                   /*case SDLK_w:
-                        break;
-                    case SDLK_a:
-                        break;
-                    case SDLK_s:
-                        break;
-                    case SDLK_d:
-                        break;*/
-                    
-                    case SDLK_LSHIFT:
-                        shift_button = true;
-                        break;
-
-                    default:
-                        printf("%d\n", event.key.keysym.sym);
-                        break;
-                }
-                break;
-            case SDL_KEYUP:
-                switch(event.key.keysym.sym)
-                {
-                    case SDLK_w:
-                        break;
-                    case SDLK_a:
-                        break;
-                    case SDLK_s:
-                        break;
-                    case SDLK_d:
-                        break;
-
-                    case SDLK_LSHIFT:
-                        shift_button = false;
-                        break;
-                }
-                break;
-        }
-    }
+    Input::handle_input(game);
 }
 
 
@@ -367,6 +276,7 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     Texture::load_texture(game->renderer, game->texture, SHIP_texture, ship_path.c_str());
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
+
     Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
 
     Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
@@ -408,9 +318,9 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
 {
     Entity e = Registry_functions::create_entity(game->registry);
 
-    auto player_comp    = Player();
     auto collision_comp = Collision();
     
+    auto player_comp    = Player();
     auto position_comp  = Position();
     auto velocity_comp  = Velocity();
     auto size_comp      = Size();
