@@ -3,9 +3,9 @@
 #include "assert.hpp"
 #include "Camera.hpp"
 #include "RenderSystem.hpp"
-#include "./platform/deltatime.hpp"
+#include "/platform/deltatime.hpp"
 
-#include "./ecs/ecs.hpp"
+#include "/ecs/ecs.hpp"
 
 #include <SDL.h>
 
@@ -151,6 +151,8 @@ void Game::camera_init(game_data *game)
 void Game::camera_clean(game_data *game)
 {
     Camera_functions::clean(game->camera);
+    free(game->camera);
+    game->camera = NULL;
 }
 
 
@@ -420,8 +422,8 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
     
     auto sprite_comp    = Sprite();
 
-    position_comp.x = x - width / 2;
-    position_comp.y = y - height / 2;
+    position_comp.x = x;
+    position_comp.y = y;
 
     velocity_comp.x = 0.0f;
     velocity_comp.y = 0.0f;
