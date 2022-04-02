@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.hpp"
+#include "../Game.hpp"
 
 namespace RenderSystem
 {
