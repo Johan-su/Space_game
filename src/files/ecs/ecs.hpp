@@ -3,7 +3,6 @@
 
 #include "View_Groups.hpp"
 
-#include "system.hpp"
 
 #include "MemoryManager.hpp"
 #include "ComponentManager.hpp"
