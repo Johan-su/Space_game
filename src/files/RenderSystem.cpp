@@ -16,7 +16,7 @@ void RenderSystem::render(game_data *game)
     auto angle_view  = Registry_functions::get_view<Angle, Sprite, Position, Size>(game->registry);
     auto sprite_view = Registry_functions::get_view<Sprite, Position, Size, Angle>(game->registry);
 
-    for(size_t i = 0; i < pos_view.size; ++i)
+    for(size_t i = 0; i < pos_view.size; ++i) //TODO(Johan) change to treat posx, posy as center vars
     {
         //dbg(printf("running in render for loop\n"));
         Tex_Sprite *sprite   = Texture::get_sprite(game->texture, sprite_view.comparray[i].texture_id);
