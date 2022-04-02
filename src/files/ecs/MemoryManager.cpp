@@ -16,7 +16,7 @@ void Memory::init(Memory_pool *mm)
     }
     else
     {
-        std::cout << "malloc failed, system out of memory?\n";
+        fprintf(stderr, "malloc failed, out of memory\n");
         exit(1);
     }
 }
