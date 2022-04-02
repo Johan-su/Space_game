@@ -20,7 +20,8 @@
 #define SCREEN_HEIGHT 1080
 
 #define MOUSE_ZOOM_SCALE_SPEED 1.4f
-#define FPS_TARGET 60
+#define FPS_TARGET 144
+#define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
 template<typename T>
 T *alloc(size_t amount = 1)
@@ -177,6 +178,12 @@ void Game::update(game_data *game, float Ts)
 }
 
 
+void Game::fixed_update(game_data *game, float Ts)
+{
+
+}
+
+
 void Game::render(game_data *game, float Ts)
 {
     SDL_RenderClear(game->renderer);
@@ -301,36 +308,53 @@ void Game::run(game_data *game)
 {
     game->active = true;
     
-    float print_timer = 0.0f;
+    uint64_t print_timer = 0;
+    uint64_t fixed_update_count = 0;
     uint64_t target_time = 1000000 / FPS_TARGET;
+    uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
+    uint64_t count = 0;
+
     uint64_t curr;
     uint64_t prev = deltaTime::get_micro_time();
     uint64_t dt; // dt in microseconds 10^-6 seconds
+    float ts; // time step in seconds
+
     while(game->active)
     {
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
         prev = curr;
 
-        while(dt < target_time)
-        {
-            curr = deltaTime::get_micro_time();
-            dt = curr - prev;
-        }
 
-        print_timer += dt / 1000000.0f;
-        if(print_timer > 1.0f)
+        /*
+        print_timer += dt;
+        if(print_timer > 1000000)
         {
-            printf("fps: %12.6f, frametime: %f\n", 1000000.0f / dt, dt / 1000000.0f);
-            print_timer = 0.0f;
+            printf("count %-5llu fps: %-7.1f frametime: %f\n", count, 1000000.0f / dt, dt / 1000000.0f);
+            print_timer -= 1000000;
         }
-
-        float ts = dt / 1000000.0f; // time step in seconds
+        */
+        ts = dt / 1000000.0f;
 
         handle_input_events(game, ts);
         update(game, ts);
+        fixed_update_count += dt;
+        while(fixed_update_count >= target_fixed_update)
+        {
+            fixed_update(game, target_fixed_update / 1000000.0f);
+            fixed_update_count -= target_fixed_update;
+        }
+
         render(game, ts);
+
+        ++count;
+        do
+        {
+            curr = deltaTime::get_micro_time();
+            dt = curr - prev;
+        } while(dt < target_time);
+
     }
 }
 

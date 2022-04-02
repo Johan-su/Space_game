@@ -50,6 +50,7 @@ namespace Game
 
 
     void update(game_data *game, float Ts);
+    void fixed_update(game_data *game, float Ts);
     void render(game_data *game, float Ts);
     void handle_input_events(game_data *game, float Ts);
 
