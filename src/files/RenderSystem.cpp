@@ -22,10 +22,15 @@ void RenderSystem::render(game_data *game)
         Tex_Sprite *sprite   = Texture::get_sprite(game->texture, sprite_view.comparray[i].texture_id);
 
         SDL_Rect srcrect     = SDL_Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
-        SDL_FRect dstrect    = SDL_FRect{(pos_view.comparray[i].x - camera->world_x) * camera->world_scale_x,
-                                         (pos_view.comparray[i].y - camera->world_y) * camera->world_scale_y, 
-                                         size_view.comparray[i].width * camera->world_scale_x, 
-                                         size_view.comparray[i].height * camera->world_scale_y};
+
+        auto pos = pos_view.comparray[i];
+        auto size = size_view.comparray[i];
+
+
+        SDL_FRect dstrect    = SDL_FRect{(pos.x - size.width / 2 - camera->world_x) * camera->world_scale_x,
+                                         (pos.y - size.height / 2 - camera->world_y) * camera->world_scale_y, 
+                                         size.width * camera->world_scale_x, 
+                                         size.height * camera->world_scale_y};
         
         SDL_Texture *texture = Texture::get_texture(game->texture, sprite->texture_index);
 
