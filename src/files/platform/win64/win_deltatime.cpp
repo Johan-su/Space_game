@@ -7,7 +7,7 @@
 
 static FILETIME time;
 
-uint64_t Windows::get_micro_time()
+uint64_t Windows::get_micro_time() //TODO(Johan): fix time retrival
 {
     GetSystemTimePreciseAsFileTime(&time);
 
