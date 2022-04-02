@@ -2,6 +2,8 @@
 #include "ecs_constants.hpp"
 #include "ecs_assert.hpp"
 
+#include <stdint.h>
+
 struct Memory_pool
 {
   void *m_runTimeData;
