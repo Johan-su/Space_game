@@ -7,8 +7,8 @@
 // components
 struct Position
 {
-    float x;
-    float y;
+    float x; // center x 
+    float y; // center y
 };
 
 
