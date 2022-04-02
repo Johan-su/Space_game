@@ -20,7 +20,7 @@
 #define SCREEN_HEIGHT 1080
 
 #define MOUSE_ZOOM_SCALE_SPEED 1.4f
-#define FPS_TARGET 144
+#define FPS_TARGET 60
 
 template<typename T>
 T *alloc(size_t amount = 1)
@@ -171,13 +171,13 @@ void Game::clean(game_data *game)
 }
 
 
-void Game::update(game_data *game, float dt)
+void Game::update(game_data *game, float Ts)
 {
 
 }
 
 
-void Game::render(game_data *game, float dt)
+void Game::render(game_data *game, float Ts)
 {
     SDL_RenderClear(game->renderer);
     RenderSystem::render(game);
@@ -197,10 +197,10 @@ void Game::render(game_data *game, float dt)
 }
 
 
-bool mouse_buttons[100] = {0};
-bool shift_button = false;
+static bool mouse_buttons[100] = {0};
+static bool shift_button = false;
 
-void Game::handle_input_events(game_data *game, float dt) //TODO(Johan) move to different file
+void Game::handle_input_events(game_data *game, float Ts) //TODO(Johan) move to different file
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -297,11 +297,11 @@ void Game::handle_input_events(game_data *game, float dt) //TODO(Johan) move to 
 }
 
 
-static float print_timer = 0.0f;
 void Game::run(game_data *game)
 {
     game->active = true;
     
+    float print_timer = 0.0f;
     uint64_t target_time = 1000000 / FPS_TARGET;
     
     uint64_t curr;
@@ -323,10 +323,10 @@ void Game::run(game_data *game)
         if(print_timer > 1.0f)
         {
             printf("fps: %12.6f, frametime: %f\n", 1000000.0f / dt, dt / 1000000.0f);
-            print_timer -= 1.0f;
+            print_timer = 0.0f;
         }
 
-        float ts = dt * 1000.0f; // time step in miliseconds
+        float ts = dt / 1000000.0f; // time step in seconds
 
         handle_input_events(game, ts);
         update(game, ts);
@@ -337,7 +337,7 @@ void Game::run(game_data *game)
 
 void Game::setup_game_state(game_data *game, const char *resources_path)
 {
-    std::string r_path = resources_path; //TODO(Johan) remove std::string
+    std::string r_path = resources_path; //TODO(Johan) replace std::string
     std::string ship_path = r_path + "/ships/placeholder.bmp";
 
     Texture::load_texture(game->renderer, game->texture, SHIP_texture, ship_path.c_str());
@@ -348,6 +348,7 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
     
 }
+
 
 
 
@@ -374,7 +375,6 @@ void GameEvents::event_listener(size_t eventid, const void *event)
             break;
     }
 }
-
 
 
 
