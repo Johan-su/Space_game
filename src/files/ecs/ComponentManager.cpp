@@ -57,7 +57,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
 
         if(size == 0) {
-            ECS_dbg(std::cout << "DEBUG: Ignoring destroy entity on empty array\n");
+            ECS_dbg(printf("DEBUG: Ignoring destroy entity on empty array\n"));
             break;
         }
 
