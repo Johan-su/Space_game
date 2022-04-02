@@ -2,7 +2,7 @@
 #include "Game.hpp"
 #include "assert.hpp"
 #include "Camera.hpp"
-#include "RenderSystem.hpp"
+#include "systems/RenderSystem.hpp"
 #include "/platform/deltatime.hpp"
 
 #include "/ecs/ecs.hpp"
@@ -199,7 +199,7 @@ void Game::render(game_data *game, float Ts)
 
 
 
-    
+
 
 
     SDL_RenderPresent(game->renderer);
@@ -315,8 +315,6 @@ void Game::run(game_data *game)
     uint64_t target_time = 1000000 / FPS_TARGET;
     uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
-    uint64_t count = 0;
-
     uint64_t curr;
     uint64_t prev = deltaTime::get_micro_time();
     uint64_t dt; // dt in microseconds 10^-6 seconds
@@ -341,6 +339,7 @@ void Game::run(game_data *game)
 
         handle_input_events(game, ts);
         update(game, ts);
+
         fixed_update_count += dt;
         while(fixed_update_count >= target_fixed_update)
         {
@@ -350,7 +349,6 @@ void Game::run(game_data *game)
 
         render(game, ts);
 
-        ++count;
         do
         {
             curr = deltaTime::get_micro_time();
