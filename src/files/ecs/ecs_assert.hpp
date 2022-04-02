@@ -1,18 +1,16 @@
 #pragma once
-#include <iostream>
-
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef _DEBUG
-#define ECS_assert(condition, message)                     \
-do                                                         \
-{                                                          \
-   if(!(condition))                                        \
-   {                                                       \
-      std::cerr << "Assertion " << "[ " #condition " ]"    \
-      << " failed in " << __FILE__ << " line " << __LINE__ \
-      << ": " << message << "\n";                          \
-      exit(1);                                             \
-   }                                                       \
+#define ECS_assert(condition, message)                                                                          \
+do                                                                                                              \
+{                                                                                                               \
+   if(!(condition))                                                                                             \
+   {                                                                                                            \
+      fprintf(stderr, "Assertion [ %s ] failed in %s line %u : %s\n", #condition, __FILE__, __LINE__, message); \
+      exit(1);                                                                                                  \
+   }                                                                                                            \
 } while(0)
 
 #define ECS_dbg(expression) \
