@@ -6,8 +6,5 @@
 
 namespace Input
 {
-
-
     void handle_input(game_data *game);
-
 }
