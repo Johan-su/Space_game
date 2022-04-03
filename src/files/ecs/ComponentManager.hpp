@@ -5,7 +5,7 @@
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
 
-
+#include <stdio.h>
 
 template<typename T>
 struct ComponentArray // changing variables or order will affect componentManager functions
@@ -77,7 +77,9 @@ namespace Component_functions
         cdata->m_component_sizes[compid]      = sizeof(T);
         cdata->m_componentArrays[compid]      = comparray;
 
-        ECS_dbg(std::cout << "sizeof " << typeid(T).name() << "_array : " << sizeof(ComponentArray<T>) << "\n");
+
+        ECS_dbg(printf("sizeof array : %llu\n", sizeof(ComponentArray<T>)));
+
 
     }
 
@@ -140,11 +142,15 @@ namespace Component_functions
 
 
     template<typename T>
-    T get_component(Component_data *cdata, Entity e)
+    T *get_component(Component_data *cdata, Entity e)
     {
+        ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
         auto *comparray = get_component_array<T>(cdata);
-
-        return comparray->dense_array[comparray->sparse_array[e]];
+        if(comparray->sparse_array[e] == ENTITY_NULL)
+        {
+            return NULL;
+        }
+        return &comparray->dense_array[comparray->sparse_array[e]];
     }
 
 

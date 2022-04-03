@@ -43,10 +43,10 @@ void RenderSystem::render_tracked_entity(game_data *game)
 {
     if(game->trackedEntity != ENTITY_NULL)
     {
-        auto pos = Registry_functions::get_component<Position>(game->registry, game->trackedEntity);
-        auto size = Registry_functions::get_component<Size>(game->registry, game->trackedEntity);
+        auto *pos = Registry_functions::get_component<Position>(game->registry, game->trackedEntity);
+        auto *size = Registry_functions::get_component<Size>(game->registry, game->trackedEntity);
 
-        SDL_FRect rect = SDL_FRect{pos.x - (size.width / 2) - 1, pos.y - (size.height / 2) - 1, size.width + 1, size.height + 1};
+        SDL_FRect rect = SDL_FRect{pos->x - (size->width / 2) - 1, pos->y - (size->height / 2) - 1, size->width + 1, size->height + 1};
 
         SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 0);
         SDL_RenderDrawRectF(game->renderer, &rect);

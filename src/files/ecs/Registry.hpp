@@ -68,7 +68,7 @@ namespace Registry_functions
     }
 
     template<typename T>
-    T get_component(Registry_data *rdata, Entity e)
+    T *get_component(Registry_data *rdata, Entity e)
     {
         return Component_functions::get_component<T>(rdata->cdata, e);
     }
