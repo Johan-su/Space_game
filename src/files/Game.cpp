@@ -163,6 +163,8 @@ void Game::init(game_data *game)
     sdl_init(game);
     texture_init(game);
     camera_init(game);
+
+    game->trackedEntity = ENTITY_NULL;
 }
 
 
