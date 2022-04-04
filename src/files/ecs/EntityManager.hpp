@@ -13,6 +13,8 @@ namespace Ecs
 
     namespace Entity_functions
     {
+
+
         void init(Memory_pool *mem, Entity_data *e_data);
         void clean(Memory_pool *mem, Entity_data *e_data);
 

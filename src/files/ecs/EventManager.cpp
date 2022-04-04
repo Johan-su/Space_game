@@ -5,6 +5,7 @@
 
 using namespace Ecs;
 
+
 void Event_functions::init(event_data *ed, void (event_listener)(size_t, const void*))
 {
     memset(ed->event_sizes, 0, sizeof(ed->event_sizes[0]) * MAX_EVENT_TYPES);

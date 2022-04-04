@@ -12,6 +12,6 @@ void MovementSystem::update(game_data *game, float Ts)
     for(size_t i = 0; i < pos_view.size; ++i)
     {
         pos_view.comparray[i].x += vel_view.comparray[i].x * Ts;
-        pos_view.comparray[i].y += vel_view.comparray[i].y * Ts;       
+        pos_view.comparray[i].y += vel_view.comparray[i].y * Ts;
     }
 }
