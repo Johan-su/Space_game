@@ -39,7 +39,6 @@ namespace Ecs
         bool init(Component_data *cdata);
         bool clean(Memory_pool *mm, Component_data *cdata);
 
-
         void destroy_entity(Component_data *cdata, Entity e);
 
         size_t get_id();
@@ -65,7 +64,7 @@ namespace Ecs
 
             ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
 
-            comparray = Memory::alloc<ComponentArray<T>>(mm);
+            comparray = MEMORY_ALLOC(mm, ComponentArray<T>, 1);
 
             comparray->size = 0;
             for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)

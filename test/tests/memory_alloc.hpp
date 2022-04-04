@@ -10,9 +10,9 @@ namespace memory_alloc
         Memory_pool *mm = new Memory_pool();
         Memory::init(mm);
 
-        auto *data = Memory::alloc<uint64_t>(mm, 1);
-        auto *data2 = Memory::alloc<uint8_t>(mm, 100);
-        auto *data3 = Memory::alloc<uint64_t>(mm);
+        auto *data  = MEMORY_ALLOC(mm, uint64_t, 1);
+        auto *data2 = MEMORY_ALLOC(mm, uint8_t, 100);
+        auto *data3 = MEMORY_ALLOC(mm, uint64_t, 1);
 
         *data = UINT64_MAX;
 
