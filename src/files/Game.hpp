@@ -6,7 +6,6 @@
 
 #include <SDL.h>
 
-#include <unordered_map>
 
 
 struct game_data
@@ -15,15 +14,13 @@ struct game_data
     SDL_Window *window;
 
     textures_data *texture;
-    Registry_data *registry;
+    Registry *registry;
 
     bool active;
 
-    std::unordered_map<uint64_t, bool> key_bool_map; //TODO(Johan) change from c++ STL
-    std::unordered_map<uint64_t, bool> mouse_button_bool_map;
 
 
-    Entity trackedEntity = ENTITY_NULL;
+    Entity trackedEntity;
     Camera *camera;
 };
 

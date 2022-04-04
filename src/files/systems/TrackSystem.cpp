@@ -5,8 +5,8 @@
 
 void TrackSystem::set_Entity_at_pos(game_data *game, float x, float y)
 {
-    auto pos_view = Registry_functions::get_view<Position, Size>(game->registry);
-    auto size_view = Registry_functions::get_view<Size, Position>(game->registry);
+    auto pos_view = Ecs::get_view<Position, Size>(game->registry);
+    auto size_view = Ecs::get_view<Size, Position>(game->registry);
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {

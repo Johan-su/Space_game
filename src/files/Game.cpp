@@ -51,18 +51,18 @@ ECS_DECLARE_EVENT(SpawnEvent);
 
 void Game::ecs_init(game_data *game)
 {
-    game->registry = alloc<Registry_data>();
-    Registry_functions::init(game->registry, GameEvents::event_listener);
+    game->registry = alloc<Registry>();
+    Ecs::init(game->registry, GameEvents::event_listener);
 
-    Registry_functions::init_component<Position>(game->registry);
-    Registry_functions::init_component<Size>(game->registry);
-    Registry_functions::init_component<Velocity>(game->registry);
-    Registry_functions::init_component<Angle>(game->registry);
-    Registry_functions::init_component<AnglularVelocity>(game->registry);
-    Registry_functions::init_component<RigidCollision>(game->registry);
-    Registry_functions::init_component<Collision>(game->registry);
-    Registry_functions::init_component<Player>(game->registry);
-    Registry_functions::init_component<Sprite>(game->registry);
+    Ecs::init_component<Position>(game->registry);
+    Ecs::init_component<Size>(game->registry);
+    Ecs::init_component<Velocity>(game->registry);
+    Ecs::init_component<Angle>(game->registry);
+    Ecs::init_component<AnglularVelocity>(game->registry);
+    Ecs::init_component<RigidCollision>(game->registry);
+    Ecs::init_component<Collision>(game->registry);
+    Ecs::init_component<Player>(game->registry);
+    Ecs::init_component<Sprite>(game->registry);
     
 
     ECS_INIT_EVENT(game->registry, CollisionEvent);
@@ -76,7 +76,7 @@ void Game::ecs_clean(game_data *game)
 {
     assert(game->registry != NULL, "Registry is null");
 
-    Registry_functions::clean(game->registry);
+    Ecs::clean(game->registry);
     free(game->registry);
     game->registry = NULL;
 }
@@ -318,7 +318,7 @@ void GameEvents::event_listener(size_t eventid, const void *event)
 
 Entity Entity_creator::create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type)
 {
-    Entity e = Registry_functions::create_entity(game->registry);
+    Entity e = Ecs::create_entity(game->registry);
 
     auto collision_comp = Collision();
     
@@ -346,14 +346,14 @@ Entity Entity_creator::create_player(game_data *game, float x, float y, float wi
 
     sprite_comp.texture_id = ship_type;
 
-    Registry_functions::set_component(game->registry, e, player_comp);
-    Registry_functions::set_component(game->registry, e, collision_comp);
-    Registry_functions::set_component(game->registry, e, position_comp);
-    Registry_functions::set_component(game->registry, e, velocity_comp);
-    Registry_functions::set_component(game->registry, e, size_comp);
-    Registry_functions::set_component(game->registry, e, angle_comp);
-    Registry_functions::set_component(game->registry, e, angleVel_comp);
-    Registry_functions::set_component(game->registry, e, sprite_comp);
+    Ecs::set_component(game->registry, e, player_comp);
+    Ecs::set_component(game->registry, e, collision_comp);
+    Ecs::set_component(game->registry, e, position_comp);
+    Ecs::set_component(game->registry, e, velocity_comp);
+    Ecs::set_component(game->registry, e, size_comp);
+    Ecs::set_component(game->registry, e, angle_comp);
+    Ecs::set_component(game->registry, e, angleVel_comp);
+    Ecs::set_component(game->registry, e, sprite_comp);
 
 
     return e;

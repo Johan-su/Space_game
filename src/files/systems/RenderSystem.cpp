@@ -10,11 +10,11 @@
 void RenderSystem::render(game_data *game)
 {
     Camera *camera = game->camera;
-    auto pos_view    = Registry_functions::get_view<Position, Size, Angle, Sprite>(game->registry);
-    auto size_view   = Registry_functions::get_view<Size, Angle, Sprite, Position>(game->registry);
+    auto pos_view    = Ecs::get_view<Position, Size, Angle, Sprite>(game->registry);
+    auto size_view   = Ecs::get_view<Size, Angle, Sprite, Position>(game->registry);
 
-    auto angle_view  = Registry_functions::get_view<Angle, Sprite, Position, Size>(game->registry);
-    auto sprite_view = Registry_functions::get_view<Sprite, Position, Size, Angle>(game->registry);
+    auto angle_view  = Ecs::get_view<Angle, Sprite, Position, Size>(game->registry);
+    auto sprite_view = Ecs::get_view<Sprite, Position, Size, Angle>(game->registry);
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {
@@ -43,8 +43,8 @@ void RenderSystem::render_tracked_entity(game_data *game)
 {
     if(game->trackedEntity != ENTITY_NULL)
     {
-        auto *pos = Registry_functions::get_component<Position>(game->registry, game->trackedEntity);
-        auto *size = Registry_functions::get_component<Size>(game->registry, game->trackedEntity);
+        auto *pos = Ecs::get_component<Position>(game->registry, game->trackedEntity);
+        auto *size = Ecs::get_component<Size>(game->registry, game->trackedEntity);
 
         SDL_FRect rect = SDL_FRect{pos->x - (size->width / 2) - 1, pos->y - (size->height / 2) - 1, size->width + 1, size->height + 1};
 

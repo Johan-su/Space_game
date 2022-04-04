@@ -6,8 +6,8 @@
 
 void MovementSystem::update(game_data *game, float Ts)
 {
-    auto pos_view = Registry_functions::get_view<Position, Velocity>(game->registry);
-    auto vel_view = Registry_functions::get_view<Velocity, Position>(game->registry);
+    auto pos_view = Ecs::get_view<Position, Velocity>(game->registry);
+    auto vel_view = Ecs::get_view<Velocity, Position>(game->registry);
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {

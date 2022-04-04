@@ -2,33 +2,33 @@
 
 
 
-void Registry_functions::init(Registry_data *rdata, void (event_listener)(size_t, const void*))
+void Ecs::init(Registry *registry, void (event_listener)(size_t, const void*))
 {
-    ECS_assert(rdata != nullptr, "Registry_data cannot be NULL");
+    ECS_assert(registry != nullptr, "Registry cannot be NULL");
 
 
-    rdata->mm = (Memory_pool*)malloc(sizeof(Memory_pool));
+    registry->mm = (Memory_pool*)malloc(sizeof(Memory_pool));
 
-    rdata->mm->m_MemoryActive = false;
+    registry->mm->m_MemoryActive = false;
 
-    Memory::init(rdata->mm);
+    Memory::init(registry->mm);
 
-    rdata->edata  = Memory::alloc<Entity_data>(rdata->mm);
-    rdata->evdata = Memory::alloc<event_data>(rdata->mm);
-    rdata->cdata  = Memory::alloc<Component_data>(rdata->mm);
+    registry->edata  = Memory::alloc<Entity_data>(registry->mm);
+    registry->evdata = Memory::alloc<event_data>(registry->mm);
+    registry->cdata  = Memory::alloc<Component_data>(registry->mm);
 
-    Entity_functions::init(rdata->mm, rdata->edata);
-    Event_functions::init(rdata->evdata, event_listener);
-    Component_functions::init(rdata->cdata);
+    Entity_functions::init(registry->mm, registry->edata);
+    Event_functions::init(registry->evdata, event_listener);
+    Component_functions::init(registry->cdata);
 }
 
 
-void Registry_functions::clean(Registry_data *rdata)
+void Ecs::clean(Registry *registry)
 {
-    auto &mm     = rdata->mm;
-    auto &edata  = rdata->edata;
-    auto &evdata = rdata->evdata;
-    auto &cdata  = rdata->cdata;
+    auto &mm     = registry->mm;
+    auto &edata  = registry->edata;
+    auto &evdata = registry->evdata;
+    auto &cdata  = registry->cdata;
 
     Component_functions::clean(mm, cdata);
     Event_functions::clean(mm, evdata);
@@ -47,9 +47,9 @@ void Registry_functions::clean(Registry_data *rdata)
 }
 
 
-Entity Registry_functions::create_entity(Registry_data *rdata)
+Entity Ecs::create_entity(Registry *registry)
 {
-    auto *edata = rdata->edata;
+    auto *edata = registry->edata;
 
     Entity e = Entity_functions::create_entity(edata);
 
@@ -57,10 +57,10 @@ Entity Registry_functions::create_entity(Registry_data *rdata)
 }
 
 
-void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
+void Ecs::destroy_entity(Registry *registry, Entity e)
 {
-    auto *edata = rdata->edata;
-    auto *cdata = rdata->cdata;
+    auto *edata = registry->edata;
+    auto *cdata = registry->cdata;
 
 
     Component_functions::destroy_entity(cdata, e);
@@ -68,15 +68,15 @@ void Registry_functions::destroy_entity(Registry_data *rdata, Entity e)
 }
 
 
-void Registry_functions::init_event(Registry_data *rdata, size_t event_id, size_t event_size, size_t event_alignment)
+void Ecs::init_event(Registry *registry, size_t event_id, size_t event_size, size_t event_alignment)
 {
-    Event_functions::init_event(rdata->evdata, event_id, event_size, event_alignment);
+    Event_functions::init_event(registry->evdata, event_id, event_size, event_alignment);
 }
 
 
-void Registry_functions::broadcast_event(Registry_data *rdata, size_t event_id, size_t event_size, size_t event_alignment, const void *event)
+void Ecs::broadcast_event(Registry *registry, size_t event_id, size_t event_size, size_t event_alignment, const void *event)
 {
-    Event_functions::broadcast_event(rdata->evdata, event_id, event_size, event_alignment, event);
+    Event_functions::broadcast_event(registry->evdata, event_id, event_size, event_alignment, event);
 }
 
     
