@@ -5,6 +5,7 @@
 void Ecs::init(Registry *registry, void (event_listener)(size_t, const void*))
 {
     ECS_assert(registry != nullptr, "Registry cannot be NULL");
+    ECS_assert(event_listener != nullptr, "event_listener cannot be NULL");
 
 
     registry->mm = (Memory_pool*)malloc(sizeof(Memory_pool));
@@ -13,9 +14,9 @@ void Ecs::init(Registry *registry, void (event_listener)(size_t, const void*))
 
     Memory::init(registry->mm);
 
-    registry->edata  = Memory::alloc<Entity_data>(registry->mm);
-    registry->evdata = Memory::alloc<event_data>(registry->mm);
-    registry->cdata  = Memory::alloc<Component_data>(registry->mm);
+    registry->edata  = MEMORY_ALLOC(registry->mm, Entity_data, 1);
+    registry->evdata = MEMORY_ALLOC(registry->mm, event_data, 1);
+    registry->cdata  = MEMORY_ALLOC(registry->mm, Component_data, 1);
 
     Entity_functions::init(registry->mm, registry->edata);
     Event_functions::init(registry->evdata, event_listener);
@@ -34,9 +35,10 @@ void Ecs::clean(Registry *registry)
     Event_functions::clean(mm, evdata);
     Entity_functions::clean(mm, edata);
 
-    Memory::dealloc(mm, cdata, 1);
-    Memory::dealloc(mm, evdata, 1);
-    Memory::dealloc(mm, edata, 1);
+    MEMORY_DEALLOC(mm, Component_data, cdata, 1);
+    MEMORY_DEALLOC(mm, event_data, cdata, 1);
+    MEMORY_DEALLOC(mm, Entity_data, cdata, 1);
+
     
     Memory::clean(mm);
     free(mm);
@@ -44,6 +46,11 @@ void Ecs::clean(Registry *registry)
     mm      = nullptr;
     edata   = nullptr;
     cdata   = nullptr;
+}
+
+Ecs::Registry *Ecs::create_registry()
+{
+    return (Registry*)malloc(sizeof(Registry));
 }
 
 

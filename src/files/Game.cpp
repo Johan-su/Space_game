@@ -51,7 +51,7 @@ ECS_DECLARE_EVENT(SpawnEvent);
 
 void Game::ecs_init(game_data *game)
 {
-    game->registry = alloc<Ecs::Registry>();
+    game->registry = Ecs::create_registry();
     Ecs::init(game->registry, GameEvents::event_listener);
 
     Ecs::init_component<Position>(game->registry);
