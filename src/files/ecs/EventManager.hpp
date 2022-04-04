@@ -24,6 +24,6 @@ namespace Ecs
         void init_event(event_data *ed, size_t event_id, size_t event_size, size_t event_alignment);
         void broadcast_event(event_data *ed, size_t event_id, size_t event_size, size_t event_alignment, const void *event);
 
-    }
+    } // Event_functions
 }
 
