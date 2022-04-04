@@ -2,6 +2,7 @@
 #include "EntityManager.hpp"
 #include "MemoryManager.hpp"
 
+using namespace Ecs;
 
 void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
 {

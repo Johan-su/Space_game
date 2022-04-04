@@ -3,6 +3,7 @@
 
 namespace memory_alloc
 {
+    using namespace Ecs;
     int test()
     {
 

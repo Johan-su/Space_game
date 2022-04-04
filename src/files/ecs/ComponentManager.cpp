@@ -6,7 +6,7 @@
 #include "string.h"
 
 
-
+using namespace Ecs;
 
 bool Component_functions::init(Component_data *cdata) // TODO(johan) check if alignment actually works
 {

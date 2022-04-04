@@ -2,6 +2,8 @@
 #include "ecs_assert.hpp"
 #include <cstring>
 
+using namespace Ecs;
+
 void Memory::init(Memory_pool *mm)
 {
     ECS_assert(mm != nullptr, "Memory pool cannot be NULL");

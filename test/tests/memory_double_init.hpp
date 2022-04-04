@@ -4,6 +4,7 @@
 
 namespace memory_double_init
 {
+    using namespace Ecs;
     int test()
     {
         Memory_pool *mm = new Memory_pool();

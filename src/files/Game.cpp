@@ -51,7 +51,7 @@ ECS_DECLARE_EVENT(SpawnEvent);
 
 void Game::ecs_init(game_data *game)
 {
-    game->registry = alloc<Registry>();
+    game->registry = alloc<Ecs::Registry>();
     Ecs::init(game->registry, GameEvents::event_listener);
 
     Ecs::init_component<Position>(game->registry);
@@ -221,7 +221,7 @@ void Game::run(game_data *game)
 {
     game->active = true;
     
-    uint64_t print_timer = 0;
+    //uint64_t print_timer = 0;
     uint64_t fixed_update_count = 0;
     uint64_t target_time = 1000000 / FPS_TARGET;
     uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;

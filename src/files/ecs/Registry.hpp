@@ -15,19 +15,18 @@
 #define ECS_BROADCAST_EVENT(registry, T, ...) Ecs::broadcast_event(registry, ECS_ID(T), sizeof(T), alignof(T), __VA_ARGS__)
 
 
-struct Registry
-{
-    Memory_pool *mm;
-    Entity_data *edata;
-    event_data *evdata;
-    Component_data *cdata;
-            
-};
+
 
 
 namespace Ecs
 {
-
+    struct Registry
+    {
+        Memory_pool *mm;
+        Entity_data *edata;
+        event_data *evdata;
+        Component_data *cdata;      
+    };
 
     void init(Registry *registry, void (event_listener)(size_t, const void*));
     void clean(Registry *registry);

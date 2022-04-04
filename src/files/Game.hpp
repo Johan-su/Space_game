@@ -14,7 +14,7 @@ struct game_data
     SDL_Window *window;
 
     textures_data *texture;
-    Registry *registry;
+    Ecs::Registry *registry;
 
     bool active;
 

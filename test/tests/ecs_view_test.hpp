@@ -19,7 +19,7 @@ void noop(size_t t, const void *r){}
 
 namespace ecs_view_test
 {
-
+    using namespace Ecs;
     int test()
     {
         auto *rd = new Registry();
