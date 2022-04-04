@@ -22,7 +22,7 @@ namespace ecs_view_test
     using namespace Ecs;
     int test()
     {
-        auto *rd = new Registry();
+        auto *rd = Ecs::create_registry();
         Ecs::init(rd, noop);
 
         //auto &mm = rd->mm;
