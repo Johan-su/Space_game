@@ -9,6 +9,10 @@
 #define MOUSE_ZOOM_SCALE_SPEED 1.4f
 
 
+
+
+
+
 void Input::handle_input(game_data *game)
 {
     SDL_Event event;
@@ -22,13 +26,13 @@ void Input::handle_input(game_data *game)
                 break;
 
 
-            case SDL_MOUSEBUTTONDOWN:
-                game->mouse_button_bool_map[event.button.button] = true;
+            /*case SDL_MOUSEBUTTONDOWN:
+                game->mouse_button_bool_map->emplace(event.button.button, true);
                 break;
 
 
             case SDL_MOUSEBUTTONUP:
-                game->mouse_button_bool_map[event.button.button] = false;
+                game->mouse_button_bool_map->emplace(event.button.button, false);
                 break;
 
 
@@ -45,16 +49,16 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_MOUSEMOTION:
-                if(game->key_bool_map[SDLK_LSHIFT])
+                if(game->key_bool_map->at(SDLK_LSHIFT))
                 {
-                    if(game->mouse_button_bool_map[SDL_BUTTON_MIDDLE])
+                    if(game->mouse_button_bool_map->at(SDL_BUTTON_MIDDLE))
                     {
                         game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
                         game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
                     }
 
 
-                    if(game->mouse_button_bool_map[SDL_BUTTON_LEFT])
+                    if(game->mouse_button_bool_map->at(SDL_BUTTON_LEFT))
                     {
                         TrackSystem::set_Entity_at_pos(game, Camera_functions::screen_to_world_x(game->camera, event.motion.x), 
                                                         Camera_functions::screen_to_world_y(game->camera, event.motion.y));
@@ -66,12 +70,12 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_KEYDOWN:
-                game->key_bool_map[event.key.keysym.sym] = true;
+                game->key_bool_map->emplace(event.key.keysym.sym, true);
                 break;
 
             case SDL_KEYUP:
-                game->key_bool_map[event.key.keysym.sym] = false;
+                game->key_bool_map->emplace(event.key.keysym.sym, false);
                 break;
-        }
+        */}
     }
 }
