@@ -14,14 +14,13 @@ struct game_data
     SDL_Window *window;
 
     textures_data *texture;
-    Registry *registry;
+    Ecs::Registry *registry;
 
-    bool active;
-
+    Camera *camera;
 
 
     Entity trackedEntity;
-    Camera *camera;
+    bool active;
 };
 
 struct key_settings
