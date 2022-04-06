@@ -52,6 +52,7 @@ struct Player
 {
 };
 
+
 struct Sprite
 {
     uint32_t texture_id;
@@ -64,6 +65,7 @@ struct CollisionEvent
     Entity e1;
     Entity e2;
 };
+
 
 struct SpawnEvent
 {
