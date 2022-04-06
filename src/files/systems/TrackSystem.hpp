@@ -5,5 +5,6 @@
 
 namespace TrackSystem
 {
-    void set_Entity_at_pos(game_data *game, float x, float y);
+    void init(game_data *game);
+    void set_Entity_at_pos(float x, float y);
 }

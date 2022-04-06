@@ -4,7 +4,7 @@
 
 namespace MovementSystem
 {
-
-    void update(game_data *game, float Ts);
+    void init(game_data *game);
+    void update(float Ts);
 
 }

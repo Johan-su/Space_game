@@ -59,7 +59,10 @@ namespace Game
 
     void run(game_data *game);
 
-    
+    void init_components(game_data *game);
+    void init_events(game_data *game);
+    void init_systems(game_data *game);
+
     void setup_game_state(game_data *game, const char *resources_path);
 }
 

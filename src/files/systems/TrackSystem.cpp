@@ -3,7 +3,16 @@
 
 #include <SDL.h>
 
-void TrackSystem::set_Entity_at_pos(game_data *game, float x, float y)
+
+static game_data *game;
+
+void TrackSystem::init(game_data *game)
+{
+    ::game = game;
+}
+
+
+void TrackSystem::set_Entity_at_pos(float x, float y)
 {
     auto pos_view = Ecs::get_view<Position, Size>(game->registry);
     auto size_view = Ecs::get_view<Size, Position>(game->registry);

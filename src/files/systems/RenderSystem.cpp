@@ -7,9 +7,16 @@
 #include <SDL.h>
 #include <stdint.h>
 
-void RenderSystem::render(game_data *game)
+static game_data *game;
+
+void RenderSystem::init(game_data *game)
 {
-    Camera *camera = game->camera;
+    ::game = game;
+}
+
+void RenderSystem::render()
+{
+    Camera *camera   = game->camera;
     auto pos_view    = Ecs::get_view<Position, Size, Angle, Sprite>(game->registry);
     auto size_view   = Ecs::get_view<Size, Angle, Sprite, Position>(game->registry);
 
@@ -28,10 +35,12 @@ void RenderSystem::render(game_data *game)
         auto size = size_view.comparray[i];
 
 
-        SDL_FRect dstrect    = SDL_FRect{(pos.x - (size.width / 2) - camera->world_x) * camera->world_scale_x,
-                                         (pos.y - (size.height / 2) - camera->world_y) * camera->world_scale_y, 
-                                         size.width * camera->world_scale_x, 
-                                         size.height * camera->world_scale_y};
+        SDL_FRect dstrect = SDL_FRect();
+
+        dstrect.x = (pos.x - (size.width / 2) - camera->world_x) * camera->world_scale_x;
+        dstrect.y = (pos.y - (size.height / 2) - camera->world_y) * camera->world_scale_y;
+        dstrect.w = size.width * camera->world_scale_x;
+        dstrect.h = size.height * camera->world_scale_y;
         
 
         SDL_RenderCopyExF(game->renderer, texture, &srcrect, &dstrect, angle_view.comparray[i].angle, NULL, SDL_FLIP_NONE);
@@ -39,7 +48,7 @@ void RenderSystem::render(game_data *game)
 }
 
 
-void RenderSystem::render_tracked_entity(game_data *game)
+void RenderSystem::render_tracked_entity()
 {
     if(game->trackedEntity != ENTITY_NULL)
     {

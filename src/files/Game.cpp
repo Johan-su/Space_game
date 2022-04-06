@@ -2,9 +2,12 @@
 #include "Game.hpp"
 #include "assert.hpp"
 #include "Camera.hpp"
+#include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
+#include "systems/TrackSystem.hpp"
 #include "/platform/deltatime.hpp"
 #include "Input.hpp"
+
 
 #include "/ecs/ecs.hpp"
 
@@ -15,7 +18,6 @@
 #include <stdint.h>
 #include <limits.h>
 
-#include <unordered_map>
 
 
 #define SCREEN_WIDTH 1920
@@ -38,6 +40,7 @@ T *alloc(size_t amount = 1)
 
 
 
+
 game_data *Game::create_game()
 {
     return alloc<game_data>();
@@ -47,29 +50,13 @@ game_data *Game::create_game()
 void Game::ecs_init(game_data *game)
 {
     game->registry = Ecs::create_registry();
-    Ecs::init(game->registry, GameEvents::event_listener);
-
-    Ecs::init_component<Position>(game->registry);
-    Ecs::init_component<Size>(game->registry);
-    Ecs::init_component<Velocity>(game->registry);
-    Ecs::init_component<Angle>(game->registry);
-    Ecs::init_component<AnglularVelocity>(game->registry);
-    Ecs::init_component<RigidCollision>(game->registry);
-    Ecs::init_component<Collision>(game->registry);
-    Ecs::init_component<Player>(game->registry);
-    Ecs::init_component<Sprite>(game->registry);
-    
-
-    ECS_INIT_EVENT(game->registry, CollisionEvent);
-    ECS_INIT_EVENT(game->registry, SpawnEvent);
-
-
+    Ecs::init(game->registry);
 }
 
 
 void Game::ecs_clean(game_data *game)
 {
-    assert(game->registry != NULL, "Registry is null");
+    assert(game->registry, "Registry cannot be null");
 
     Ecs::clean(game->registry);
     free(game->registry);
@@ -79,6 +66,8 @@ void Game::ecs_clean(game_data *game)
 
 void Game::sdl_init(game_data *game)
 {
+    assert(game, "Game cannot be null");
+
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         fprintf(stderr, "ERROR: SDL_INITALIZATION FAILED, %s", SDL_GetError());
@@ -104,6 +93,7 @@ void Game::sdl_init(game_data *game)
 
 void Game::sdl_clean(game_data *game)
 {
+    assert(game, "game cannot be NULL");
     assert(game->renderer, "renderer cannot be NULL");
     assert(game->window, "window cannot be NULL");
 
@@ -187,15 +177,13 @@ void Game::fixed_update(game_data *game, float Ts)
 void Game::render(game_data *game, float Ts)
 {
     SDL_RenderClear(game->renderer);
-    RenderSystem::render(game);
-    RenderSystem::render_tracked_entity(game);
+    RenderSystem::render();
+    RenderSystem::render_tracked_entity();
 
 
     SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
     SDL_RenderDrawPoint(game->renderer, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2));
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-
-
 
 
 
@@ -265,8 +253,41 @@ void Game::run(game_data *game)
 }
 
 
+void Game::init_components(game_data *game)
+{
+    Ecs::init_component<Position>(game->registry);
+    Ecs::init_component<Size>(game->registry);
+    Ecs::init_component<Velocity>(game->registry);
+    Ecs::init_component<Angle>(game->registry);
+    Ecs::init_component<AnglularVelocity>(game->registry);
+    Ecs::init_component<RigidCollision>(game->registry);
+    Ecs::init_component<Collision>(game->registry);
+    Ecs::init_component<Player>(game->registry);
+    Ecs::init_component<Sprite>(game->registry);
+}
+
+
+void Game::init_systems(game_data *game)
+{
+    MovementSystem::init(game);
+    RenderSystem::init(game);
+    TrackSystem::init(game);
+}
+
+
+void Game::init_events(game_data *game)
+{
+    Ecs::init_event<CollisionEvent>(game->registry, NULL); //TODO(Johan) change to real function pointers
+    Ecs::init_event<SpawnEvent>(game->registry, NULL);
+}
+
+
 void Game::setup_game_state(game_data *game, const char *resources_path)
 {
+    init_components(game);
+    init_systems(game);
+    init_events(game);
+
     std::string r_path = resources_path; //TODO(Johan) replace std::string
     std::string ship_path = r_path + "/ships/placeholder.bmp";
 
@@ -274,41 +295,11 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
 
+    Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
     Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
 
-    Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
     
 }
-
-
-
-
-
-void GameEvents::event_listener(size_t eventid, const void *event)
-{
-    switch (eventid)
-    {
-        case ECS_ID(CollisionEvent):
-        {
-            auto *coll_event = (CollisionEvent*)event;
-            dbg(printf("event_listener with CollisionEvent val: %lld , %lld\n", coll_event->e1, coll_event->e2));
-            break;
-        }
-        case ECS_ID(SpawnEvent):
-        {
-            auto *spawn_event = (SpawnEvent*)event;
-            dbg(printf("event_listener with SpawnEvent\n val: %f , %f\n", spawn_event->x, spawn_event->y));
-            break;
-        }
-            
-        
-        default:
-            break;
-    }
-}
-
-
-
 
 
 Entity Entity_creator::create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type)

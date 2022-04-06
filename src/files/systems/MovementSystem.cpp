@@ -3,8 +3,15 @@
 #include "../ecs/ecs.hpp"
 
 
+static game_data *game;
 
-void MovementSystem::update(game_data *game, float Ts)
+void MovementSystem::init(game_data *game)
+{
+    ::game = game;
+}
+
+
+void MovementSystem::update(float Ts)
 {
     auto pos_view = Ecs::get_view<Position, Velocity>(game->registry);
     auto vel_view = Ecs::get_view<Velocity, Position>(game->registry);
