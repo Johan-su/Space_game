@@ -44,11 +44,6 @@ game_data *Game::create_game()
 }
 
 
-
-ECS_DECLARE_EVENT(CollisionEvent);
-ECS_DECLARE_EVENT(SpawnEvent);
-
-
 void Game::ecs_init(game_data *game)
 {
     game->registry = Ecs::create_registry();

@@ -8,43 +8,23 @@
 
 using namespace Ecs;
 
-/*struct Component_data
+
+
+void Component_functions::init(Component_data *cdata) // TODO(johan) check if alignment actually works
 {
-    void *m_componentArrays[MAX_COMPONENT_TYPES];
-    size_t m_component_sizes[MAX_COMPONENT_TYPES];
-    size_t m_component_alignments[MAX_COMPONENT_TYPES];
-    size_t m_componentTypesCount;
-    bool m_array_init[MAX_COMPONENT_TYPES];
-};*/
-
-
-bool Component_functions::init(Component_data *cdata) // TODO(johan) check if alignment actually works
-{
-    memset(cdata->m_array_init,           0, sizeof(cdata->m_array_init[0])           * MAX_COMPONENT_TYPES);
-    memset(cdata->m_component_alignments, 0, sizeof(cdata->m_component_alignments[0]) * MAX_COMPONENT_TYPES);
-    memset(cdata->m_component_sizes,      0, sizeof(cdata->m_component_sizes[0])      * MAX_COMPONENT_TYPES);
-    memset(cdata->m_componentArrays,      0, sizeof(cdata->m_componentArrays[0])      * MAX_COMPONENT_TYPES);
-
-    cdata->m_componentTypesCount = 0;
-
-
-
-
-    return 0;
+    memset(cdata, 0, sizeof(*cdata));
 }
 
 
-bool Component_functions::clean(Memory_pool *mm, Component_data *cdata)
+void Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
     for(size_t i = 0; i < MAX_COMPONENT_TYPES; ++i)
     {
         if(cdata->m_array_init[i])
         {
-            Memory::dealloc(mm, cdata->m_component_sizes[i], cdata->m_component_alignments[i], cdata->m_componentArrays[i],  MAX_COMPONENT_TYPES);
+            Memory::dealloc(mm, (char*)cdata->m_componentArrays[i], cdata->m_component_sizes[i] * MAX_ENTITY_AMOUNT);
         }
     }
-    
-    return 0;
 }
 
 

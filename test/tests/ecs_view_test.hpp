@@ -15,7 +15,6 @@ struct Size
     float height;
 };
 
-void noop(size_t t, const void *r){}
 
 namespace ecs_view_test
 {
@@ -23,10 +22,8 @@ namespace ecs_view_test
     int test()
     {
         auto *rd = Ecs::create_registry();
-        Ecs::init(rd, noop);
+        Ecs::init(rd);
 
-        //auto &mm = rd->mm;
-        auto &cdata = rd->cdata;
 
         Ecs::init_component<Position>(rd);
         Ecs::init_component<Size>(rd);
@@ -69,7 +66,7 @@ namespace ecs_view_test
 
         Ecs::destroy_entity(rd, 340);
 
-        auto view = Component_functions::get_view<Position, Size>(cdata);
+        auto view = Ecs::get_view<Position, Size>(rd);
 
 
         for(int i = 0; i < view.size; ++i)

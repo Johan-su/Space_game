@@ -2,8 +2,8 @@
 #include "MemoryManager.hpp"
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
-#include "View_Groups.hpp"
 #include "EventManager.hpp"
+#include "View_Groups.hpp"
 
 #include <stdint.h>
 
@@ -18,7 +18,7 @@ namespace Ecs
         Component_data *cdata;      
     };
 
-    void init(Registry *registry, void (event_listener)(size_t, const void*));
+    void init(Registry *registry);
     void clean(Registry *registry);
 
     Registry *create_registry();
@@ -26,13 +26,18 @@ namespace Ecs
     Entity create_entity(Registry *registry);
     void destroy_entity(Registry *registry, Entity e);
 
-    void init_event(Registry *registry, size_t event_id, size_t event_size, size_t event_alignment);
-    void broadcast_event(Registry *registry, size_t event_id, size_t event_size, size_t event_alignment, const void *event);
 
 }
 
 namespace Ecs
 {
+
+    template<typename T>
+    void init_event(Registry *registry, void (event_listener)(T *))
+    {
+        Event_functions::init_event(registry->evdata, event_listener);
+    }
+
 
     template<typename T>
     void init_component(Registry *registry)
@@ -45,7 +50,7 @@ namespace Ecs
     }
 
 
-    template <typename T>
+    template<typename T>
     void set_component(Registry *registry, Entity e, T& comp)
     {
 

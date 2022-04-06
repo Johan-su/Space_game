@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+
 namespace Ecs
 {
     template<typename T>
@@ -36,8 +37,8 @@ namespace Ecs
 
     namespace Component_functions 
     {
-        bool init(Component_data *cdata);
-        bool clean(Memory_pool *mm, Component_data *cdata);
+        void init(Component_data *cdata);
+        void clean(Memory_pool *mm, Component_data *cdata);
 
         void destroy_entity(Component_data *cdata, Entity e);
 
@@ -50,9 +51,9 @@ namespace Ecs
     {
 
         template<typename T>
-        size_t get_unique_component_id(Component_data *cdata)
+        size_t get_component_id(Component_data *cdata)
         {
-            static size_t id = cdata->m_componentTypesCount++;
+            static const size_t id = cdata->m_componentTypesCount++;
             return id;
         }
 
@@ -60,11 +61,11 @@ namespace Ecs
         template<typename T>
         void init_component(Memory_pool *mm, Component_data *cdata)
         {
-            const size_t compid = get_unique_component_id<T>(cdata);
+            const size_t compid = get_component_id<T>(cdata);
 
             ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
 
-            comparray = MEMORY_ALLOC(mm, ComponentArray<T>, 1);
+            comparray = Memory::alloc<ComponentArray<T>>(mm);
 
             comparray->size = 0;
             for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)
@@ -81,14 +82,13 @@ namespace Ecs
 
             ECS_dbg(printf("sizeof array : %llu\n", sizeof(ComponentArray<T>)));
 
-
         }
 
 
         template<typename T>
         ComponentArray<T> *get_component_array(Component_data *cdata)
         {
-            size_t compid = get_unique_component_id<T>(cdata);
+            size_t compid = get_component_id<T>(cdata);
             ECS_assert(cdata->m_array_init[compid], "Component_array was not initalized");
 
             auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];
@@ -128,7 +128,6 @@ namespace Ecs
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-            //size_t compid = get_unique_component_id<T>();
             ComponentArray<T> *comparray = get_component_array<T>(cdata);
             ECS_assert(comparray->size > 0, "array size is 0");
 
@@ -160,7 +159,7 @@ namespace Ecs
         void _set_min_comp_array_size(Component_data *cdata, size_t &mincompid, size_t *compids, size_t &minsize, const size_t component_amount)
         {
             const size_t typeCount = 1 + sizeof...(Ts);
-            const size_t compid = Component_functions::get_unique_component_id<T1>(cdata);
+            const size_t compid = Component_functions::get_component_id<T1>(cdata);
             ECS_assert(cdata->m_array_init[compid], "componentArray not initalized");
 
             const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
