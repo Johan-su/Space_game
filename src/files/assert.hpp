@@ -1,8 +1,10 @@
 #pragma once
+#include <stdlib.h>
 #include <stdio.h>
 
+
 #ifdef _DEBUG
-#define assert(condition, message)                                                                          \
+#define assert(condition, message)                                                                              \
 do                                                                                                              \
 {                                                                                                               \
    if(!(condition))                                                                                             \
