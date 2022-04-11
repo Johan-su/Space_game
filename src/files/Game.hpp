@@ -5,7 +5,7 @@
 #include "ecs/ecs.hpp"
 
 #include <SDL.h>
-
+#include "../datastructures/hashmap.hpp"
 
 
 struct game_data
@@ -21,6 +21,9 @@ struct game_data
 
     Entity trackedEntity;
     bool active;
+
+    hash_map<bool> *key_map;
+    hash_map<bool> *mouse_map;
 };
 
 struct key_settings
