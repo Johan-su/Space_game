@@ -1,35 +1,80 @@
 #pragma once
 #include <stdint.h>
-template<size_t S, typename T>
+#include <string.h>
+
+template<typename T>
 struct hash_map
 {
-    size_t keys[S];
-    T values[S];
-    size_t hash[S];
+    size_t keys[8192];
+    T values[8192];
+    //size_t hash[8192];
 
     size_t count;
     const size_t size;
 };
 
-namespace Internal // TODO(johan) implement hash function
+namespace Hashmap // TODO(johan) implement good and real hash map
 {
     template<typename T>
-    void add(hash_map<0, T> *map, size_t key, T value)
+    void init(hash_map<T> *map)
     {
+        memset(map, 0, sizeof(*map));
+        memset(map, 0xFF, sizeof(map->keys));
+    }
 
+    template<typename T>
+    void set(hash_map<T> *map, size_t key, T value)
+    {
+        T *value_pointer = get_pointer(map, key);
+
+        if(value_pointer == NULL) // check if map does not include key
+        {
+            map->values[map->count] = value;
+            map->keys[map->count] = key;
+            ++map->count;
+        }
+        else
+        {
+            *value_pointer = value;
+        }
     }
 
 
     template<typename T>
-    T get(hash_map<0, T> *map, size_t key)
+    T *get_pointer(hash_map<T> *map, size_t key)
     {
+        size_t pos = SIZE_MAX;
+        for(size_t i = 0; i < map->count; ++i)
+        {
+            if(map->keys[i] == key)
+            {
+                pos = i;
+                break;
+            }
+        }
+
+        if(pos == SIZE_MAX)
+        {
+            return NULL;
+        }
+        else
+        {
+            return &map->values[pos];
+        }
 
     }
 
-
-    void hash(size_t map_size, size_t index)
+    template<typename T>
+    T get_value(hash_map<T> *map, size_t key) // Super sketchy function
     {
+        T *value_pointer = get_pointer(map, key);
 
+        if(value_pointer)
+        {
+            return *value_pointer;
+        }
+
+        return T();
     }
 
 }
