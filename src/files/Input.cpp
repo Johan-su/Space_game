@@ -26,13 +26,15 @@ void Input::handle_input(game_data *game)
                 break;
 
 
-            /*case SDL_MOUSEBUTTONDOWN:
-                game->mouse_button_bool_map->emplace(event.button.button, true);
+            case SDL_MOUSEBUTTONDOWN:
+                Hashmap::set(game->mouse_map, event.button.button, true);
+                //printf("down %u\n", event.button.button);
                 break;
 
 
             case SDL_MOUSEBUTTONUP:
-                game->mouse_button_bool_map->emplace(event.button.button, false);
+                Hashmap::set(game->mouse_map, event.button.button, false);
+                //printf("up %u\n", event.button.button);
                 break;
 
 
@@ -49,18 +51,18 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_MOUSEMOTION:
-                if(game->key_bool_map->at(SDLK_LSHIFT))
+                if(Hashmap::get_value(game->key_map, SDLK_LSHIFT))
                 {
-                    if(game->mouse_button_bool_map->at(SDL_BUTTON_MIDDLE))
+                    if(Hashmap::get_value(game->mouse_map, SDL_BUTTON_MIDDLE))
                     {
                         game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
                         game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
                     }
 
 
-                    if(game->mouse_button_bool_map->at(SDL_BUTTON_LEFT))
+                    if(Hashmap::get_value(game->mouse_map, SDL_BUTTON_LEFT))
                     {
-                        TrackSystem::set_Entity_at_pos(game, Camera_functions::screen_to_world_x(game->camera, event.motion.x), 
+                        TrackSystem::set_Entity_at_pos(Camera_functions::screen_to_world_x(game->camera, event.motion.x), 
                                                         Camera_functions::screen_to_world_y(game->camera, event.motion.y));
                     }
                 }
@@ -70,12 +72,12 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_KEYDOWN:
-                game->key_bool_map->emplace(event.key.keysym.sym, true);
+                Hashmap::set(game->key_map, event.key.keysym.sym, true);
                 break;
 
             case SDL_KEYUP:
-                game->key_bool_map->emplace(event.key.keysym.sym, false);
+                Hashmap::set(game->key_map, event.key.keysym.sym, false);
                 break;
-        */}
+        }
     }
 }
