@@ -12,7 +12,6 @@
 
 
 
-
 void Input::handle_input(game_data *game)
 {
     SDL_Event event;
@@ -23,6 +22,21 @@ void Input::handle_input(game_data *game)
         {
             case SDL_QUIT:
                 game->active = false;
+                break;
+
+            case SDL_WINDOWEVENT:
+                switch (event.window.event)
+                {
+                    case SDL_WINDOWEVENT_ENTER:
+                        printf("mouse enter\n");
+                        break;
+                    
+                    
+                    case SDL_WINDOWEVENT_LEAVE:
+                        printf("mouse leave\n");
+                        break;
+                
+                }
                 break;
 
 
