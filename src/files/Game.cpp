@@ -142,12 +142,33 @@ void Game::camera_clean(game_data *game)
 }
 
 
+void Game::input_init(game_data *game)
+{
+    game->key_map = alloc<hash_map<bool>>();
+    game->mouse_map = alloc<hash_map<bool>>();
+
+    Hashmap::init(game->key_map);
+    Hashmap::init(game->mouse_map);
+}
+
+
+void Game::input_clean(game_data *game)
+{
+    free(game->key_map);
+    free(game->mouse_map);
+
+    game->key_map = NULL;
+    game->mouse_map = NULL;
+}
+
+
 void Game::init(game_data *game)
 {
     ecs_init(game);
     sdl_init(game);
     texture_init(game);
     camera_init(game);
+    input_init(game);
 
     game->trackedEntity = ENTITY_NULL;
 }
@@ -159,6 +180,7 @@ void Game::clean(game_data *game)
     sdl_clean(game);
     texture_clean(game);
     camera_clean(game);
+    input_clean(game);
 }
 
 
