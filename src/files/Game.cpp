@@ -186,6 +186,7 @@ void Game::clean(game_data *game)
 
 void Game::update(game_data *game, float Ts)
 {
+    MovementSystem::update(Ts);
 
 }
 
