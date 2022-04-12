@@ -48,7 +48,7 @@ struct Collision
 };
 
 
-struct Player
+struct Player //TODO(Johan) probably not needed
 {
 };
 
