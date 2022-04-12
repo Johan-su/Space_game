@@ -2,9 +2,12 @@
 #include "Game.hpp"
 #include "assert.hpp"
 #include "Camera.hpp"
+
 #include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
 #include "systems/TrackSystem.hpp"
+#include "systems/PlayerSystem.hpp"
+
 #include "/platform/deltatime.hpp"
 #include "Input.hpp"
 
@@ -187,7 +190,7 @@ void Game::clean(game_data *game)
 void Game::update(game_data *game, float Ts)
 {
     MovementSystem::update(Ts);
-
+    PlayerSystem::update(Ts);
 }
 
 
@@ -295,6 +298,7 @@ void Game::init_systems(game_data *game)
     MovementSystem::init(game);
     RenderSystem::init(game);
     TrackSystem::init(game);
+    PlayerSystem::init(game);
 }
 
 
@@ -319,7 +323,9 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
 
 
     Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
-    Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+    Entity player = Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+
+    PlayerSystem::set_player_entity(player);
 
     
 }
