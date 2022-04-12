@@ -52,11 +52,14 @@ namespace Game
     void camera_init(game_data *game);
     void camera_clean(game_data *game);
 
+
     void input_init(game_data *game);
     void input_clean(game_data *game);
 
+
     void init(game_data *game);
     void clean(game_data *game);
+
 
     void update(game_data *game, float Ts);
     void fixed_update(game_data *game, float Ts);
