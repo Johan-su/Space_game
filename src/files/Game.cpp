@@ -7,6 +7,7 @@
 #include "systems/RenderSystem.hpp"
 #include "systems/TrackSystem.hpp"
 #include "systems/PlayerSystem.hpp"
+#include "systems/AngleSystem.hpp"
 
 #include "/platform/deltatime.hpp"
 #include "Input.hpp"
@@ -191,6 +192,7 @@ void Game::update(game_data *game, float Ts)
 {
     MovementSystem::update(Ts);
     PlayerSystem::update(Ts);
+    AngleSystem::update(Ts);
 }
 
 
@@ -299,6 +301,7 @@ void Game::init_systems(game_data *game)
     RenderSystem::init(game);
     TrackSystem::init(game);
     PlayerSystem::init(game);
+    AngleSystem::init(game);
 }
 
 
