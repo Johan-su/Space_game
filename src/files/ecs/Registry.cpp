@@ -1,6 +1,5 @@
 #include "Registry.hpp"
 
-
 void Ecs::init(Registry *registry)
 {
     ECS_assert(registry != nullptr, "Registry cannot be NULL");
@@ -17,6 +16,7 @@ void Ecs::init(Registry *registry)
     registry->cdata  = Memory::alloc<Component_data>(registry->mm);
 
     Entity_functions::init(registry->mm, registry->edata);
+    Event_functions::init(registry->evdata);
     Component_functions::init(registry->cdata);
 }
 
@@ -44,6 +44,7 @@ void Ecs::clean(Registry *registry)
     edata   = nullptr;
     cdata   = nullptr;
 }
+
 
 Ecs::Registry *Ecs::create_registry()
 {
