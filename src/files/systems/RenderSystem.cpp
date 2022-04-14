@@ -43,8 +43,11 @@ void RenderSystem::render()
 
         SDL_FRect dstrect = SDL_FRect();
 
-        dstrect.x = (pos.x - (size.width / 2) - camera->world_x) * camera->world_scale_x;
-        dstrect.y = (pos.y - (size.height / 2) - camera->world_y) * camera->world_scale_y;
+        float worldunit_per_pixel_x = 1.0f / camera->world_scale_x;
+        float worldunit_per_pixel_y = 1.0f / camera->world_scale_y;
+
+        dstrect.x = (pos.x - (size.width / 2) - (camera->world_x - worldunit_per_pixel_x * (camera->screen_width / 2))) * camera->world_scale_x;
+        dstrect.y = (pos.y - (size.height / 2) - (camera->world_y - worldunit_per_pixel_y * (camera->screen_height / 2))) * camera->world_scale_y;
         dstrect.w = size.width * camera->world_scale_x;
         dstrect.h = size.height * camera->world_scale_y;
         
