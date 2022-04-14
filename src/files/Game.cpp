@@ -326,7 +326,10 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
 
 
     Camera_functions::set_camera_center(game->camera, 0.0f, 0.0f);
-    Entity player = Entity_creator::create_player(game, 0.0f, 0.0f, 114.0f, 200.0f, SHIP1);
+
+    PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
+
+    Entity player = Ecs::broadcast_event<PlayerSpawnEvent, Entity>(game->registry, &pse);
 
     PlayerSystem::set_player_entity(player);
 
@@ -334,54 +337,7 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
 }
 
 
-Entity Entity_creator::create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type)
-{
-    Entity e = Ecs::create_entity(game->registry);
 
-    auto collision_comp = Collision();
-    
-    auto player_comp    = Player();
-    auto position_comp  = Position();
-    auto velocity_comp  = Velocity();
-    auto size_comp      = Size();
-
-    auto angle_comp     = Angle();
-    auto angleVel_comp  = AnglularVelocity();
-    
-    auto sprite_comp    = Sprite();
-
-    position_comp.x = x;
-    position_comp.y = y;
-
-    velocity_comp.x = 0.0f;
-    velocity_comp.y = 0.0f;
-
-    size_comp.width = width;
-    size_comp.height = height;
-
-    angle_comp.angle = 0.0f;
-    angleVel_comp.angleV = 0.0f;
-
-    sprite_comp.texture_id = ship_type;
-
-    Ecs::set_component(game->registry, e, player_comp);
-    Ecs::set_component(game->registry, e, collision_comp);
-    Ecs::set_component(game->registry, e, position_comp);
-    Ecs::set_component(game->registry, e, velocity_comp);
-    Ecs::set_component(game->registry, e, size_comp);
-    Ecs::set_component(game->registry, e, angle_comp);
-    Ecs::set_component(game->registry, e, angleVel_comp);
-    Ecs::set_component(game->registry, e, sprite_comp);
-
-
-    return e;
-}
-
-
-Entity Entity_creator::create_planet(game_data *game, float x, float y)
-{
-    return 0;
-}
 
 
 

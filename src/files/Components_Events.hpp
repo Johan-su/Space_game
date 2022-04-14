@@ -72,3 +72,13 @@ struct SpawnEvent
     float x;
     float y;
 };
+
+
+struct PlayerSpawnEvent
+{
+    float x;
+    float y;
+    float width;
+    float height; 
+    uint32_t ship_type;
+};
