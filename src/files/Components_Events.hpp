@@ -48,6 +48,11 @@ struct Collision
 };
 
 
+struct Boid
+{
+};
+
+
 struct Player //TODO(Johan) probably not needed
 {
     uint32_t id;
@@ -82,4 +87,15 @@ struct PlayerSpawnEvent
     float width;
     float height; 
     uint32_t ship_type;
+};
+
+
+struct BoidSpawnEvent
+{
+    float x;
+    float y;
+    float vel_x;
+    float vel_y;
+    float angle;
+
 };

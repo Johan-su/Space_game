@@ -89,6 +89,7 @@ namespace Ecs
         ComponentArray<T> *get_component_array(Component_data *cdata)
         {
             size_t compid = get_component_id<T>(cdata);
+
             ECS_assert(cdata->m_array_init[compid], "Component_array was not initalized");
 
             auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];

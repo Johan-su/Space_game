@@ -68,6 +68,43 @@ Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
 }
 
 
+Entity EntityCreationSystem::create_boid(BoidSpawnEvent *event)
+{
+    Entity e = Ecs::create_entity(game->registry);
+
+    Position pos = Position();
+    pos.x = event->x;
+    pos.y = event->y;
+
+    Velocity vel = Velocity();
+    vel.x = event->vel_x;
+    vel.y = event->vel_y;
+
+    Size size = Size();
+    size.height = 114.0f * 0.25f;
+    size.width  = 200.0f * 0.25f;
+
+    Angle ang = Angle();
+    ang.angle = event->angle;
+
+    Boid boid = Boid();
+
+    Sprite sprite = Sprite();
+
+    sprite.texture_id = SHIP1;
+    
+
+    Ecs::set_component(game->registry, e, pos);
+    Ecs::set_component(game->registry, e, vel);
+    Ecs::set_component(game->registry, e, size);
+    Ecs::set_component(game->registry, e, ang);
+    Ecs::set_component(game->registry, e, boid);
+    Ecs::set_component(game->registry, e, sprite);
+
+    return e;
+}
+
+
 Entity EntityCreationSystem::create_planet(float x, float y)
 {
     return 0;

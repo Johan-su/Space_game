@@ -10,6 +10,8 @@ namespace EntityCreationSystem
 
     Entity create_player(PlayerSpawnEvent *event);
 
+    Entity create_boid(BoidSpawnEvent *event);
+
     Entity create_planet(float x, float y);
 
 } // namespace EntityCreationSystem

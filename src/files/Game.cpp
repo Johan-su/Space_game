@@ -9,6 +9,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
+#include "systems/BoidSystem.hpp"
 
 #include "/platform/deltatime.hpp"
 #include "Input.hpp"
@@ -194,6 +195,7 @@ void Game::update(game_data *game, float Ts)
     MovementSystem::update(Ts);
     PlayerSystem::update(Ts);
     AngleSystem::update(Ts);
+    BoidSystem::update(Ts);
 }
 
 
@@ -291,6 +293,7 @@ void Game::init_components(game_data *game)
     Ecs::init_component<AnglularVelocity>(game->registry);
     Ecs::init_component<RigidCollision>(game->registry);
     Ecs::init_component<Collision>(game->registry);
+    Ecs::init_component<Boid>(game->registry);
     Ecs::init_component<Player>(game->registry);
     Ecs::init_component<Sprite>(game->registry);
 }
@@ -304,6 +307,7 @@ void Game::init_systems(game_data *game)
     PlayerSystem::init(game);
     AngleSystem::init(game);
     EntityCreationSystem::init(game);
+    BoidSystem::init(game);
 }
 
 
@@ -311,7 +315,8 @@ void Game::init_events(game_data *game)
 {
     //Ecs::init_event<CollisionEvent, void>(game->registry, NULL); //TODO(Johan) change to real function pointers
     //Ecs::init_event<SpawnEvent, void>(game->registry, NULL);
-    Ecs::init_event<PlayerSpawnEvent, Entity>(game->registry, EntityCreationSystem::create_player);
+    Ecs::init_event(game->registry, EntityCreationSystem::create_player);
+    Ecs::init_event(game->registry, EntityCreationSystem::create_boid);
 }
 
 
@@ -335,6 +340,24 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     Entity player = Ecs::broadcast_event<PlayerSpawnEvent, Entity>(game->registry, &pse);
 
     PlayerSystem::set_player_entity(player);
+
+    for(size_t i = 0; i < 2000; ++i)
+    {
+        BoidSpawnEvent bse = BoidSpawnEvent();
+
+        bse.x = 2000.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.y = 2000.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+
+        bse.vel_x = 400.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.vel_y = 400.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+
+
+        bse.angle = 500.0f * (float)(rand()) / RAND_MAX;
+
+        Ecs::broadcast_event<BoidSpawnEvent, Entity>(game->registry, &bse);
+    }
+
+
 
     
 }
