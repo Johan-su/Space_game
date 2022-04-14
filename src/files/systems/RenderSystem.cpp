@@ -7,6 +7,12 @@
 #include <SDL.h>
 #include <stdint.h>
 
+static float RadToDeg(float angle)
+{
+    return angle * 57.2957786667; // 180 / pi
+}
+
+
 static game_data *game;
 
 void RenderSystem::init(game_data *game)
@@ -43,7 +49,7 @@ void RenderSystem::render()
         dstrect.h = size.height * camera->world_scale_y;
         
 
-        SDL_RenderCopyExF(game->renderer, texture, &srcrect, &dstrect, angle_view.comparray[i].angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyExF(game->renderer, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, SDL_FLIP_NONE);
     }
 }
 
@@ -61,3 +67,8 @@ void RenderSystem::render_tracked_entity()
         SDL_RenderDrawRectF(game->renderer, &rect);
     }
 }
+
+
+
+
+
