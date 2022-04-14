@@ -8,6 +8,7 @@
 #include "systems/TrackSystem.hpp"
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
+#include "systems/EntityCreationSystem.hpp"
 
 #include "/platform/deltatime.hpp"
 #include "Input.hpp"
@@ -302,13 +303,15 @@ void Game::init_systems(game_data *game)
     TrackSystem::init(game);
     PlayerSystem::init(game);
     AngleSystem::init(game);
+    EntityCreationSystem::init(game);
 }
 
 
 void Game::init_events(game_data *game)
 {
-    Ecs::init_event<CollisionEvent>(game->registry, NULL); //TODO(Johan) change to real function pointers
-    Ecs::init_event<SpawnEvent>(game->registry, NULL);
+    //Ecs::init_event<CollisionEvent, void>(game->registry, NULL); //TODO(Johan) change to real function pointers
+    //Ecs::init_event<SpawnEvent, void>(game->registry, NULL);
+    Ecs::init_event<PlayerSpawnEvent, Entity>(game->registry, EntityCreationSystem::create_player);
 }
 
 
