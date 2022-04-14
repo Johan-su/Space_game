@@ -50,6 +50,7 @@ struct Collision
 
 struct Player //TODO(Johan) probably not needed
 {
+    uint32_t id;
 };
 
 
