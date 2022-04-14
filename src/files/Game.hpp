@@ -82,14 +82,6 @@ namespace GameEvents
 }
 
 
-namespace Entity_creator
-{
-    Entity create_player(game_data *game, float x, float y, float width, float height, uint32_t ship_type);
-
-    Entity create_planet(game_data *game, float x, float y);
-}
-
-
 
 
 
