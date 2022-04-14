@@ -13,17 +13,16 @@ void MovementSystem::init(game_data *game)
 
 void MovementSystem::update(float Ts)
 {
-    auto pos_view = Ecs::get_view<Position, Velocity>(game->registry);
     auto vel_view = Ecs::get_view<Velocity, Position>(game->registry);
 
-    for(size_t i = 0; i < pos_view.size; ++i) //TODO(Johan) maybe fix to better system
+    for(size_t i = 0; i < vel_view.size; ++i) //TODO(Johan) maybe fix to better system
     {
-        Entity e = pos_view.entity_list[i];
+        Entity e = vel_view.entity_list[i];
         Position *pos = Ecs::get_component<Position>(game->registry, e);
-        Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+        Velocity vel = vel_view.comparray[i];
 
         
-        pos->x += vel->x * Ts;
-        pos->y += vel->y * Ts;
+        pos->x += vel.x * Ts;
+        pos->y += vel.y * Ts;
     }
 }
