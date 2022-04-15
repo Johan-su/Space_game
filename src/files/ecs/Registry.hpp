@@ -60,10 +60,9 @@ namespace Ecs
     template<typename T>
     void set_component(Registry *registry, Entity e, T& comp)
     {
+        //auto *cdata = registry->cdata;
 
-        auto *cdata = registry->cdata;
-
-        Component_functions::set_component<T>(cdata, e, comp);
+        //Component_functions::set_component<T>(cdata, e, comp);
     }
 
 
@@ -76,7 +75,7 @@ namespace Ecs
     template<typename T>
     T *get_component(Registry *registry, Entity e)
     {
-        return Component_functions::get_component<T>(registry->cdata, e);
+        return Component_functions::get_component<T>(registry->mm, registry->cdata, e);
     }
 
 
