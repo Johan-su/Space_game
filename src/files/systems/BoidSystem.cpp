@@ -77,30 +77,19 @@ static Position avgPos(View<Position> *pos_view, float visual_range, Position *e
 }
 
 
-static float angle(Velocity vel)
-{
-    return atan2f(vel.y, vel.x);
-}
+
+static const float visualrange = 8000.0f;
 
 
-static float lerp(float current, float target, float step)
-{
-    return current + step * (target - current);
-}
-
-
-static const float visualrange = 4000.0f;
-
-
-static const float separation = 0.01f;
-static const float alignment  = 0.24f;
+static const float separation = 0.05f;
+static const float alignment  = 0.05;
 
 
 
 
 
 
-static const float cohesion   = 0.01f;
+static const float cohesion   = 0.005f;
 
 static void goToCenter(View<Position> *pos_view, Entity e, float Ts)
 {
