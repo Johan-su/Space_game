@@ -1,6 +1,7 @@
 #pragma once
 #include "Texture.hpp"
 #include "Camera.hpp"
+#include "Config.hpp"
 
 #include "ecs/ecs.hpp"
 
@@ -14,10 +15,11 @@ struct game_data
     SDL_Window *window;
 
     textures_data *texture;
+    config_data *config;
+
     Ecs::Registry *registry;
-
     Camera *camera;
-
+    
 
     Entity trackedEntity;
     bool active;
@@ -36,6 +38,9 @@ namespace Game
 {
     game_data *create_game();
 
+
+    void config_init(game_data *game, const char *config_path);
+    void config_clean(game_data *game);
 
     void ecs_init(game_data *game);
     void ecs_clean(game_data *game);
@@ -57,7 +62,7 @@ namespace Game
     void input_clean(game_data *game);
 
 
-    void init(game_data *game);
+    void init(game_data *game, const char *pwd);
     void clean(game_data *game);
 
 
@@ -72,7 +77,7 @@ namespace Game
     void init_events(game_data *game);
     void init_systems(game_data *game);
 
-    void setup_game_state(game_data *game, const char *resources_path);
+    void setup_game_state(game_data *game, const char *pwd);
 }
 
 namespace GameEvents
