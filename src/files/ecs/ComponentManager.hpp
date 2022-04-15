@@ -265,7 +265,7 @@ namespace Ecs
             void **component_pages = (void**)(size_pointer + 1); // almost three star programming
 
 
-            for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i) //TODO(Johan) finish
+            for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i) //TODO(Johan) finish, fix mincompsize based on numbers of pages instead of number of entities
             {
                 void *page = component_pages[i];
                 if(page == NULL)
@@ -278,7 +278,7 @@ namespace Ecs
                 Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
                 void *dense_array_pointer    = (void*)(entity_list_pointer + PAGE_SIZE);
 
-                for(size_t k = 0; k < typeCount; ++k)
+                for(size_t k = 0; k < typeCount; ++k) //TODO(Johan) finish
                 {
                     void *curr_comp_pool = cdata->component_pools[compids[k]];
 
@@ -286,14 +286,24 @@ namespace Ecs
                     void **curr_component_pages = (void**)(curr_size_pointer + 1); // almost three star programming
 
                     void *curr_page = curr_component_pages[i];
+
+                    size_t *curr_page_size_pointer    = (size_t*)curr_page;
+                    Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
+                    Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
+
                     if(curr_page == NULL)
                     {
                         goto continue_outer_loop;
                     }
 
-                    for(size_t j = 0; j < PAGE_SIZE; ++j)
+                    for(size_t j = 0; j < PAGE_SIZE; ++j) //TODO(Johan) finish
                     {
-                        Entity min_e = entity_list_pointer[j];
+                        Entity min_e  = entity_list_pointer[j];
+                        Entity curr_e = curr_entity_list_pointer[j];
+                        if(curr_sparse_array_pointer[j] == ENTITY_NULL)
+                        {
+                            goto continue_outer_loop;
+                        }
                     }                    
                 }
 
