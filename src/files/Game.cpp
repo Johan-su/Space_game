@@ -356,15 +356,15 @@ void Game::setup_game_state(game_data *game, const char *pwd)
 
     PlayerSystem::set_player_entity(player);
 
-    for(size_t i = 0; i < 2000; ++i)
+    for(size_t i = 0; i < 1500; ++i)
     {
         BoidSpawnEvent bse = BoidSpawnEvent();
 
-        bse.x = 200.0f * (float)(rand() - rand()) / (float)RAND_MAX;
-        bse.y = 200.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.x = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.y = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
 
-        bse.vel_x = 0.0f;
-        bse.vel_y = 0.0f;
+        bse.vel_x = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.vel_y = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
 
         Ecs::broadcast_event<BoidSpawnEvent, Entity>(game->registry, &bse);
     }
