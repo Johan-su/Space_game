@@ -78,18 +78,13 @@ static Position avgPos(View<Position> *pos_view, float visual_range, Position *e
 
 
 
-static const float visualrange = 8000.0f;
+static const float visualrange = 300.0f;
 
 
-static const float separation = 0.05f;
-static const float alignment  = 0.05;
+static const float separation = 9000.0f;
+static const float alignment  = 12.0f;
 
-
-
-
-
-
-static const float cohesion   = 0.005f;
+static const float cohesion   = 3.0f;
 
 static void goToCenter(View<Position> *pos_view, Entity e, float Ts)
 {
@@ -99,12 +94,13 @@ static void goToCenter(View<Position> *pos_view, Entity e, float Ts)
 
     Position avg_pos = avgPos(pos_view, visualrange, pos);
 
+
     vel->x += (avg_pos.x - pos->x) * (cohesion * Ts);
     vel->y += (avg_pos.y - pos->y) * (cohesion * Ts);
 }
 
 
-static const float minDistance = 1200.0f;
+static const float minDistance = 50.0f;
 
 static void avoidOthers(View<Position> *pos_view, Entity e, float Ts)
 {
@@ -141,7 +137,8 @@ static void matchVelocity(View<Position> *pos_view, View<Velocity> *vel_view, En
     vel->y += (avg_vel.y - vel->y) * (alignment * Ts);
 }
 
-static float speed_limit = 2000.0f;
+
+static float speed_limit = 4000000.0f;
 
 static void limitSpeed(Entity e, float Ts)
 {
@@ -155,6 +152,7 @@ static void limitSpeed(Entity e, float Ts)
         vel->y = (vel->y / speed) * speed_limit;
     }
 }
+
 
 void BoidSystem::update(float Ts)
 {
