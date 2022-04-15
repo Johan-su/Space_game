@@ -5,5 +5,4 @@ namespace RenderSystem
 {
     void init(game_data *game);
     void render();
-    void render_tracked_entity();
 } 
