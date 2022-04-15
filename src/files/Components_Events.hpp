@@ -96,6 +96,5 @@ struct BoidSpawnEvent
     float y;
     float vel_x;
     float vel_y;
-    float angle;
 
 };
