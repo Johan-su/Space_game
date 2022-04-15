@@ -85,7 +85,7 @@ Entity EntityCreationSystem::create_boid(BoidSpawnEvent *event)
     size.width  = 200.0f * 0.25f;
 
     Angle ang = Angle();
-    ang.angle = event->angle;
+    ang.angle = 0.0f;
 
     Boid boid = Boid();
 

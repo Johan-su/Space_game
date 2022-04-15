@@ -345,14 +345,11 @@ void Game::setup_game_state(game_data *game, const char *resources_path)
     {
         BoidSpawnEvent bse = BoidSpawnEvent();
 
-        bse.x = 2000.0f * (float)(rand() - rand()) / (float)RAND_MAX;
-        bse.y = 2000.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.x = 200.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.y = 200.0f * (float)(rand() - rand()) / (float)RAND_MAX;
 
-        bse.vel_x = 400.0f * (float)(rand() - rand()) / (float)RAND_MAX;
-        bse.vel_y = 400.0f * (float)(rand() - rand()) / (float)RAND_MAX;
-
-
-        bse.angle = 500.0f * (float)(rand()) / RAND_MAX;
+        bse.vel_x = 0.0f;
+        bse.vel_y = 0.0f;
 
         Ecs::broadcast_event<BoidSpawnEvent, Entity>(game->registry, &bse);
     }
