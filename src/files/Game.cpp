@@ -26,10 +26,6 @@
 
 
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
-
-#define FPS_TARGET 144
 #define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
 template<typename T>
@@ -50,6 +46,24 @@ T *alloc(size_t amount = 1)
 game_data *Game::create_game()
 {
     return alloc<game_data>();
+}
+
+
+void Game::config_init(game_data *game, const char *pwd)
+{
+    game->config = alloc<config_data>();
+
+    std::string config_path = std::string(pwd) + "/config.ini";
+
+    Config::init(game->config, config_path.c_str());
+}
+
+
+void Game::config_clean(game_data *game)
+{
+    Config::clean(game->config);
+    free(game->config);
+    game->config = NULL;
 }
 
 
@@ -81,7 +95,7 @@ void Game::sdl_init(game_data *game)
     }
 
     int flags = 0;
-    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, flags);
+    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, game->config->screen_width, game->config->screen_height, flags);
     if(!game->window)
     {
         fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s", SDL_GetError());
@@ -136,7 +150,7 @@ void Game::camera_init(game_data *game)
 {
     game->camera = alloc<Camera>();
 
-    Camera_functions::init(game->camera, SCREEN_WIDTH, SCREEN_HEIGHT);
+    Camera_functions::init(game->camera, game->config->screen_width, game->config->screen_height);
 }
 
 
@@ -168,8 +182,9 @@ void Game::input_clean(game_data *game)
 }
 
 
-void Game::init(game_data *game)
+void Game::init(game_data *game, const char *pwd)
 {
+    config_init(game, pwd);
     ecs_init(game);
     sdl_init(game);
     texture_init(game);
@@ -182,6 +197,7 @@ void Game::init(game_data *game)
 
 void Game::clean(game_data *game)
 {
+    config_clean(game);
     ecs_clean(game);
     sdl_clean(game);
     texture_clean(game);
@@ -209,11 +225,10 @@ void Game::render(game_data *game, float Ts)
 {
     SDL_RenderClear(game->renderer);
     RenderSystem::render();
-    RenderSystem::render_tracked_entity();
 
 
     SDL_SetRenderDrawColor(game->renderer, 255, 0, 0, 255);
-    SDL_RenderDrawPoint(game->renderer, (SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2));
+    SDL_RenderDrawPoint(game->renderer, (game->config->screen_width / 2), (game->config->screen_height / 2));
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
 
@@ -237,7 +252,7 @@ void Game::run(game_data *game)
     
     //uint64_t print_timer = 0;
     uint64_t fixed_update_count = 0;
-    uint64_t target_time = 1000000 / FPS_TARGET;
+    uint64_t target_time = 1000000 / game->config->FPS_target;
     uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
     uint64_t curr;
@@ -320,14 +335,14 @@ void Game::init_events(game_data *game)
 }
 
 
-void Game::setup_game_state(game_data *game, const char *resources_path)
+void Game::setup_game_state(game_data *game, const char *pwd)
 {
     init_components(game);
     init_systems(game);
     init_events(game);
 
-    std::string r_path = resources_path; //TODO(Johan) replace std::string
-    std::string ship_path = r_path + "/ships/placeholder.bmp";
+
+    std::string ship_path = std::string(pwd) + "/resources/ships/placeholder.bmp"; //TODO(Johan) replace std::string
 
     Texture::load_texture(game->renderer, game->texture, SHIP_texture, ship_path.c_str());
     Texture::init_sprite(game->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
