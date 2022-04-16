@@ -280,7 +280,7 @@ namespace Ecs
                 Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
             //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
 
-                for(size_t j = 0; j < PAGE_SIZE; ++j)
+                for(size_t j = 0; j < *page_size_pointer; ++j)
                 {
                     Entity min_e  = entity_list_pointer[j];
 
@@ -309,6 +309,7 @@ namespace Ecs
 
                     }
 
+                    ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
                     view.entity_list[view.size++] = min_e;
 
                     continue_entity_loop:;
@@ -321,13 +322,15 @@ namespace Ecs
             }
 
             // add components to view
-
+            ECS_assert(view.size < VIEW_SIZE, "View cannot be greater than max size");
             for(size_t i = 0; i < view.size; ++i)
             {
                 Entity e = view.entity_list[i];
+                ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
                 uint32_t page_id = e / PAGE_SIZE;
+                uint32_t page_entry = e % PAGE_SIZE;
                 Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
-                view.comparray[i] = page->dense_array[page->sparse_array[e]];
+                view.comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
 
 
