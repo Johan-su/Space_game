@@ -45,7 +45,7 @@ namespace Ecs
             ECS_assert(mm->m_MemoryActive, "Inactive memory pool");
             ECS_assert(type_size * amount + mm->m_bytesAllocated < MEMORY_POOL_SIZE, "Out of memory");
             
-            size_t padding = mm->m_bytesAllocated % type_size;
+            size_t padding = alignof(T);
             size_t tmp = mm->m_bytesAllocated + padding;
             mm->m_bytesAllocated += padding + type_size * amount;
                 
@@ -65,9 +65,9 @@ namespace Ecs
             ECS_assert(ptr >= mm->m_runTimeData, "Pointer outside memory pool");
             ECS_assert((char*)ptr < (char*)mm->m_runTimeData + MEMORY_POOL_SIZE, "Pointer outside memory pool");
                     
-            for(size_t i = 0; i < type_size * amount; ++i) // only sets the allocated values to zeroes.
+            for(size_t i = 0; i < type_size * amount; ++i) // only sets the deallocated values to zeroes.
             {
-                *((char*)(ptr) + i) = 0;
+                *((char*)(ptr) + i) = 0xDD;
             }  
         }
 
