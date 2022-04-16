@@ -8,7 +8,7 @@ using namespace Ecs;
 
 void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
 {
-    e_data->m_entitycount = 0;
+    e_data->m_entitycount = -1;
 }
 
 
@@ -20,7 +20,7 @@ void Entity_functions::clean(Memory_pool *mem, Entity_data *e_data)
 Entity Entity_functions::create_entity(Entity_data *e_data)
 {
     Entity e = Entity();
-    e = {++(e_data->m_entitycount)}; // entities start at 1 for debugging purposes //TODO(Johan) remove when finished
+    e = {++(e_data->m_entitycount)};
     return e;
 }
 
