@@ -26,7 +26,7 @@ void Component_functions::clean(Memory_pool *mm, Component_data *cdata)
         }
     }
 }
-
+#define ECS_DEBUG3 0
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 {
@@ -34,7 +34,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
     uint32_t page_id      = e / PAGE_SIZE;
     uint32_t page_entry_e = e % PAGE_SIZE;
-    ECS_dbg(printf("DEBUG: DESTROYING ENTITY [%llu]\n", e));
+    ECS_dbg3(printf("DEBUG: DESTROYING ENTITY [%llu]\n", e));
     for(size_t i = 0; i < cdata->componentTypesCount; ++i)
     {
         ECS_assert(cdata->pool_init[i], "disordered/uninitalized component pool");
@@ -49,14 +49,14 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
 
         if(pool_entity_count == 0) {
-            ECS_dbg(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool component id: %llu\n", e, i));
+            ECS_dbg3(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool component id: %llu\n", e, i));
             continue;
         }
 
         void *page = pool_component_pages[page_id];
         if(page == NULL)
         { 
-            ECS_dbg(printf("DEBUG: ignoring destroy entity [%llu] on empty page component id: %ld, page id: %llu\n", e, i, page_id));
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page component id: %ld, page id: %llu\n", e, i, page_id));
             continue;
         }
         size_t *page_entity_count = (size_t*)(page);
@@ -64,7 +64,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
         if(page_sparse_array[page_entry_e] == ENTITY_NULL)
         {
-            ECS_dbg(printf("DEBUG: ignoring destroy entity [%llu], does not exist page component id: %llu, page id: %ld\n", e, i, page_id));
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu], does not exist page component id: %llu, page id: %ld\n", e, i, page_id));
             continue;
         }
 
