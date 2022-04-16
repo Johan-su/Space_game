@@ -201,12 +201,13 @@ namespace Ecs
             ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
-            if(page->sparse_array[e] == ENTITY_NULL)
+            if(page->sparse_array[page_entry] == ENTITY_NULL)
             {
                 return NULL;
             }
-            return &page->dense_array[page->sparse_array[e]];
+            return &page->dense_array[page->sparse_array[page_entry]];
         }
 
 
