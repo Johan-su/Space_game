@@ -199,8 +199,8 @@ void BoidSystem::update(float Ts)
 
         if(pos->y < -maxDistance)
         {
-            vel->y *= (-1.0f);
-            pos->y += 50.0f;
+            Ecs::destroy_entity(game->registry, e);
+            continue;
         }
 
         // set angle to velocity vector
