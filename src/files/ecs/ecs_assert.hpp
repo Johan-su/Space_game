@@ -19,8 +19,17 @@ do                          \
    expression;              \
 } while (0) 
 
+#ifdef ECS_DEBUG3
+#define ECS_dbg3(expression)  \
+do                            \
+{                             \
+   expression;                \
+} while (0) 
 
-
+#else
+#define ECS_dbg3(expression) \
+do {} while(0)
+#endif
 
 #else
 #define ECS_assert(condition, message) \
