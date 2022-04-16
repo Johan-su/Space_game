@@ -181,18 +181,21 @@ namespace Ecs
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-            Component_pool<T> *comparray = get_component_pool<T>(cdata);
-            ECS_assert(comparray->size > 0, "array size is 0");
+            uint32_t page_id = e / PAGE_SIZE;
 
-            Entity laste = comparray->entity_list[comparray->size - 1];
+            Component_pool<T> *pool = get_component_pool<T>(cdata);
+            Component_page<T> *page = get_page<T>(mm, pool, page_id);
+            ECS_assert(pool->size > 0, "pool size cannot be 0");
 
-            comparray->dense_array[comparray->sparse_array[e]] = comparray->dense_array[comparray->sparse_array[laste]];
-            comparray->sparse_array[laste] = comparray->sparse_array[e];
+            Entity laste = pool->entity_list[pool->size - 1];
+
+            pool->dense_array[pool->sparse_array[e]] = pool->dense_array[pool->sparse_array[laste]];
+            pool->sparse_array[laste] = pool->sparse_array[e];
             
-            comparray->sparse_array[e] = ENTITY_NULL;
-            --comparray->size;
+            pool->sparse_array[e] = ENTITY_NULL;
+            --pool->size;
         }
-        */
+        
 
         template<typename T>
         T *get_component(Memory_pool *mm, Component_data *cdata, Entity e)
