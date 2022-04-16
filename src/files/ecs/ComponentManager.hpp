@@ -151,16 +151,17 @@ namespace Ecs
             ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
 
-            page->sparse_array[e] = page->size;
+            page->sparse_array[page_entry] = page->entity_count;
 
-            page->entity_list[page->size] = e;
+            page->entity_list[page->entity_count] = e;
 
-            page->dense_array[page->size] = comp;
+            page->dense_array[page->entity_count] = comp;
 
-            ++page->size;
+            ++page->entity_count;
             ++pool->entity_count;
         }
 
@@ -169,13 +170,14 @@ namespace Ecs
         {   
 
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
 
             Component_page<T> *page = get_page<T>(mm, cdata, page_id);
 
-            return page->sparse_array[e];
+            return page->sparse_array[page_entry];
         }
 
-        /*
+        
         template<typename T>
         void destroy_component(Component_data *cdata, Entity e)
         {
