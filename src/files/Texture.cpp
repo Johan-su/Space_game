@@ -53,11 +53,11 @@ void Texture::load_texture(SDL_Renderer *renderer, textures_data *td, uint32_t e
 
 void Texture::init_sprite(textures_data *td, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 {
-    assert(sprite_id <= MAX_SPRITE_TYPES, "sprite id to big");
+    assert(sprite_id <= MAX_SPRITE_TYPES, "sprite id too big");
 
     td->enum_to_sprite[sprite_id] = td->sprite_count;
 
-    assert(texture_id <= MAX_TEXTURE_TYPES, "texture id to big");
+    assert(texture_id <= MAX_TEXTURE_TYPES, "texture id too big");
 
     Tex_Sprite sprite = Tex_Sprite();
 
