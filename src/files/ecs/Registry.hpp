@@ -60,9 +60,8 @@ namespace Ecs
     template<typename T>
     void set_component(Registry *registry, Entity e, T& comp)
     {
-        //auto *cdata = registry->cdata;
 
-        //Component_functions::set_component<T>(cdata, e, comp);
+        Component_functions::set_component<T>(registry->mm, registry->cdata, e, comp);
     }
 
 
@@ -91,7 +90,7 @@ namespace Ecs
     template<typename T1, typename... Ts>
     View<T1> get_view(Registry *registry)
     {
-        return Component_functions::get_view<T1, Ts...>(registry->cdata);
+        return Component_functions::get_view<T1, Ts...>(registry->mm, registry->cdata);
     }
 }
 
