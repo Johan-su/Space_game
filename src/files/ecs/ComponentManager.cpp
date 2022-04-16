@@ -20,9 +20,9 @@ void Component_functions::clean(Memory_pool *mm, Component_data *cdata)
 {
     for(size_t i = 0; i < MAX_COMPONENT_TYPES; ++i)
     {
-        if(cdata->m_array_init[i])
+        if(cdata->pool_init[i])
         {
-            Memory::dealloc(mm, (char*)cdata->m_componentArrays[i], cdata->m_component_sizes[i] * MAX_ENTITY_AMOUNT);
+            Memory::dealloc(mm, (char*)cdata->component_pools[i], cdata->component_sizes[i] * MAX_ENTITY_AMOUNT);
         }
     }
 }
@@ -32,12 +32,12 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 {
     ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-    for(size_t i = 0; i < cdata->m_componentTypesCount; ++i)
+    for(size_t i = 0; i < cdata->componentTypesCount; ++i)
     {
-        ECS_assert(cdata->m_array_init[i], "disordered/uninitalized componentArrays");
+        ECS_assert(cdata->pool_init[i], "disordered/uninitalized componentArrays");
 
-        void *comparray      = cdata->m_componentArrays[i];
-        size_t &compsize     = cdata->m_component_sizes[i];
+        void *comparray      = cdata->component_pools[i];
+        size_t &compsize     = cdata->component_sizes[i];
         size_t *size_pointer = (size_t*)(comparray);
         Entity *sparse_array = (Entity*)(size_pointer + 1);
         Entity *entity_list  = sparse_array + MAX_ENTITY_AMOUNT;

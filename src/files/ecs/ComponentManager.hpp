@@ -11,25 +11,35 @@
 namespace Ecs
 {
     template<typename T>
-    struct ComponentArray // changing variables or order will affect componentManager functions
+    struct Component_page // changing variables or order will affect componentManager functions
     {
         size_t size;
-        Entity sparse_array[MAX_ENTITY_AMOUNT];
-        Entity entity_list[MAX_ENTITY_AMOUNT];
-        T dense_array[MAX_ENTITY_AMOUNT];
+        Entity sparse_array[PAGE_SIZE];
+        Entity entity_list[PAGE_SIZE];
+        T dense_array[PAGE_SIZE];
     };
+
+
+    template<typename T>
+    struct Component_pool // changing variables or order will affect componentManager functions
+    {
+        size_t page_count;
+        size_t entity_count;
+        Component_page<T> *component_pages[MAX_PAGE_AMOUNT];
+    };
+
 
 
     struct Component_data
     {
-        void *m_componentArrays[MAX_COMPONENT_TYPES];
+        void *component_pools[MAX_COMPONENT_TYPES];
 
-        size_t m_component_sizes[MAX_COMPONENT_TYPES];
-        size_t m_component_alignments[MAX_COMPONENT_TYPES];
+        size_t component_sizes[MAX_COMPONENT_TYPES];
+        size_t component_alignments[MAX_COMPONENT_TYPES];
 
-        size_t m_componentTypesCount;
+        size_t componentTypesCount;
 
-        bool m_array_init[MAX_COMPONENT_TYPES];
+        bool pool_init[MAX_COMPONENT_TYPES];
 
     };
 
@@ -53,7 +63,7 @@ namespace Ecs
         template<typename T>
         size_t get_component_id(Component_data *cdata)
         {
-            static const size_t id = cdata->m_componentTypesCount++;
+            static const size_t id = cdata->componentTypesCount++;
             return id;
         }
 
@@ -63,73 +73,116 @@ namespace Ecs
         {
             const size_t compid = get_component_id<T>(cdata);
 
-            ComponentArray<T> *comparray = (ComponentArray<T>*)cdata->m_componentArrays[compid];
+            Component_pool<T> *comppool = (Component_pool<T>*)cdata->component_pools[compid];
 
-            comparray = Memory::alloc<ComponentArray<T>>(mm);
+            comppool = Memory::alloc<Component_pool<T>>(mm);
 
-            comparray->size = 0;
-            for(size_t i = 0; i < MAX_ENTITY_AMOUNT; ++i)
+            comppool->page_count = 0;
+            comppool->entity_count = 0;
+            for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i)
             {
-                comparray->sparse_array[i] = ENTITY_NULL;
-                comparray->entity_list[i]  = ENTITY_NULL;
+                comppool->component_pages[i] = NULL;
             }
 
-            cdata->m_array_init[compid]           = true;
-            cdata->m_component_alignments[compid] = alignof(T);
-            cdata->m_component_sizes[compid]      = sizeof(T);
-            cdata->m_componentArrays[compid]      = comparray;
+
+            cdata->pool_init[compid]            = true;
+            cdata->component_alignments[compid] = alignof(T);
+            cdata->component_sizes[compid]      = sizeof(T);
+            cdata->component_pools[compid]      = comppool;
 
 
-            ECS_dbg(printf("sizeof array : %llu\n", sizeof(ComponentArray<T>)));
+            ECS_dbg(printf("sizeof array : %llu\n", sizeof(Component_pool<T>)));
 
         }
 
-
         template<typename T>
-        ComponentArray<T> *get_component_array(Component_data *cdata)
+        Component_pool<T> *get_component_pool(Component_data *cdata)
         {
-            size_t compid = get_component_id<T>(cdata);
+            const size_t compid = get_component_id<T>(cdata);
+            ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
 
-            ECS_assert(cdata->m_array_init[compid], "Component_array was not initalized");
+            Component_pool<T> *comp_pool = (Component_pool<T>*) cdata->component_pools[compid];
+            ECS_assert(comp_pool != nullptr, "Component_pool is null");
 
-            auto *comparray = (ComponentArray<T>*) cdata->m_componentArrays[compid];
-            ECS_assert(comparray != nullptr, "ComponentArray is null");
-
-            return comparray;
+            return comp_pool;
         }
 
+
         template<typename T>
-        void set_component(Component_data *cdata, Entity e, T comp)
+        Component_page<T> *init_page(Memory_pool *mm, Component_pool<T> *pool, uint32_t page_id)
+        {
+            ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
+            Component_page<T> *page = Memory::alloc<Component_page<T>>(mm);
+
+            page->size = 0;
+            for(size_t i = 0; i < PAGE_SIZE; ++i)
+            {
+                page->sparse_array[i] = ENTITY_NULL;
+                page->entity_list[i]  = ENTITY_NULL;
+            }
+            ECS_assert(pool->page_count < MAX_PAGE_AMOUNT, "Maximum page amount reached");
+
+            pool->component_pages[page_id] = page;
+
+            ++pool->page_count;
+
+            return page;
+        }
+
+
+        template<typename T>
+        Component_page<T> *get_page(Memory_pool *mm, Component_pool<T> *pool, uint32_t id)
+        {
+            ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
+
+            if(pool->component_pages[id] == NULL)
+            {
+                pool->component_pages[id] = init_page<T>(mm, pool, id);
+            }
+
+            return pool->component_pages[id];
+        }
+
+
+        template<typename T>
+        void set_component(Memory_pool *mm, Component_data *cdata, Entity e, T &comp)
         {
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
-            ComponentArray<T> *comparray = get_component_array<T>(cdata);
+            uint32_t page_id = e / PAGE_SIZE;
+            Component_pool<T> *pool = get_component_pool<T>(cdata);
+            Component_page<T> *page = get_page<T>(mm, pool, page_id);
 
-            comparray->sparse_array[e] = comparray->size;
+            page->sparse_array[e] = page->size;
 
-            comparray->entity_list[comparray->size] = e;
+            page->entity_list[page->size] = e;
 
-            comparray->dense_array[comparray->size] = comp;
+            page->dense_array[page->size] = comp;
 
-            ++comparray->size;
+            ++page->size;
+            ++pool->entity_count;
         }
 
         template<typename T>
-        Entity lookup_entity(Component_data *cdata, Entity e)
-        {
-            auto *comparray = get_component_array<T>(cdata);
+        Entity lookup_entity(Memory_pool *mm, Component_data *cdata, Entity e)
+        {   
 
-            return comparray->sparse_array[e];
+            uint32_t page_id = e / PAGE_SIZE;
+
+            Component_page<T> *page = get_page<T>(mm, cdata, page_id);
+
+            return page->sparse_array[e];
         }
 
+        /*
         template<typename T>
         void destroy_component(Component_data *cdata, Entity e)
         {
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-            ComponentArray<T> *comparray = get_component_array<T>(cdata);
+            Component_pool<T> *comparray = get_component_pool<T>(cdata);
             ECS_assert(comparray->size > 0, "array size is 0");
 
             Entity laste = comparray->entity_list[comparray->size - 1];
@@ -140,18 +193,20 @@ namespace Ecs
             comparray->sparse_array[e] = ENTITY_NULL;
             --comparray->size;
         }
-
+        */
 
         template<typename T>
-        T *get_component(Component_data *cdata, Entity e)
+        T *get_component(Memory_pool *mm, Component_data *cdata, Entity e)
         {
             ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
-            auto *comparray = get_component_array<T>(cdata);
-            if(comparray->sparse_array[e] == ENTITY_NULL)
+            Component_pool<T> *pool = get_component_pool<T>(cdata);
+            uint32_t page_id = e / PAGE_SIZE;
+            Component_page<T> *page = get_page<T>(mm, pool, page_id);
+            if(page->sparse_array[e] == ENTITY_NULL)
             {
                 return NULL;
             }
-            return &comparray->dense_array[comparray->sparse_array[e]];
+            return &page->dense_array[page->sparse_array[e]];
         }
 
 
@@ -161,14 +216,14 @@ namespace Ecs
         {
             const size_t typeCount = 1 + sizeof...(Ts);
             const size_t compid = Component_functions::get_component_id<T1>(cdata);
-            ECS_assert(cdata->m_array_init[compid], "componentArray not initalized");
+            ECS_assert(cdata->pool_init[compid], "component pool not initalized");
 
-            const auto *comparray = static_cast<ComponentArray<T1>*>(cdata->m_componentArrays[compid]);
-            const size_t size = comparray->size;
+            const Component_pool<T1>* comparray = static_cast<Component_pool<T1>*>(cdata->component_pools[compid]);
+            const size_t entity_count = comparray->entity_count;
 
-            if(size < minsize)
+            if(entity_count < minsize)
             {
-                minsize = size;
+                minsize = entity_count;
                 mincompid = compid;
             }
 
@@ -184,7 +239,7 @@ namespace Ecs
 
 
         template<typename T1, typename... Ts>
-        View<T1> get_view(Component_data *cdata)
+        View<T1> get_view(Memory_pool *mm, Component_data *cdata)
         {
             const size_t typeCount = 1 + sizeof...(Ts);
 
@@ -195,54 +250,85 @@ namespace Ecs
             _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
 
 
-            auto view = View<T1>();
+            View<T1> view = View<T1>();
+            view.size = 0;
 
             for(size_t i = 0; i < VIEW_SIZE; ++i)
             {
                 view.entity_list[i] = ENTITY_NULL;
             }
 
-            auto *comparray = get_component_array<T1>(cdata);
+            Component_pool<T1> *comp_pool = get_component_pool<T1>(cdata);
 
-            void *mincomparray = cdata->m_componentArrays[mincompid]; // dangerous
+            void *min_comp_pool = cdata->component_pools[mincompid]; // dangerous
 
-            size_t *size_pointer = (size_t*)(mincomparray);
-            Entity *sparse_array = (Entity*)(size_pointer + 1);
-            Entity *entity_list  = sparse_array + MAX_ENTITY_AMOUNT;
+            size_t *page_count_pointer   = (size_t*)(min_comp_pool);
+            size_t *entity_count_pointer = (size_t*)(page_count_pointer + 1);
+            void **component_pages       = (void**)(entity_count_pointer + 1); // almost three star programming
 
-            size_t size = *size_pointer;
-            
 
-            for(size_t i = 0; i < size; ++i)
+            for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i)
             {
-                Entity e = entity_list[i];
-
-                for(size_t j = 0; j < typeCount; ++j) // checks mincomparray again which is unnecessary.
-                {   
-                    void *curr_comp_array     = cdata->m_componentArrays[compids[j]];
-                    size_t *curr_size_pointer = (size_t*)(curr_comp_array);
-                    Entity *curr_sparse_array = (Entity*)(curr_size_pointer + 1);
-
-                    if(curr_sparse_array[e] == ENTITY_NULL)
-                    {
-                        goto continue_outer_loop; // first use of goto
-                    }
-
+                void *page = component_pages[i];
+                if(page == NULL)
+                {
+                    continue;
                 }
 
-                
-                view.entity_list[view.size++] = e;   // will break when more than VIEW_SIZE (4096) entites are included
-                    
-                continue_outer_loop : ;
+                size_t *page_size_pointer    = (size_t*)page;
+                Entity *sparse_array_pointer = (Entity*)(page_size_pointer + 1);
+                Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
+            //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
+
+                for(size_t j = 0; j < PAGE_SIZE; ++j)
+                {
+                    Entity min_e  = entity_list_pointer[j];
+
+                    for(size_t k = 0; k < typeCount; ++k)
+                    {
+                        void *curr_comp_pool = cdata->component_pools[compids[k]];
+
+                        size_t *curr_page_count_pointer   = (size_t*)(curr_comp_pool);
+                        size_t *curr_entity_count_pointer = (size_t*)(curr_page_count_pointer + 1);
+                        void **curr_component_pages       = (void**)(curr_entity_count_pointer + 1); // almost three star programming
+
+                        void *curr_page = curr_component_pages[i];
+                        if(curr_page == NULL)
+                        {
+                            goto continue_page_loop;
+                        }
+
+                        size_t *curr_page_size_pointer    = (size_t*)curr_page;
+                        Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
+                    //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
+
+                        if(curr_sparse_array_pointer[min_e] == ENTITY_NULL)
+                        {
+                            goto continue_entity_loop;
+                        }
+
+                    }
+
+                    view.entity_list[view.size++] = min_e;
+
+                    continue_entity_loop:;
+                }                    
+
+
+
+
+                continue_page_loop:;
             }
+
+            // add components to view
 
             for(size_t i = 0; i < view.size; ++i)
             {
                 Entity e = view.entity_list[i];
-
-                view.comparray[i] = comparray->dense_array[comparray->sparse_array[e]];
+                uint32_t page_id = e / PAGE_SIZE;
+                Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
+                view.comparray[i] = page->dense_array[page->sparse_array[e]];
             }
-
 
 
             return view;

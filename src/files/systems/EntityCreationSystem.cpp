@@ -13,7 +13,7 @@ void EntityCreationSystem::init(game_data *game)
 }
 
 
-static uint32_t player_id = 0;
+static uint32_t player_id_count = 0;
 
 Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
 {
@@ -38,7 +38,7 @@ Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
     
     auto sprite_comp    = Sprite();
 
-    player_comp.id = player_id++;
+    player_comp.id = player_id_count++;
 
     position_comp.x = x;
     position_comp.y = y;

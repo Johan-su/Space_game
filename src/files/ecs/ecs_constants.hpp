@@ -7,7 +7,9 @@
 
 
 #define MAX_COMPONENT_TYPES 256
+#define PAGE_SIZE 1024 // increase for faster iteration at the cost of higher memory usage.
+#define MAX_PAGE_AMOUNT 4096
+
 #define VIEW_SIZE 4096 // increase for faster iteration at the cost of higher memory usage.
 
 #define MAX_EVENT_TYPES 256
-#define EVENT_QUEUE_SIZE 2048
