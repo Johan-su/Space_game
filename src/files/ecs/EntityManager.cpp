@@ -27,5 +27,5 @@ Entity Entity_functions::create_entity(Entity_data *e_data)
 
 void Entity_functions::destroy_entity(Entity_data *edata, Entity e)
 {
-    --edata->m_entitycount;
+    
 }
