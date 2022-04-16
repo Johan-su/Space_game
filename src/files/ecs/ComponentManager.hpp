@@ -13,7 +13,7 @@ namespace Ecs
     template<typename T>
     struct Component_page // changing variables or order will affect componentManager functions
     {
-        size_t size;
+        size_t entity_count;
         Entity sparse_array[PAGE_SIZE];
         Entity entity_list[PAGE_SIZE];
         T dense_array[PAGE_SIZE];
@@ -73,25 +73,22 @@ namespace Ecs
         {
             const size_t compid = get_component_id<T>(cdata);
 
-            Component_pool<T> *comppool = (Component_pool<T>*)cdata->component_pools[compid];
+            Component_pool<T> *comp_pool = (Component_pool<T>*)cdata->component_pools[compid];
 
-            comppool = Memory::alloc<Component_pool<T>>(mm);
+            comp_pool = Memory::alloc<Component_pool<T>>(mm);
 
-            comppool->page_count = 0;
-            comppool->entity_count = 0;
+            comp_pool->page_count = 0;
+            comp_pool->entity_count = 0;
             for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i)
             {
-                comppool->component_pages[i] = NULL;
+                comp_pool->component_pages[i] = NULL;
             }
 
 
             cdata->pool_init[compid]            = true;
             cdata->component_alignments[compid] = alignof(T);
             cdata->component_sizes[compid]      = sizeof(T);
-            cdata->component_pools[compid]      = comppool;
-
-
-            ECS_dbg(printf("sizeof array : %llu\n", sizeof(Component_pool<T>)));
+            cdata->component_pools[compid]      = comp_pool;
 
         }
 
@@ -114,7 +111,7 @@ namespace Ecs
             ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
             Component_page<T> *page = Memory::alloc<Component_page<T>>(mm);
 
-            page->size = 0;
+            page->entity_count = 0;
             for(size_t i = 0; i < PAGE_SIZE; ++i)
             {
                 page->sparse_array[i] = ENTITY_NULL;
