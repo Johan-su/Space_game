@@ -286,6 +286,7 @@ namespace Ecs
                 for(size_t j = 0; j < *page_size_pointer; ++j)
                 {
                     Entity min_e  = entity_list_pointer[j];
+                    uint32_t page_entry_min_e = min_e % PAGE_SIZE;
 
                     for(size_t k = 0; k < typeCount; ++k)
                     {
@@ -305,7 +306,7 @@ namespace Ecs
                         Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
                     //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
 
-                        if(curr_sparse_array_pointer[min_e] == ENTITY_NULL)
+                        if(curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
                         {
                             goto continue_entity_loop;
                         }
