@@ -12,8 +12,7 @@ void Memory::init(Memory_pool *mm)
     mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
     if(mm->m_runTimeData != nullptr)
     {
-        memset(mm->m_runTimeData, 0, MEMORY_POOL_SIZE);
-        ECS_dbg(memset(mm->m_runTimeData, 0xCC, MEMORY_POOL_SIZE));
+        ECS_dbg(memset(mm->m_runTimeData, 0xDD, MEMORY_POOL_SIZE));
         mm->m_bytesAllocated = 0;
         mm->m_MemoryActive = true;
     }
