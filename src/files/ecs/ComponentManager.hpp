@@ -13,7 +13,7 @@ namespace Ecs
     template<typename T>
     struct Component_page // changing variables or order will affect componentManager functions
     {
-        size_t size;
+        size_t entity_count;
         Entity sparse_array[PAGE_SIZE];
         Entity entity_list[PAGE_SIZE];
         T dense_array[PAGE_SIZE];
@@ -73,25 +73,22 @@ namespace Ecs
         {
             const size_t compid = get_component_id<T>(cdata);
 
-            Component_pool<T> *comppool = (Component_pool<T>*)cdata->component_pools[compid];
+            Component_pool<T> *comp_pool = (Component_pool<T>*)cdata->component_pools[compid];
 
-            comppool = Memory::alloc<Component_pool<T>>(mm);
+            comp_pool = Memory::alloc<Component_pool<T>>(mm);
 
-            comppool->page_count = 0;
-            comppool->entity_count = 0;
+            comp_pool->page_count = 0;
+            comp_pool->entity_count = 0;
             for(size_t i = 0; i < MAX_PAGE_AMOUNT; ++i)
             {
-                comppool->component_pages[i] = NULL;
+                comp_pool->component_pages[i] = NULL;
             }
 
 
             cdata->pool_init[compid]            = true;
             cdata->component_alignments[compid] = alignof(T);
             cdata->component_sizes[compid]      = sizeof(T);
-            cdata->component_pools[compid]      = comppool;
-
-
-            ECS_dbg(printf("sizeof array : %llu\n", sizeof(Component_pool<T>)));
+            cdata->component_pools[compid]      = comp_pool;
 
         }
 
@@ -114,7 +111,7 @@ namespace Ecs
             ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
             Component_page<T> *page = Memory::alloc<Component_page<T>>(mm);
 
-            page->size = 0;
+            page->entity_count = 0;
             for(size_t i = 0; i < PAGE_SIZE; ++i)
             {
                 page->sparse_array[i] = ENTITY_NULL;
@@ -151,16 +148,17 @@ namespace Ecs
             ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
 
-            page->sparse_array[e] = page->size;
+            page->sparse_array[page_entry] = page->entity_count;
 
-            page->entity_list[page->size] = e;
+            page->entity_list[page->entity_count] = e;
 
-            page->dense_array[page->size] = comp;
+            page->dense_array[page->entity_count] = comp;
 
-            ++page->size;
+            ++page->entity_count;
             ++pool->entity_count;
         }
 
@@ -169,31 +167,35 @@ namespace Ecs
         {   
 
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
 
             Component_page<T> *page = get_page<T>(mm, cdata, page_id);
 
-            return page->sparse_array[e];
+            return page->sparse_array[page_entry];
         }
 
-        /*
+        
         template<typename T>
         void destroy_component(Component_data *cdata, Entity e)
         {
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
-            Component_pool<T> *comparray = get_component_pool<T>(cdata);
-            ECS_assert(comparray->size > 0, "array size is 0");
+            uint32_t page_id = e / PAGE_SIZE;
 
-            Entity laste = comparray->entity_list[comparray->size - 1];
+            Component_pool<T> *pool = get_component_pool<T>(cdata);
+            Component_page<T> *page = get_page<T>(mm, pool, page_id);
+            ECS_assert(pool->size > 0, "pool size cannot be 0");
 
-            comparray->dense_array[comparray->sparse_array[e]] = comparray->dense_array[comparray->sparse_array[laste]];
-            comparray->sparse_array[laste] = comparray->sparse_array[e];
+            Entity laste = pool->entity_list[pool->size - 1];
+
+            pool->dense_array[pool->sparse_array[e]] = pool->dense_array[pool->sparse_array[laste]];
+            pool->sparse_array[laste] = pool->sparse_array[e];
             
-            comparray->sparse_array[e] = ENTITY_NULL;
-            --comparray->size;
+            pool->sparse_array[e] = ENTITY_NULL;
+            --pool->size;
         }
-        */
+        
 
         template<typename T>
         T *get_component(Memory_pool *mm, Component_data *cdata, Entity e)
@@ -201,12 +203,13 @@ namespace Ecs
             ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             uint32_t page_id = e / PAGE_SIZE;
+            uint32_t page_entry = e % PAGE_SIZE;
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
-            if(page->sparse_array[e] == ENTITY_NULL)
+            if(page->sparse_array[page_entry] == ENTITY_NULL)
             {
                 return NULL;
             }
-            return &page->dense_array[page->sparse_array[e]];
+            return &page->dense_array[page->sparse_array[page_entry]];
         }
 
 
@@ -280,7 +283,7 @@ namespace Ecs
                 Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
             //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
 
-                for(size_t j = 0; j < PAGE_SIZE; ++j)
+                for(size_t j = 0; j < *page_size_pointer; ++j)
                 {
                     Entity min_e  = entity_list_pointer[j];
 
@@ -309,6 +312,7 @@ namespace Ecs
 
                     }
 
+                    ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
                     view.entity_list[view.size++] = min_e;
 
                     continue_entity_loop:;
@@ -321,13 +325,15 @@ namespace Ecs
             }
 
             // add components to view
-
+            ECS_assert(view.size < VIEW_SIZE, "View cannot be greater than max size");
             for(size_t i = 0; i < view.size; ++i)
             {
                 Entity e = view.entity_list[i];
+                ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
                 uint32_t page_id = e / PAGE_SIZE;
+                uint32_t page_entry = e % PAGE_SIZE;
                 Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
-                view.comparray[i] = page->dense_array[page->sparse_array[e]];
+                view.comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
 
 

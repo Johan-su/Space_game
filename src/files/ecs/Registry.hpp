@@ -49,11 +49,7 @@ namespace Ecs
     template<typename T>
     void init_component(Registry *registry)
     {
-        auto *cdata = registry->cdata;
-        auto *mm = registry->mm;
-
-
-        Component_functions::init_component<T>(mm, cdata);        
+        Component_functions::init_component<T>(registry->mm, registry->cdata);        
     }
 
 
