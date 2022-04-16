@@ -153,6 +153,7 @@ static void limitSpeed(Entity e, float Ts)
     }
 }
 
+float spawn_timer = 0.0f;
 
 void BoidSystem::update(float Ts)
 {
@@ -164,6 +165,7 @@ void BoidSystem::update(float Ts)
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {
+
         Entity e = pos_view.entity_list[i];
         // coherence
         goToCenter(&pos_view, e, Ts);
@@ -179,21 +181,21 @@ void BoidSystem::update(float Ts)
         if(pos->x > maxDistance)
         {
             vel->x *= (-1.0f);
-            pos->x -= 50.0f;
+            pos->x = maxDistance - 50.0f;
         }
 
 
         if(pos->x < -maxDistance)
         {
             vel->x *= (-1.0f);
-            pos->x += 50.0f;
+            pos->x = -maxDistance + 50.0f;
         }
 
         
         if(pos->y > maxDistance)
         {
             vel->y *= (-1.0f);
-            pos->y -= 50.0f;
+            pos->y = maxDistance - 50.0f;
         }
 
 
@@ -206,7 +208,6 @@ void BoidSystem::update(float Ts)
         // set angle to velocity vector
 
         Angle *ang    = Ecs::get_component<Angle>(game->registry, e);
-
         ang->angle = atan2(vel->y, vel->x);
 
 
@@ -214,6 +215,20 @@ void BoidSystem::update(float Ts)
         limitSpeed(e, Ts);
     }
 
+    spawn_timer += Ts;
+    while(spawn_timer > 0.01f)
+    {
+        spawn_timer -= 0.01f;
+        BoidSpawnEvent bse = BoidSpawnEvent();
+
+        bse.x = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.y = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+
+        bse.vel_x = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        bse.vel_y = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+
+        Ecs::broadcast_event<BoidSpawnEvent, Entity>(game->registry, &bse);
+    }
 }
 
 
