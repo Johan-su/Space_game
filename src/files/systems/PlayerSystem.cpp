@@ -8,8 +8,6 @@
 static float lerp(float current, float target, float step)
 {
     return current + step * (target - current);
-
-
 }
 
 static game_data *game;
@@ -56,7 +54,7 @@ void PlayerSystem::update(float Ts)
 
     if(Hashmap::get_value(key_map, SDLK_w))
     {
-        vel_x_target= speed * cosf(angle->angle);
+        vel_x_target = speed * cosf(angle->angle);
         vel_y_target = speed * sinf(angle->angle);
     }
     else if(Hashmap::get_value(key_map, SDLK_s))
