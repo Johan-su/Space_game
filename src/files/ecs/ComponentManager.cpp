@@ -16,7 +16,7 @@ void Component_functions::init(Component_data *cdata) // TODO(johan) check if al
 }
 
 
-void Component_functions::clean(Memory_pool *mm, Component_data *cdata)
+void Component_functions::clean(Memory_pool *mm, Component_data *cdata) // TODO(Johan) implement correct deallocation for pools and pages
 {
     for(size_t i = 0; i < MAX_COMPONENT_TYPES; ++i)
     {
