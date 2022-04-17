@@ -10,6 +10,6 @@
 #define PAGE_SIZE 1024 // increase for faster iteration at the cost of higher memory usage.
 #define MAX_PAGE_AMOUNT 4096
 
-#define VIEW_SIZE 10000 // increase for faster iteration at the cost of higher memory usage.
+#define VIEW_SIZE 10000
 
 #define MAX_EVENT_TYPES 256
