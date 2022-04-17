@@ -48,9 +48,9 @@ struct Collision
 };
 
 
-struct Player //TODO(Johan) probably not needed
+struct Player 
 {
-    uint32_t id;
+    uint32_t id; //TODO(Johan) probably not needed
 };
 
 
@@ -58,6 +58,33 @@ struct Sprite
 {
     uint32_t texture_id;
 };
+
+
+struct NeutralAI
+{
+};
+
+
+struct AllyAI
+{
+};
+
+
+struct EnemyAI
+{
+};
+
+
+struct HostileAI
+{
+};
+
+
+
+
+
+
+
 
 
 // events
@@ -75,6 +102,17 @@ struct SpawnEvent
 };
 
 
+struct ShipSpawnEvent
+{
+    float x;
+    float y;
+    float width;
+    float height; 
+    uint32_t ship_type;
+};
+
+
+
 struct PlayerSpawnEvent
 {
     float x;
@@ -82,4 +120,14 @@ struct PlayerSpawnEvent
     float width;
     float height; 
     uint32_t ship_type;
+};
+
+struct AiSpawnEvent
+{
+    float x;
+    float y;
+    float width;
+    float height; 
+    uint32_t ship_type;
+    uint8_t ai_type;
 };
