@@ -32,16 +32,16 @@ namespace Ecs
         }
 
 
-        template<typename Event, typename Return>
-        void init_event(event_data *ed, Return (event_listener)(Event*))
+        template<typename ReturnT, typename EventT>
+        void init_event(event_data *ed, ReturnT (event_listener)(EventT*))
         {
-            const size_t id = get_event_id<Event>(ed);
+            const size_t id = get_event_id<EventT>(ed);
             ECS_assert(id < MAX_EVENT_TYPES, "id must be lower than MAX_EVENT_TYPES");
             ed->event_listeners[id] = (void*)event_listener;
             ed->event_init[id] = true;
         }
 
-        template<typename EventT, typename ReturnT>
+        template<typename ReturnT, typename EventT>
         ReturnT broadcast_event(event_data *ed, EventT *event)
         {
             const size_t id = get_event_id<EventT>(ed);

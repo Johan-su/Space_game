@@ -326,7 +326,7 @@ void Game::init_events(game_data *game)
 {
     //Ecs::init_event<CollisionEvent, void>(game->registry, NULL); //TODO(Johan) change to real function pointers
     //Ecs::init_event<SpawnEvent, void>(game->registry, NULL);
-    Ecs::init_event<PlayerSpawnEvent, Entity>(game->registry, EntityCreationSystem::create_player);
+    Ecs::init_event<Entity>(game->registry, EntityCreationSystem::create_player);
 }
 
 
@@ -347,7 +347,7 @@ void Game::setup_game_state(game_data *game, const char *pwd)
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
 
-    Entity player = Ecs::broadcast_event<PlayerSpawnEvent, Entity>(game->registry, &pse);
+    Entity player = Ecs::broadcast_event<Entity>(game->registry, &pse);
 
     PlayerSystem::set_player_entity(player);
 

@@ -32,17 +32,17 @@ namespace Ecs
 namespace Ecs
 {
 
-    template<typename Event, typename Return>
-    void init_event(Registry *registry, Return (event_listener)(Event *))
+    template<typename ReturnT, typename EventT>
+    void init_event(Registry *registry, ReturnT (event_listener)(EventT *))
     {
-        Event_functions::init_event<Event, Return>(registry->evdata, event_listener);
+        Event_functions::init_event<ReturnT, EventT>(registry->evdata, event_listener);
     }
 
 
-    template<typename EventT, typename ReturnT>
+    template<typename ReturnT, typename EventT>
     ReturnT broadcast_event(Registry *registry, EventT *event)
     {
-        return Event_functions::broadcast_event<EventT, ReturnT>(registry->evdata, event);
+        return Event_functions::broadcast_event<ReturnT, EventT>(registry->evdata, event);
     }
 
 
