@@ -331,8 +331,10 @@ namespace Ecs
             {
                 Entity e = view.entity_list[i];
                 ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
+                
                 uint32_t page_id = e / PAGE_SIZE;
                 uint32_t page_entry = e % PAGE_SIZE;
+
                 Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
                 view.comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
