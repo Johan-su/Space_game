@@ -216,9 +216,9 @@ void BoidSystem::update(float Ts)
     }
 
     spawn_timer += Ts;
-    while(spawn_timer > 0.01f)
+    while(spawn_timer > 0.003f)
     {
-        spawn_timer -= 0.01f;
+        spawn_timer -= 0.003f;
         BoidSpawnEvent bse = BoidSpawnEvent();
 
         bse.x = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
