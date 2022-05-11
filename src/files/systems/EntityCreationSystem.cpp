@@ -74,12 +74,7 @@ static uint32_t player_id_count = 0;
 
 Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
 {
-    ShipSpawnEvent sse = ShipSpawnEvent();
-    sse.x         = event->x;
-    sse.y         = event->y;
-    sse.width     = event->width;
-    sse.height    = event->height;
-    sse.ship_type = event->ship_type;
+    ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
     Entity e = create_ship(&sse);
     Player player_comp = Player();
@@ -92,12 +87,7 @@ Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
 
 Entity EntityCreationSystem::create_ai(AiSpawnEvent *event) //TODO(Johan) maybe separate to different functions
 {
-    ShipSpawnEvent sse = ShipSpawnEvent();
-    sse.x         = event->x;
-    sse.y         = event->y;
-    sse.width     = event->width;
-    sse.height    = event->height;
-    sse.ship_type = event->ship_type;
+    ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
     auto nai = NeutralAI(); // TODO(Johan) make better
     auto aai = AllyAI();
