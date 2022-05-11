@@ -27,7 +27,7 @@ void PlayerSystem::set_player_entity(Entity id)
 
 void PlayerSystem::update(float Ts)
 {
-    if(player == ENTITY_NULL)
+    if (player == ENTITY_NULL)
     {
         return;
     }
@@ -43,7 +43,7 @@ void PlayerSystem::update(float Ts)
 
     float speed;
 
-    if(Hashmap::get_value(key_map, SDLK_LSHIFT))
+    if (Hashmap::get_value(key_map, SDLK_LSHIFT))
     {
         speed = 5000.0f;
     }
@@ -52,12 +52,12 @@ void PlayerSystem::update(float Ts)
         speed = 500.0f;
     }
 
-    if(Hashmap::get_value(key_map, SDLK_w))
+    if (Hashmap::get_value(key_map, SDLK_w))
     {
         vel_x_target = speed * cosf(angle->angle);
         vel_y_target = speed * sinf(angle->angle);
     }
-    else if(Hashmap::get_value(key_map, SDLK_s))
+    else if (Hashmap::get_value(key_map, SDLK_s))
     {
         vel_x_target = -speed * cosf(angle->angle);
         vel_y_target = -speed * sinf(angle->angle);
@@ -71,11 +71,11 @@ void PlayerSystem::update(float Ts)
 
     float angle_vel_target;
 
-    if(Hashmap::get_value(key_map, SDLK_d))
+    if (Hashmap::get_value(key_map, SDLK_d))
     {
         angle_vel_target = 0.52359877559f *18; // pi/6
     }
-    else if(Hashmap::get_value(key_map, SDLK_a))
+    else if (Hashmap::get_value(key_map, SDLK_a))
     {
         angle_vel_target = -0.52359877559f *18; //  -pi/6
     }
