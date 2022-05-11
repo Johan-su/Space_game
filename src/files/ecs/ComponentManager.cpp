@@ -69,13 +69,13 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         }
 
         Entity *page_entity_list  = (Entity*)(page_sparse_array + PAGE_SIZE);
-        uint8_t *page_dense_array = (uint8_t*)(page_entity_list + PAGE_SIZE); // char because to pointer arithmetic in memcpy
+        uint8_t *page_dense_array = (uint8_t*)(page_entity_list + PAGE_SIZE); // char because for byte-wise pointer arithmetic in memcpy
 
         Entity laste = page_entity_list[*page_entity_count - 1];
         uint32_t page_entry_laste = laste % PAGE_SIZE;
 
-        memcpy( static_cast<void*>(&(page_dense_array[page_sparse_array[page_entry_e] * compsize])), // high risk of segfault/exception
-                static_cast<void*>(&(page_dense_array[page_sparse_array[page_entry_laste] * compsize])), 
+        memcpy( (void*)(&(page_dense_array[page_sparse_array[page_entry_e] * compsize])),
+                (void*)(&(page_dense_array[page_sparse_array[page_entry_laste] * compsize])), 
                 compsize);
 
 
