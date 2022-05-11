@@ -12,6 +12,6 @@ namespace EntityCreationSystem
     Entity create_ship(ShipSpawnEvent *event);
     Entity create_player(PlayerSpawnEvent *event);
     Entity create_ai(AiSpawnEvent *event);
-    Entity create_planet(float x, float y);
+    Entity create_planet(PlanetSpawnEvent *event);
 
 } // namespace EntityCreationSystem

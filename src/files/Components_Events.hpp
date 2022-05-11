@@ -18,6 +18,12 @@ struct Size
     float height;
 };
 
+struct Circle_size
+{
+    float radius;
+};
+
+
 
 struct Velocity
 {
@@ -35,6 +41,11 @@ struct Angle
 struct AnglularVelocity
 {
     float angleV;
+};
+
+struct Mass
+{
+    float mass;
 };
 
 
@@ -80,7 +91,14 @@ struct HostileAI
 };
 
 
+struct GravityAttractor
+{
+};
 
+
+struct Gravity
+{
+};
 
 
 
@@ -130,4 +148,19 @@ struct AiSpawnEvent
     float height; 
     uint32_t ship_type;
     uint8_t ai_type;
+};
+
+
+struct PlanetSpawnEvent
+{
+    float x;
+    float y;
+
+    float vel_x;
+    float vel_y;
+
+    float radius;
+    float mass;
+
+    uint8_t planet_type;
 };

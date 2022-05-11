@@ -136,7 +136,35 @@ Entity EntityCreationSystem::create_ai(AiSpawnEvent *event) //TODO(Johan) maybe 
 
 
 
-Entity EntityCreationSystem::create_planet(float x, float y)
+Entity EntityCreationSystem::create_planet(PlanetSpawnEvent *event)
 {
-    return -1;
+    Entity e = Ecs::create_entity(game->registry);
+
+    Position pos = {event->x, event->y};
+    Velocity vel = {event->vel_x, event->vel_y};
+
+    Circle_size c_size = {event->radius};
+    GravityAttractor grav = GravityAttractor();
+
+
+    Sprite sprite = {event->planet_type};
+
+
+
+
+
+
+
+
+    Ecs::set_component(game->registry, e, pos);
+    Ecs::set_component(game->registry, e, vel);
+    Ecs::set_component(game->registry, e, c_size);
+    Ecs::set_component(game->registry, e, grav);
+    Ecs::set_component(game->registry, e, sprite);
+
+
+
+
+
+    return e;
 }
