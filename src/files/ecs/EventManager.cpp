@@ -17,9 +17,4 @@ void Event_functions::init(event_data *ed)
 }
 
 
-void Event_functions::clean(Memory_pool *mm, event_data *ed)
-{
-}
-
-
 

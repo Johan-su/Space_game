@@ -12,11 +12,6 @@ void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
 }
 
 
-void Entity_functions::clean(Memory_pool *mem, Entity_data *e_data)
-{
-}
-
-
 Entity Entity_functions::create_entity(Entity_data *e_data)
 {
     Entity e = Entity();

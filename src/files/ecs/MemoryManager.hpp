@@ -35,7 +35,6 @@ namespace Ecs
 
     namespace Memory
     {
-        //TODO(Johan) add real allocation/deallocation
         template<typename T>
         T *alloc(Memory_pool *mm, size_t amount = 1)
         {
@@ -49,7 +48,7 @@ namespace Ecs
             size_t tmp = mm->m_bytesAllocated + padding;
             mm->m_bytesAllocated += padding + type_size * amount;
                 
-            return (T*)((char*)(mm->m_runTimeData) + tmp); // C++ forcing this mess
+            return (T*)((char*)(mm->m_runTimeData) + tmp);
         }
 
         template<typename T>

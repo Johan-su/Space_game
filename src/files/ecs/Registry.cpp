@@ -23,26 +23,12 @@ void Ecs::init(Registry *registry)
 
 void Ecs::clean(Registry *registry)
 {
-    auto &mm     = registry->mm;
-    auto &edata  = registry->edata;
-    auto &evdata = registry->evdata;
-    auto &cdata  = registry->cdata;
+    Memory::clean(registry->mm);
+    free(registry->mm);
 
-    Component_functions::clean(mm, cdata);
-    Event_functions::clean(mm, evdata);
-    Entity_functions::clean(mm, edata);
-
-    Memory::dealloc(mm, registry->edata);
-    Memory::dealloc(mm, registry->evdata);
-    Memory::dealloc(mm, registry->cdata);
-
-    
-    Memory::clean(mm);
-    free(mm);
-
-    mm      = nullptr;
-    edata   = nullptr;
-    cdata   = nullptr;
+    registry->mm    = nullptr;
+    registry->edata = nullptr;
+    registry->cdata = nullptr;
 }
 
 

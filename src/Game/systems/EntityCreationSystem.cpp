@@ -1,22 +1,11 @@
 #include "EntityCreationSystem.hpp"
 
-#include "../Components_Events.hpp"
-
 #include <stdio.h>
 
 
-static game_data *game;
-
-void EntityCreationSystem::init(game_data *game)
-{
-    ::game = game;
-}
 
 
-
-
-
-Entity EntityCreationSystem::create_ship(ShipSpawnEvent *event)
+Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent *event)
 {
     float x            = event->x;
     float y            = event->y;
@@ -24,7 +13,7 @@ Entity EntityCreationSystem::create_ship(ShipSpawnEvent *event)
     float height       = event->height;
     uint32_t ship_type = event->ship_type;
 
-    Entity e = Ecs::create_entity(game->registry);
+    Entity e = Ecs::create_entity(registry);
 
     auto collision_comp = Collision();
     
@@ -53,13 +42,13 @@ Entity EntityCreationSystem::create_ship(ShipSpawnEvent *event)
 
     sprite_comp.texture_id = ship_type;
 
-    Ecs::set_component(game->registry, e, collision_comp);
-    Ecs::set_component(game->registry, e, position_comp);
-    Ecs::set_component(game->registry, e, velocity_comp);
-    Ecs::set_component(game->registry, e, size_comp);
-    Ecs::set_component(game->registry, e, angle_comp);
-    Ecs::set_component(game->registry, e, angleVel_comp);
-    Ecs::set_component(game->registry, e, sprite_comp);
+    Ecs::set_component(registry, e, collision_comp);
+    Ecs::set_component(registry, e, position_comp);
+    Ecs::set_component(registry, e, velocity_comp);
+    Ecs::set_component(registry, e, size_comp);
+    Ecs::set_component(registry, e, angle_comp);
+    Ecs::set_component(registry, e, angleVel_comp);
+    Ecs::set_component(registry, e, sprite_comp);
 
 
     return e;
@@ -72,20 +61,20 @@ Entity EntityCreationSystem::create_ship(ShipSpawnEvent *event)
 
 static uint32_t player_id_count = 0;
 
-Entity EntityCreationSystem::create_player(PlayerSpawnEvent *event)
+Entity EntityCreationSystem::create_player(Ecs::Registry *registry, PlayerSpawnEvent *event)
 {
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
-    Entity e = create_ship(&sse);
+    Entity e = create_ship(registry, &sse);
     Player player_comp = Player();
     player_comp.id = player_id_count++;
-    Ecs::set_component(game->registry, e, player_comp);
+    Ecs::set_component(registry, e, player_comp);
 
     return e;
 }
 
 
-Entity EntityCreationSystem::create_ai(AiSpawnEvent *event) //TODO(Johan) maybe separate to different functions
+Entity EntityCreationSystem::create_ai(Ecs::Registry *registry, AiSpawnEvent *event) //TODO(Johan) maybe separate to different functions
 {
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
@@ -94,22 +83,22 @@ Entity EntityCreationSystem::create_ai(AiSpawnEvent *event) //TODO(Johan) maybe 
     auto eai = EnemyAI();
     auto hai = HostileAI();
 
-    Entity e = create_ship(&sse);
+    Entity e = create_ship(registry, &sse);
     switch (event->ai_type)
     {
         case 0:
-            Ecs::set_component(game->registry, e, nai);
+            Ecs::set_component(registry, e, nai);
             break;
 
         case 1:
-            Ecs::set_component(game->registry, e, aai);
+            Ecs::set_component(registry, e, aai);
             break;
         case 2:
-            Ecs::set_component(game->registry, e, eai);
+            Ecs::set_component(registry, e, eai);
             break;
 
         case 3:
-            Ecs::set_component(game->registry, e, hai);
+            Ecs::set_component(registry, e, hai);
             break;
         
         default:
@@ -126,9 +115,9 @@ Entity EntityCreationSystem::create_ai(AiSpawnEvent *event) //TODO(Johan) maybe 
 
 
 
-Entity EntityCreationSystem::create_planet(PlanetSpawnEvent *event)
+Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnEvent *event)
 {
-    Entity e = Ecs::create_entity(game->registry);
+    Entity e = Ecs::create_entity(registry);
 
     Position pos = {event->x, event->y};
     Velocity vel = {event->vel_x, event->vel_y};
@@ -146,11 +135,11 @@ Entity EntityCreationSystem::create_planet(PlanetSpawnEvent *event)
 
 
 
-    Ecs::set_component(game->registry, e, pos);
-    Ecs::set_component(game->registry, e, vel);
-    Ecs::set_component(game->registry, e, c_size);
-    Ecs::set_component(game->registry, e, grav);
-    Ecs::set_component(game->registry, e, sprite);
+    Ecs::set_component(registry, e, pos);
+    Ecs::set_component(registry, e, vel);
+    Ecs::set_component(registry, e, c_size);
+    Ecs::set_component(registry, e, grav);
+    Ecs::set_component(registry, e, sprite);
 
 
 

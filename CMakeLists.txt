@@ -50,16 +50,20 @@ link_libraries(${SDL2_LIBRARIES})
 
 
 
-FILE(GLOB_RECURSE SRCFILES ./src/files/*.cpp )
-FILE(GLOB_RECURSE HEADFILES ./src/files/*.hpp)
+FILE(GLOB_RECURSE ENGINESRCFILES ./src/files/*.cpp )
+FILE(GLOB_RECURSE ENGINEHEADFILES ./src/files/*.hpp)
 
-FILE(GLOB MAIN ./src/main/Main.cpp)
-
-FILE(GLOB TESTSRCFILES ./test/*.cpp)
-FILE(GLOB TESTHEADFILES ./test/*.hpp)
+FILE(GLOB_RECURSE GAMESRCFILES ./src/Game/*.cpp )
+FILE(GLOB_RECURSE GAMEHEADFILES ./src/Game/*.hpp)
 
 
-add_executable(Space_game ${MAIN} ${SRCFILES} ${HEADFILES})
+#FILE(GLOB MAIN ./src/main/Main.cpp)
+
+#FILE(GLOB TESTSRCFILES ./test/*.cpp)
+#FILE(GLOB TESTHEADFILES ./test/*.hpp)
 
 
-add_executable(Space_game_test ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
+add_executable(Space_game ${ENGINESRCFILES} ${ENGINEHEADFILES} ${GAMESRCFILES} ${GAMEHEADFILES})
+
+
+#add_executable(Space_game_test ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})

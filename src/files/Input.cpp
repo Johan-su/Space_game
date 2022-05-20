@@ -1,6 +1,5 @@
 #include "Input.hpp"
 
-#include "systems/TrackSystem.hpp"
 #include "Camera.hpp"
 
 #include <SDL.h>
@@ -12,7 +11,7 @@
 
 
 
-void Input::handle_input(game_data *game)
+void Input::handle_input(engine_data *engine)
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -21,7 +20,7 @@ void Input::handle_input(game_data *game)
         switch(event.type)
         {
             case SDL_QUIT:
-                game->active = false;
+                engine->active = false;
                 break;
 
             case SDL_WINDOWEVENT:
@@ -41,13 +40,13 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_MOUSEBUTTONDOWN:
-                Hashmap::set(game->mouse_map, event.button.button, true);
+                Hashmap::set(engine->mouse_map, event.button.button, true);
                 //printf("down %u\n", event.button.button);
                 break;
 
 
             case SDL_MOUSEBUTTONUP:
-                Hashmap::set(game->mouse_map, event.button.button, false);
+                Hashmap::set(engine->mouse_map, event.button.button, false);
                 //printf("up %u\n", event.button.button);
                 break;
 
@@ -55,30 +54,24 @@ void Input::handle_input(game_data *game)
             case SDL_MOUSEWHEEL:
                 if(event.wheel.y > 0)
                 {
-                    Camera_functions::zoom(game->camera, MOUSE_ZOOM_SCALE_SPEED);
+                    //Camera_functions::zoom(engine->camera, MOUSE_ZOOM_SCALE_SPEED);
                 }
                 else
                 {
-                    Camera_functions::zoom(game->camera, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
+                    //Camera_functions::zoom(engine->camera, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
                 }
                 break;
 
 
             case SDL_MOUSEMOTION:
-                if(Hashmap::get_value(game->key_map, SDLK_LSHIFT))
+                if(Hashmap::get_value(engine->key_map, SDLK_LSHIFT))
                 {
-                    if(Hashmap::get_value(game->mouse_map, SDL_BUTTON_MIDDLE))
+                    if(Hashmap::get_value(engine->mouse_map, SDL_BUTTON_MIDDLE))
                     {
-                        game->camera->world_x -= event.motion.xrel / game->camera->world_scale_x;
-                        game->camera->world_y -= event.motion.yrel / game->camera->world_scale_y;
+                        //engine->camera->world_x -= event.motion.xrel / engine->camera->world_scale_x;
+                        //engine->camera->world_y -= event.motion.yrel / engine->camera->world_scale_y;
                     }
 
-
-                    if(Hashmap::get_value(game->mouse_map, SDL_BUTTON_LEFT))
-                    {
-                        TrackSystem::set_Entity_at_pos(Camera_functions::screen_to_world_x(game->camera, event.motion.x), 
-                                                        Camera_functions::screen_to_world_y(game->camera, event.motion.y));
-                    }
                 }
                 //printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
                 
@@ -86,11 +79,11 @@ void Input::handle_input(game_data *game)
 
 
             case SDL_KEYDOWN:
-                Hashmap::set(game->key_map, event.key.keysym.sym, true);
+                Hashmap::set(engine->key_map, event.key.keysym.sym, true);
                 break;
 
             case SDL_KEYUP:
-                Hashmap::set(game->key_map, event.key.keysym.sym, false);
+                Hashmap::set(engine->key_map, event.key.keysym.sym, false);
                 break;
         }
     }

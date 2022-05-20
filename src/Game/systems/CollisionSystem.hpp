@@ -1,15 +1,11 @@
 #pragma once
 
 
-#include "../Game.hpp"
-
-
+#include "../../ecs/ecs.hpp"
 
 
 namespace CollisionSystem
 {
-    void init(game_data *game);
-
-    void update();
+    void update(Ecs::Registry *registry);
     
 } // namespace CollisionSystem

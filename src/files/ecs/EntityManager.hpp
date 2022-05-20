@@ -16,7 +16,6 @@ namespace Ecs
 
 
         void init(Memory_pool *mem, Entity_data *e_data);
-        void clean(Memory_pool *mem, Entity_data *e_data);
 
         Entity create_entity(Entity_data *e_data);
         void destroy_entity(Entity_data *edata, Entity e);

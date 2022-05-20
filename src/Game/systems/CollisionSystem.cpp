@@ -1,23 +1,12 @@
 #include "CollisionSystem.hpp"
 
-
 #include "../Components_Events.hpp"
 
-static game_data *game;
 
-
-
-void CollisionSystem::init(game_data *game)
+void CollisionSystem::update(Ecs::Registry *registry)
 {
-    ::game = game;
-}
-
-
-
-void CollisionSystem::update()
-{
-    View<Position> pos_view = Ecs::get_view<Position, Size, Collision>(game->registry);
-    View<Size> size_view    = Ecs::get_view<Size, Position, Collision>(game->registry);
+    View<Position> pos_view = Ecs::get_view<Position, Size, Collision>(registry);
+    View<Size> size_view    = Ecs::get_view<Size, Position, Collision>(registry);
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {
@@ -54,7 +43,7 @@ void CollisionSystem::update()
                 ce.e1 = e;
                 ce.e2 = e2;
 
-                Ecs::broadcast_event<void>(game->registry, &ce);
+                Ecs::broadcast_event<void>(registry, &ce);
             }
         }
     }
