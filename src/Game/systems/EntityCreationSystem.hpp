@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../ecs/ecs.hpp"
-
+#include "../Game.hpp"
 #include "../Components_Events.hpp"
 
 namespace EntityCreationSystem

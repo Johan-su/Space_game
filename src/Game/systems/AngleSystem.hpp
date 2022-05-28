@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ecs/ecs.hpp"
+#include "../Game.hpp"
 
 
 

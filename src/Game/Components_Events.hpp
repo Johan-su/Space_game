@@ -1,5 +1,4 @@
 #pragma once
-#include "../ecs/ecs.hpp"
 
 #include <stdint.h>
 

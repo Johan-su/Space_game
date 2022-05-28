@@ -7,10 +7,10 @@ using namespace Ecs;
 
 void Memory::init(Memory_pool *mm)
 {
-    ECS_assert(mm != nullptr, "Memory pool cannot be NULL");
+    ECS_assert(mm != NULL, "Memory pool cannot be NULL");
 
     mm->m_runTimeData = malloc(MEMORY_POOL_SIZE);
-    if(mm->m_runTimeData != nullptr)
+    if(mm->m_runTimeData != NULL)
     {
         ECS_dbg(memset(mm->m_runTimeData, 0xDD, MEMORY_POOL_SIZE));
         mm->m_bytesAllocated = 0;
@@ -28,7 +28,7 @@ void Memory::clean(Memory_pool *mm)
 {
     ECS_assert(mm->m_MemoryActive, "Memory pool already inactive");
     free(mm->m_runTimeData);
-    mm->m_runTimeData = nullptr;
+    mm->m_runTimeData = NULL;
     mm->m_MemoryActive = false;
 }
 

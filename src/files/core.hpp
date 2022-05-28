@@ -9,11 +9,7 @@
 #include "datastructures/hashmap.hpp"
 
 
-struct scene
-{
-    Ecs::Registry *registry;
-    Camera *camera;
-};
+
 
 
 
@@ -24,8 +20,6 @@ struct engine_data
     
     config_data *config;
     textures_data *texture;
-
-    scene *scenes[128];
 
     hash_map<bool> *key_map;
     hash_map<bool> *mouse_map;
@@ -38,12 +32,11 @@ struct key_settings
     
 };
 
-typedef void engine_handle;
 
 namespace Real
 {
-    engine_handle *create_context();
-    void destroy_context(engine_handle *engine);
+    engine_data *create_context();
+    void destroy_context(engine_data *engine);
 
     void init(engine_data *engine, const char *pwd);
     void clean(engine_data *engine);

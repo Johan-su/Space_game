@@ -1,12 +1,26 @@
 #include "Game.hpp"
 
-struct scene;
-
+#include "../files/EntryPoint.hpp"
 #include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
+
+
+
+void init(Application_handle *app)
+{
+    init_components();
+}
+
+
+void clean(Application_handle *app)
+{
+
+}
+
+
 
 static void init_components(scene *scene)
 {

@@ -6,7 +6,7 @@ using namespace Ecs;
 
 
 
-void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
+void Entity_functions::init(Entity_data *e_data)
 {
     e_data->m_entitycount = -1;
 }

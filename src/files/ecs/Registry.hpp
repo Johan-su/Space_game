@@ -12,16 +12,16 @@ namespace Ecs
 {
     struct Registry
     {
-        Memory_pool *mm;
+        Memory_pool mm;
         Entity_data *edata;
         event_data *evdata;
         Component_data *cdata;      
     };
 
     void init(Registry *registry);
-    void clean(Registry *registry);
 
     Registry *create_registry();
+    void destroy_registry(Registry *registry);
 
     Entity create_entity(Registry *registry);
     void destroy_entity(Registry *registry, Entity e);
@@ -57,7 +57,7 @@ namespace Ecs
     void set_component(Registry *registry, Entity e, T& comp)
     {
 
-        Component_functions::set_component<T>(registry->mm, registry->cdata, e, comp);
+        Component_functions::set_component<T>(&registry->mm, registry->cdata, e, comp);
     }
 
 
@@ -70,7 +70,7 @@ namespace Ecs
     template<typename T>
     T *get_component(Registry *registry, Entity e)
     {
-        return Component_functions::get_component<T>(registry->mm, registry->cdata, e);
+        return Component_functions::get_component<T>(&registry->mm, registry->cdata, e);
     }
 
 
@@ -86,7 +86,7 @@ namespace Ecs
     template<typename T1, typename... Ts>
     View<T1> get_view(Registry *registry)
     {
-        return Component_functions::get_view<T1, Ts...>(registry->mm, registry->cdata);
+        return Component_functions::get_view<T1, Ts...>(&registry->mm, registry->cdata);
     }
 }
 

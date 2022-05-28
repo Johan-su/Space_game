@@ -1,21 +1,20 @@
 #include "RenderSystem.hpp"
 #include "../Components_Events.hpp"
-#include "../../assert.hpp"
-
-#include "../../ecs/ecs.hpp"
 
 
-
-#include <SDL.h>
-#include <stdint.h>
+//#include <stdint.h>
 
 static float RadToDeg(float angle)
 {
-    return angle * 57.2957786667; // 180 / pi
+    return angle * 57.2957786667f; // 180 / pi
 }
 
-void RenderSystem::render(Ecs::Registry *registry, SDL_Renderer *renderer, Camera *camera, textures_data *texture_data)
+
+void RenderSystem::render(Application_handle *app, scene *scene)
 {
+    Ecs::Registry *registry = scene->registry;
+    Camera *camera = &scene->camera;
+
     auto pos_view    = Ecs::get_view<Position, Size, Angle, Sprite>(registry);
     auto size_view   = Ecs::get_view<Size, Angle, Sprite, Position>(registry);
 
@@ -25,16 +24,16 @@ void RenderSystem::render(Ecs::Registry *registry, SDL_Renderer *renderer, Camer
     for(size_t i = 0; i < pos_view.size; ++i)
     {
         //dbg(printf("running in render for loop\n"));
-        Tex_Sprite *sprite   = Texture::get_sprite(texture_data, sprite_view.comparray[i].texture_id);
-        SDL_Texture *texture = Texture::get_texture(texture_data, sprite->texture_index);
+        Texture_Sprite *sprite = Application::get_sprite(app, sprite_view.comparray[i].texture_id);
+        Texture *texture       = Application::get_texture(app, sprite->texture_index);
 
-        SDL_Rect srcrect     = SDL_Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
+        Rect srcrect     = Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
 
         auto pos = pos_view.comparray[i];
         auto size = size_view.comparray[i];
 
 
-        SDL_FRect dstrect = SDL_FRect();
+        FRect dstrect = FRect();
 
         float worldunit_per_pixel_x = 1.0f / camera->world_scale_x;
         float worldunit_per_pixel_y = 1.0f / camera->world_scale_y;
@@ -45,7 +44,9 @@ void RenderSystem::render(Ecs::Registry *registry, SDL_Renderer *renderer, Camer
         dstrect.h = size.height * camera->world_scale_y;
         
 
-        SDL_RenderCopyExF(renderer, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, SDL_FLIP_NONE);
+        //SDL_RenderCopyExF(renderer, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, SDL_FLIP_NONE);
+
+        Application::RenderCopyExF(app, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, FLIP_NONE);
     }
 }
 

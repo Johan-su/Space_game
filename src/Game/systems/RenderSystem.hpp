@@ -1,9 +1,7 @@
 #pragma once
-#include "../../ecs/ecs.hpp"
-#include "../../Camera.hpp"
-#include "../../Texture.hpp"
+#include "../Game.hpp"
 
 namespace RenderSystem
 {
-    void render(Ecs::Registry *registry, SDL_Renderer *renderer, Camera *camera, textures_data *texture_data);
+    void render(Application_handle *app, scene *scene);
 } 

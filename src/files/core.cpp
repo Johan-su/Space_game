@@ -19,7 +19,6 @@
 
 
 
-#define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
 template<typename T>
 T *alloc(size_t amount = 1)
@@ -34,15 +33,21 @@ T *alloc(size_t amount = 1)
 }
 
 
-engine_handle *Real::create_context()
+engine_data *Real::create_context()
 {
-    return (engine_handle*)alloc<engine_data>();
+    return alloc<engine_data>();
 }
 
 
-static void sdl_init(engine_data *game)
+void Real::destroy_context(engine_data *engine)
 {
-    assert(game, "Game cannot be null");
+    free(engine);
+}
+
+
+static void sdl_init(engine_data *engine)
+{
+    assert(engine, "Game cannot be null");
 
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
@@ -51,15 +56,15 @@ static void sdl_init(engine_data *game)
     }
 
     int flags = 0;
-    game->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, game->config->screen_width, game->config->screen_height, flags);
-    if(!game->window)
+    engine->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, engine->config->screen_width, engine->config->screen_height, flags);
+    if(!engine->window)
     {
         fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s", SDL_GetError());
         exit(1);
     }
 
-    game->renderer = SDL_CreateRenderer(game->window, -1, SDL_RENDERER_ACCELERATED);
-    if(!game->renderer)
+    engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_ACCELERATED);
+    if(!engine->renderer)
     {
         fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s", SDL_GetError());
         exit(1);
@@ -93,7 +98,7 @@ void Real::init(engine_data *engine, const char *pwd)
     sdl_init(engine);
 
     engine->texture = alloc<textures_data>();
-    Texture::init(engine->texture);
+    Texture_functions::init(engine->texture);
 
 
     engine->key_map = alloc<hash_map<bool>>();
@@ -113,7 +118,7 @@ void Real::clean(engine_data *engine)
 
     sdl_clean(engine);
 
-    Texture::clean(engine->texture);
+    Texture_functions::clean(engine->texture);
     free(engine->texture);
     engine->texture = NULL;
     
@@ -157,62 +162,62 @@ static void render(engine_data *engine, float Ts, void* func)
 
 
 
-static void handle_input_events(engine_data *game, float Ts) //TODO(Johan) move to different file
+static void handle_input_events(engine_data *engine, float Ts) //TODO(Johan) move to different file
 {
-    Input::handle_input(game);
+    
 }
 
 
-void Real::run(engine_data *engine)
+void Real::run(engine_data *engine) //TODO:(Johan) make use of func pointers for update and render also pass through scene somehow
 {
-    engine->active = true;
+    // engine->active = true;
     
-    //uint64_t print_timer = 0;
-    uint64_t fixed_update_count = 0;
-    uint64_t target_time = 1000000 / engine->config->FPS_target;
-    uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
+    // //uint64_t print_timer = 0;
+    // uint64_t fixed_update_count = 0;
+    // uint64_t target_time = 1000000 / engine->config->FPS_target;
+    // uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
-    uint64_t curr;
-    uint64_t prev = deltaTime::get_micro_time();
-    uint64_t dt; // dt in microseconds 10^-6 seconds
-    float ts; // time step in seconds
+    // uint64_t curr;
+    // uint64_t prev = deltaTime::get_micro_time();
+    // uint64_t dt; // dt in microseconds 10^-6 seconds
+    // float ts; // time step in seconds
 
-    while(engine->active)
-    {
-        curr = deltaTime::get_micro_time();
-        dt = curr - prev;
-        prev = curr;
+    // while(engine->active)
+    // {
+    //     curr = deltaTime::get_micro_time();
+    //     dt = curr - prev;
+    //     prev = curr;
 
 
-        /*
-        print_timer += dt;
-        if(print_timer > 1000000)
-        {
-            printf("count %-5llu fps: %-7.1f frametime: %f\n", count, 1000000.0f / dt, dt / 1000000.0f);
-            print_timer -= 1000000;
-        }
-        */
-        ts = dt / 1000000.0f;
+    //     /*
+    //     print_timer += dt;
+    //     if(print_timer > 1000000)
+    //     {
+    //         printf("count %-5llu fps: %-7.1f frametime: %f\n", count, 1000000.0f / dt, dt / 1000000.0f);
+    //         print_timer -= 1000000;
+    //     }
+    //     */
+    //     ts = dt / 1000000.0f;
 
-        handle_input_events(engine, ts);
-        update(engine, ts, NULL);
+    //     handle_input_events(engine, ts);
+    //     update(engine, ts, NULL);
 
-        fixed_update_count += dt;
-        while(fixed_update_count >= target_fixed_update)
-        {
-            fixed_update(engine, target_fixed_update / 1000000.0f, NULL);
-            fixed_update_count -= target_fixed_update;
-        }
+    //     fixed_update_count += dt;
+    //     while(fixed_update_count >= target_fixed_update)
+    //     {
+    //         fixed_update(engine, target_fixed_update / 1000000.0f, NULL);
+    //         fixed_update_count -= target_fixed_update;
+    //     }
 
-        render(engine, ts, NULL);
+    //     render(engine, ts, NULL);
 
-        do
-        {
-            curr = deltaTime::get_micro_time();
-            dt = curr - prev;
-        } while(dt < target_time);
+    //     do
+    //     {
+    //         curr = deltaTime::get_micro_time();
+    //         dt = curr - prev;
+    //     } while(dt < target_time);
 
-    }
+    // }
 }
 
 

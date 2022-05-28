@@ -1,48 +1,47 @@
 #include "Registry.hpp"
 
-void Ecs::init(Registry *registry)
+using namespace Ecs;
+
+static void init(Registry *registry)
 {
     ECS_assert(registry != nullptr, "Registry cannot be NULL");
 
 
-    registry->mm = (Memory_pool*)malloc(sizeof(Memory_pool));
 
-    registry->mm->m_MemoryActive = false;
+    registry->mm.m_MemoryActive = false;
 
-    Memory::init(registry->mm);
+    Memory::init(&registry->mm);
 
-    registry->edata  = Memory::alloc<Entity_data>(registry->mm);
-    registry->evdata = Memory::alloc<event_data>(registry->mm);
-    registry->cdata  = Memory::alloc<Component_data>(registry->mm);
+    registry->edata  = Memory::alloc<Entity_data>(&registry->mm);
+    registry->evdata = Memory::alloc<event_data>(&registry->mm);
+    registry->cdata  = Memory::alloc<Component_data>(&registry->mm);
 
-    Entity_functions::init(registry->mm, registry->edata);
+    Entity_functions::init(registry->edata);
     Event_functions::init(registry->evdata);
     Component_functions::init(registry->cdata);
 }
 
 
-void Ecs::clean(Registry *registry)
-{
-    Memory::clean(registry->mm);
-    free(registry->mm);
 
-    registry->mm    = nullptr;
-    registry->edata = nullptr;
-    registry->cdata = nullptr;
+
+Registry *Ecs::create_registry()
+{
+    Registry *registry = (Registry*)malloc(sizeof(Registry));
+    init(registry);
+    return registry;
 }
 
 
-Ecs::Registry *Ecs::create_registry()
+void Ecs::destroy_registry(Registry *registry)
 {
-    return (Registry*)malloc(sizeof(Registry));
+    Memory::clean(&registry->mm);
+    free(registry);
 }
 
 
 Entity Ecs::create_entity(Registry *registry)
 {
-    auto *edata = registry->edata;
-
-    Entity e = Entity_functions::create_entity(edata);
+    Entity e = Entity_functions::create_entity(registry->edata);
 
     return e;    
 }
@@ -50,12 +49,8 @@ Entity Ecs::create_entity(Registry *registry)
 
 void Ecs::destroy_entity(Registry *registry, Entity e)
 {
-    auto *edata = registry->edata;
-    auto *cdata = registry->cdata;
-
-
-    Component_functions::destroy_entity(cdata, e);
-    Entity_functions::destroy_entity(edata, e);
+    Component_functions::destroy_entity(registry->cdata, e);
+    Entity_functions::destroy_entity(registry->edata, e);
 }
 
 

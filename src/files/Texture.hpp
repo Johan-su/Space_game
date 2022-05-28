@@ -39,7 +39,7 @@ struct textures_data
 };
 
 
-namespace Texture
+namespace Texture_functions
 {
     void init(textures_data *td);
     void clean(textures_data *td);

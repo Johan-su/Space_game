@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../../ecs/ecs.hpp"
-#include "../../datastructures/hashmap.hpp"
+#include "../Game.hpp"
 
 namespace PlayerSystem
 {
     void set_player_entity(Entity id);
-    void update(Ecs::Registry *registry, hash_map<bool> *key_map, float Ts);
+    void update(Application_handle *app, Ecs::Registry *registry, float Ts);
 
 } // namespace PlayerSystem
