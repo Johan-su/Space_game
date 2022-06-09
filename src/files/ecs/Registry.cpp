@@ -2,40 +2,21 @@
 
 using namespace Ecs;
 
-static void init(Registry *registry)
+
+void Ecs::init(Registry *registry, top_memory_arena *mm)
 {
-    ECS_assert(registry != nullptr, "Registry cannot be NULL");
+    ECS_assert(registry != NULL, "Registry cannot be NULL");
 
 
 
-    registry->mm.m_MemoryActive = false;
 
-    Memory::init(&registry->mm);
+    registry->mm = mm;
 
-    registry->edata  = Memory::alloc<Entity_data>(&registry->mm);
-    registry->evdata = Memory::alloc<event_data>(&registry->mm);
-    registry->cdata  = Memory::alloc<Component_data>(&registry->mm);
+    registry->edata  = Arena::top_alloc<Entity_data>(registry->mm);
+    registry->cdata  = Arena::top_alloc<Component_data>(registry->mm);
 
     Entity_functions::init(registry->edata);
-    Event_functions::init(registry->evdata);
     Component_functions::init(registry->cdata);
-}
-
-
-
-
-Registry *Ecs::create_registry()
-{
-    Registry *registry = (Registry*)malloc(sizeof(Registry));
-    init(registry);
-    return registry;
-}
-
-
-void Ecs::destroy_registry(Registry *registry)
-{
-    Memory::clean(&registry->mm);
-    free(registry);
 }
 
 

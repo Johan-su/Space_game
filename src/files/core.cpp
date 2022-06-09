@@ -3,45 +3,57 @@
 #include "Camera.hpp"
 
 
-#include "/platform/deltatime.hpp"
+#include "platform/platform.hpp"
 #include "Input.hpp"
 
+#include "Memory_arena.hpp"
 
-#include "/ecs/ecs.hpp"
+#include "ecs/ecs.hpp"
 
 #include <SDL.h>
 
-#include <string>
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
 
+#define KiB 1024llu
+#define MiB 1024llu * KiB
+#define GiB 1024llu * MiB
+#define TiB 1024llu * GiB
 
 
 
 
-template<typename T>
-T *alloc(size_t amount = 1)
+
+static void *reserve_memory_begin;
+static void *reserve_memory_end;
+
+global_memory g_memory = {};
+
+
+void Real::init_global_memory()
 {
-    T *mem = (T*)malloc(sizeof(T) * amount);
-    if(mem == NULL)
+    Platform::init();
+    reserve_memory_begin = memory_map::reserve(NULL, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
+    reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
+
+    Arena::init_top_arena(&g_memory.app_buffer, reserve_memory_begin, 4096, 2 * MiB); // 2 MiB
+    Arena::init_top_arena(&g_memory.scratch_buffer, (char *)reserve_memory_begin + 2 * MiB, 2 * MiB, 2 * MiB); // 2 MiB
+
+
+
+
+
+
+    // scene buffers
     {
-        fprintf(stderr, "ERROR: not enough memory");
-        exit(1);
+        void *base = (char *)reserve_memory_end - 512 * GiB; // 512 GiB from end
+        for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+        {
+            Arena::init_top_arena(&g_memory.scene_buffers[i], (char *)base + i * 16 * GiB, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(16 * GiB));
+        }
     }
-    return mem;
-}
 
-
-engine_data *Real::create_context()
-{
-    return alloc<engine_data>();
-}
-
-
-void Real::destroy_context(engine_data *engine)
-{
-    free(engine);
 }
 
 
@@ -74,89 +86,62 @@ static void sdl_init(engine_data *engine)
 
 static void sdl_clean(engine_data *engine)
 {
-    assert(engine, "engine cannot be NULL");
-    assert(engine->renderer, "renderer cannot be NULL");
-    assert(engine->window, "window cannot be NULL");
-
     SDL_DestroyRenderer(engine->renderer);
     SDL_DestroyWindow(engine->window);
 
     engine->renderer = NULL;
     engine->window = NULL;
-
-    SDL_Quit();
 }
 
 
-void Real::init(engine_data *engine, const char *pwd)
+engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
 {
-    engine->config = alloc<config_data>();
-    std::string config_path = std::string(pwd) + "/config.ini";
-    Config::init(engine->config, config_path.c_str());
+    engine_data *engine = Arena::top_alloc<engine_data>(arena);
+
+    engine->config = Arena::top_alloc<config_data>(arena);
+
+    {
+        char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
+
+        strcat(config_path, pwd);
+        strcat(config_path, "/config.ini");
+
+        Config::init(engine->config, config_path);
+
+        Arena::clear_top_arena(&g_memory.scratch_buffer);
+    }
+
 
 
     sdl_init(engine);
 
-    engine->texture = alloc<textures_data>();
+    engine->texture = Arena::top_alloc<textures_data>(arena);
     Texture_functions::init(engine->texture);
 
 
-    engine->key_map = alloc<hash_map<bool>>();
-    engine->mouse_map = alloc<hash_map<bool>>();
+    engine->key_map = Arena::top_alloc<hash_map<bool>>(arena);
+    engine->mouse_map = Arena::top_alloc<hash_map<bool>>(arena);
 
     Hashmap::init(engine->key_map);
     Hashmap::init(engine->mouse_map);
 
+
+    return engine;
+
 }
 
 
-void Real::clean(engine_data *engine)
+void Real::clean_engine(engine_data *engine) // exists because SDL uses its own allocators
 {
-    Config::clean(engine->config);
-    free(engine->config);
     engine->config = NULL;
 
     sdl_clean(engine);
 
     Texture_functions::clean(engine->texture);
-    free(engine->texture);
     engine->texture = NULL;
-    
-
-    free(engine->key_map);
-    free(engine->mouse_map);
 
     engine->key_map = NULL;
     engine->mouse_map = NULL;
-}
-
-
-static void update(engine_data *engine, float Ts, void* func)
-{
-
-}
-
-
-static void fixed_update(engine_data *engine, float Ts, void* func)
-{
-
-}
-
-
-static void render(engine_data *engine, float Ts, void* func)
-{
-    SDL_RenderClear(engine->renderer);
-    
-
-
-    SDL_SetRenderDrawColor(engine->renderer, 255, 0, 0, 255);
-    SDL_RenderDrawPoint(engine->renderer, (engine->config->screen_width / 2), (engine->config->screen_height / 2));
-    SDL_SetRenderDrawColor(engine->renderer, 0, 0, 0, 255);
-
-
-
-
-    SDL_RenderPresent(engine->renderer);
 }
 
 

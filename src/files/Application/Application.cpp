@@ -1,48 +1,121 @@
 #include "Application.hpp"
-#include "../platform/deltatime.hpp"
+#include "../platform/platform.hpp"
 #include "../Input.hpp"
 #include "../core.hpp"
+#include "../assert.hpp"
+#include "../Memory_arena.hpp"
+
+
+
 
 struct Application_data
 {
     engine_data *engine;
     size_t scene_count;
-    scene *scenes[128];
+    scene *scenes[MAX_SCENE_COUNT];
+    bool active;
 };
 
 
+static bool app_created = false;
 
 
-Application_handle *Application::create_application(const char *pwd)
+
+
+Application_data *Application::create_application(const char *pwd)
 {
-    
-}
-
-
-
-
-static void clean_scene(scene *scene)
-{
-    Ecs::destroy_registry(scene->registry);
-    scene->registry = NULL;
-}
-
-
-void Application::destroy_application(Application_handle *app)
-{
-    Application_data *app_data = (Application_data *)(app);
-    for(int i = 0; i < app_data->scene_count; ++i)
+    if(app_created)
     {
-        clean_scene(app_data->scenes[i]);
+        fprintf(stderr, "ERROR: tried to create application while already existing");
+        exit(1);
     }
-    free(app_data);
+    app_created = true;
+
+    Real::init_global_memory();
+
+    
+
+
+    Application_data *app_data = Arena::top_alloc<Application_data>(&g_memory.app_buffer);
+    memset(app_data, 0, sizeof(*app_data));
+
+    app_data->engine = Real::create_engine(&g_memory.app_buffer, pwd);
+
+    app_data->active = false;
+
+
+    return app_data;
 }
 
 
-scene *create_scene()
+void Application::destroy_application(Application_data *app)
+{
+    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+    {
+        Arena::clean_arena(&g_memory.scene_buffers[i]);
+    }
+    Real::clean_engine(app->engine);
+
+    Arena::clean_arena(&g_memory.app_buffer);
+}
+
+
+scene *Application::create_add_scene(Application_data *app, const char *scene_name = "unnamed_scene")
 {
 
+    int scene_pos = -1;
+
+    // get unoccupied scene position in app
+    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+    {
+        if(app->scenes[i] == NULL)
+        {
+            scene_pos = i;
+            break;
+        }
+    }
+
+    if(scene_pos != -1)
+    {
+        scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
+        game_scene->registry = Arena::top_alloc<Ecs::Registry>(&g_memory.scene_buffers[scene_pos]);
+
+        Ecs::init(game_scene->registry, &g_memory.scene_buffers[scene_pos]);
+        Camera_functions::init(&game_scene->camera, app->engine->config->screen_width, app->engine->config->screen_height);
+        
+        
+        game_scene->name = "scene_name";
+        app->scenes[scene_pos] = game_scene;
+    }
+    else
+    {
+        fprintf(stderr, "ERROR: failed to create scene, max scene amount %d reached\n", MAX_SCENE_COUNT);
+        exit(1);
+    }
+
+
+    return app->scenes[scene_pos];
 }
+
+
+scene *Application::get_scene_by_name(Application_data *app, const char *scene_name)
+{
+    scene *scene = NULL;
+    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+    {
+        if(strcmp(app->scenes[i]->name, scene_name) == 0)
+        {
+            break;
+        }
+    }
+
+    if(scene == NULL)
+    {
+        fprintf(stderr, "WARNING: failed to find scene by name");
+    }
+    return scene;
+}
+
 
 
 static void handle_input_events(engine_data *engine, float Ts)
@@ -51,23 +124,23 @@ static void handle_input_events(engine_data *engine, float Ts)
 }
 
 
+
 #define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
-void Application::run(Application_handle *app, uint16_t scene_id, void (*update_func)(Application_handle *, scene *, float), void (*fixed_update_func)(Application_handle *, scene *, float), void (*render_func)(Application_handle *, scene *, float))
+void Application::run(Application_data *app, scene *scene, void (*update_func)(Application_data *, struct scene *, float), void (*fixed_update_func)(Application_data *, struct scene *, float), void (*render_func)(Application_data *, struct scene *, float))
 {
-    Application_data *app_data = (Application_data *)(app);
 
-    if(scene_id >= app_data->scene_count)
+    if(scene == NULL)
     {
-        fprintf(stderr, "ERROR: scene_id out of bounds with value %u", scene_id);
+        fprintf(stderr, "ERROR: scene cannot be NULL\n");
         return;
     }
 
-    app_data->engine->active = true;
+    app->active = true;
 
     //uint64_t print_timer = 0;
     uint64_t fixed_update_count = 0;
-    uint64_t target_time = 1000000 / app_data->engine->config->FPS_target;
+    uint64_t target_time = 1000000 / app->engine->config->FPS_target;
     uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
     uint64_t curr;
@@ -75,7 +148,7 @@ void Application::run(Application_handle *app, uint16_t scene_id, void (*update_
     uint64_t dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
 
-    while(app_data->engine->active)
+    while(app->active)
     {
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
@@ -92,17 +165,30 @@ void Application::run(Application_handle *app, uint16_t scene_id, void (*update_
         */
         ts = dt / 1000000.0f;
 
-        handle_input_events(app_data->engine, ts);
-        update_func(app, app_data->scenes[scene_id], ts);
+        handle_input_events(app->engine, ts);
+        update_func(app, scene, ts);
 
         fixed_update_count += dt;
         while(fixed_update_count >= target_fixed_update)
         {
-            fixed_update_func(app, app_data->scenes[scene_id], target_fixed_update / 1000000.0f);
+            fixed_update_func(app, scene, target_fixed_update / 1000000.0f);
             fixed_update_count -= target_fixed_update;
         }
 
-        render_func(app, app_data->scenes[scene_id], ts);
+        // begin render
+
+        SDL_RenderClear(app->engine->renderer);
+    
+
+        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 255);
+        SDL_RenderDrawPoint(app->engine->renderer, (app->engine->config->screen_width / 2), (app->engine->config->screen_height / 2));
+        SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 255);
+        render_func(app, scene, ts);
+
+        SDL_RenderPresent(app->engine->renderer);
+
+        // end render
+
 
         do
         {
@@ -114,11 +200,7 @@ void Application::run(Application_handle *app, uint16_t scene_id, void (*update_
 }
 
 
-
-
-
-
-int Application::RenderCopyExF(Application_handle *app,
+int Application::RenderCopyExF(Application_data *app,
                                Texture *texture,
                                const Rect *srcrect,
                                const FRect *dstrect,
@@ -126,29 +208,39 @@ int Application::RenderCopyExF(Application_handle *app,
                                const FPoint *center,
                                const Flip_flag flip)
 {
-    Application_data *app_data = (Application_data*)app;
 
-    return SDL_RenderCopyExF(app_data->engine->renderer, (SDL_Texture*)texture, (SDL_Rect*)srcrect, (const SDL_FRect*)dstrect, angle, (const SDL_FPoint*)center, (const SDL_RendererFlip)flip);
+    return SDL_RenderCopyExF(app->engine->renderer, (SDL_Texture*)texture, (SDL_Rect*)srcrect, (const SDL_FRect*)dstrect, angle, (const SDL_FPoint*)center, (const SDL_RendererFlip)flip);
 }
 
 
-Texture *Application::get_texture(Application_handle *app, uint32_t id)
+
+void Application::load_texture(Application_data *app, uint32_t id, const char *path)
 {
-    Application_data *app_data = (Application_data*)app;
-    return (Texture*)Texture_functions::get_texture(app_data->engine->texture, id);
+    Texture_functions::load_texture(app->engine->renderer, app->engine->texture, id, path);
 }
 
 
-Texture_Sprite *Application::get_sprite(Application_handle *app, uint32_t id)
+void Application::init_sprite(Application_data *app, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h)
 {
-    Application_data *app_data = (Application_data*)app;
-    return (Texture_Sprite*)Texture_functions::get_sprite(app_data->engine->texture, id);
+    Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
 }
 
 
-bool Application::IsKeyPressed(Application_handle *app, int keyCode)
+
+Texture *Application::get_texture(Application_data *app, uint32_t id)
 {
-    Application_data *app_data = (Application_data*)app;
-
-    return Hashmap::get_value(app_data->engine->key_map, keyCode);
+    return (Texture*)Texture_functions::get_texture(app->engine->texture, id);
 }
+
+
+Texture_Sprite *Application::get_sprite(Application_data *app, uint32_t id)
+{
+    return (Texture_Sprite*)Texture_functions::get_sprite(app->engine->texture, id);
+}
+
+
+bool Application::IsKeyPressed(Application_data *app, int keyCode)
+{
+    return Hashmap::get_value(app->engine->key_map, keyCode);
+}
+

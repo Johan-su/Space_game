@@ -64,7 +64,7 @@ struct Player
 };
 
 
-struct Sprite
+struct SpriteComponent
 {
     uint32_t texture_id;
 };

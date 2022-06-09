@@ -7,7 +7,10 @@
 
 
 
-typedef void Application_handle, Texture, Tex_Sprite_handle;
+typedef void Texture, Tex_Sprite_handle;
+
+
+struct Application_data;
 
 namespace Ecs
 {
@@ -16,10 +19,12 @@ namespace Ecs
 
 struct scene
 {
-    Ecs::Registry *registry;
     Camera camera;
+    const char *name;
+    Ecs::Registry *registry;
 };
 
+typedef struct scene scene;
 
 
 
@@ -83,19 +88,16 @@ struct Texture_Sprite
 namespace Application
 {
     
-    Application_handle *create_application(const char *pwd);
-    void destroy_application(Application_handle *app);
+    Application_data *create_application(const char *pwd);
+    void destroy_application(Application_data *app);
 
-    scene *create_scene();
+    scene *create_add_scene(Application_data *app, const char *scene_name);
 
+    scene *get_scene_by_name(Application_data *app, const char *scene_name);
 
-    scene *get_scene(uint16_t scene_id);
+    void run(Application_data *app, scene *scene, void (*update_func)(Application_data *, struct scene *, float), void (*fixed_update_func)(Application_data *, struct scene *, float), void (*render_func)(Application_data *, struct scene *, float));
 
-    void run(Application_handle *app, uint16_t scene_id, void (*update_func)(Application_handle *, scene *, float), void (*fixed_update_func)(Application_handle *, scene *, float), void (*render_func)(Application_handle *, scene *, float));
-
-    //void set_scene(Application_handle *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
-    void push_scene(Application_handle *app, scene *scene);
-    void pop_scene(Application_handle *app);
+    //void set_scene(Application_data *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
 
 
     /**
@@ -105,7 +107,7 @@ namespace Application
      * 
      *
      */
-    int RenderCopyExF(Application_handle *app,
+    int RenderCopyExF(Application_data *app,
                       Texture *texture,
                       const Rect *srcrect,
                       const FRect *dstrect,
@@ -115,10 +117,13 @@ namespace Application
 
 
 
-    Texture *get_texture(Application_handle *app, uint32_t id);
-    Texture_Sprite *get_sprite(Application_handle *app, uint32_t id);
+    void load_texture(Application_data *app, uint32_t id, const char *path);
+    void init_sprite(Application_data *app, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+
+    Texture *get_texture(Application_data *app, uint32_t id);
+    Texture_Sprite *get_sprite(Application_data *app, uint32_t id);
 
 
-    bool IsKeyPressed(Application_handle *app, int keyCode);
+    bool IsKeyPressed(Application_data *app, int keyCode);
 
 }

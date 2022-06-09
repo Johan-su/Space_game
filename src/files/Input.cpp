@@ -20,7 +20,7 @@ void Input::handle_input(engine_data *engine)
         switch(event.type)
         {
             case SDL_QUIT:
-                engine->active = false;
+                //engine->active = false; //TODO(Johan) fix quit
                 break;
 
             case SDL_WINDOWEVENT:

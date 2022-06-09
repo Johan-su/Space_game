@@ -16,16 +16,6 @@ void Component_functions::init(Component_data *cdata) // TODO(johan) check if al
 }
 
 
-void Component_functions::clean(Memory_pool *mm, Component_data *cdata) // TODO(Johan) implement correct deallocation for pools and pages
-{
-    for(size_t i = 0; i < MAX_COMPONENT_TYPES; ++i)
-    {
-        if(cdata->pool_init[i])
-        {
-            Memory::dealloc(mm, (char*)cdata->component_pools[i], cdata->component_sizes[i] * MAX_ENTITY_AMOUNT);
-        }
-    }
-}
 #define ECS_DEBUG3 0
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)

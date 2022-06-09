@@ -1,13 +1,15 @@
 #pragma once
-#include "../files/Real.hpp"
+#include "Application/Application.hpp"
 
 /*
 
 define init, clean in your application
 
 */
-void init(Application_handle *app);
-void clean(Application_handle *app);
+
+
+void init(Application_data *app, const char *pwd);
+void clean(Application_data *app);
 
 int main(int argc, char *argv[])
 {   
@@ -22,10 +24,11 @@ int main(int argc, char *argv[])
     {
         pwd = "./";
     }
-    Application_handle *app = Application::create_application(pwd);
-    // game_data *game = Game::create_context();
 
-    init(app);
+
+    Application_data *app = Application::create_application(pwd);
+
+    init(app, pwd);
     clean(app);
 
     Application::destroy_application(app);

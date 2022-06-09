@@ -3,5 +3,5 @@
 
 namespace RenderSystem
 {
-    void render(Application_handle *app, scene *scene);
+    void render(Application_data *app, scene *scene);
 } 

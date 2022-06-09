@@ -2,6 +2,7 @@
 
 #include "../Components_Events.hpp"
 
+#include <assert.h>
 
 void CollisionSystem::update(Ecs::Registry *registry)
 {
@@ -42,8 +43,8 @@ void CollisionSystem::update(Ecs::Registry *registry)
 
                 ce.e1 = e;
                 ce.e2 = e2;
-
-                Ecs::broadcast_event<void>(registry, &ce);
+                assert(false); // TODO: implement
+                // Ecs::broadcast_event<void>(registry, &ce); //TODO(Johan) fix
             }
         }
     }

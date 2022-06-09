@@ -15,40 +15,28 @@ Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent
 
     Entity e = Ecs::create_entity(registry);
 
-    auto collision_comp = Collision();
+    Collision collision = {};
     
-    auto position_comp = Position();
-    auto velocity_comp = Velocity();
-    auto size_comp     = Size();
+    Position position = {x, y};
 
-    auto angle_comp    = Angle();
-    auto angleVel_comp = AnglularVelocity();
+    Velocity velocity = {0.0f, 0.0f};
+
+    Size size = {width, height};
+
+    Angle angle = {0.0f};
+
+    AnglularVelocity angleVel = {0.0f};
     
-    auto sprite_comp   = Sprite();
+    SpriteComponent spriteComp = {ship_type};
 
-    
 
-    position_comp.x = x;
-    position_comp.y = y;
-
-    velocity_comp.x = 0.0f;
-    velocity_comp.y = 0.0f;
-
-    size_comp.width = width;
-    size_comp.height = height;
-
-    angle_comp.angle = 0.0f;
-    angleVel_comp.angleV = 0.0f;
-
-    sprite_comp.texture_id = ship_type;
-
-    Ecs::set_component(registry, e, collision_comp);
-    Ecs::set_component(registry, e, position_comp);
-    Ecs::set_component(registry, e, velocity_comp);
-    Ecs::set_component(registry, e, size_comp);
-    Ecs::set_component(registry, e, angle_comp);
-    Ecs::set_component(registry, e, angleVel_comp);
-    Ecs::set_component(registry, e, sprite_comp);
+    Ecs::set_component(registry, e, collision);
+    Ecs::set_component(registry, e, position);
+    Ecs::set_component(registry, e, velocity);
+    Ecs::set_component(registry, e, size);
+    Ecs::set_component(registry, e, angle);
+    Ecs::set_component(registry, e, angleVel);
+    Ecs::set_component(registry, e, spriteComp);
 
 
     return e;
@@ -126,7 +114,7 @@ Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnE
     GravityAttractor grav = GravityAttractor();
 
 
-    Sprite sprite = {event->planet_type};
+    SpriteComponent sprite = {event->planet_type};
 
 
 

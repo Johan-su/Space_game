@@ -7,32 +7,33 @@
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
 
+#include <string>
 
+#include <assert.h>
 
-void init(Application_handle *app)
+enum Texture_id_map
 {
-    init_components();
-}
+    SHIP_texture
+};
 
-
-void clean(Application_handle *app)
+enum Sprite_id_map
 {
-
-}
+    SHIP1, SHIP2
+};
 
 
 
 static void init_components(scene *scene)
 {
-    // Ecs::init_component<Position>(scene->registry);
-    // Ecs::init_component<Size>(scene->registry);
-    // Ecs::init_component<Velocity>(scene->registry);
-    // Ecs::init_component<Angle>(scene->registry);
-    // Ecs::init_component<AnglularVelocity>(scene->registry);
-    // Ecs::init_component<RigidCollision>(scene->registry);
-    // Ecs::init_component<Collision>(scene->registry);
-    // Ecs::init_component<Player>(scene->registry);
-    // Ecs::init_component<Sprite>(scene->registry);
+    Ecs::init_component<Position>(scene->registry);
+    Ecs::init_component<Size>(scene->registry);
+    Ecs::init_component<Velocity>(scene->registry);
+    Ecs::init_component<Angle>(scene->registry);
+    Ecs::init_component<AnglularVelocity>(scene->registry);
+    Ecs::init_component<RigidCollision>(scene->registry);
+    Ecs::init_component<Collision>(scene->registry);
+    Ecs::init_component<Player>(scene->registry);
+    Ecs::init_component<SpriteComponent>(scene->registry);
 }
 
 
@@ -47,21 +48,24 @@ static void init_systems(scene *scene)
 }
 
 
-
-
-static void update()
+static void fixed_update(Application_data *app, scene *scene, float Ts)
 {
-    // MovementSystem::update(Ts);
-    // PlayerSystem::update(Ts);
-    // AngleSystem::update(Ts);
+
+}
+
+static void update(Application_data *app, scene *scene, float Ts)
+{
+    MovementSystem::update(scene->registry, Ts);
+    PlayerSystem::update(app, scene->registry, Ts);
+    AngleSystem::update(scene->registry, Ts);
 }
 
 
 
 
-static void render()
+static void render(Application_data *app, scene *scene, float Ts)
 {
-    // RenderSystem::render();
+    RenderSystem::render(app, scene);
 }
 
 
@@ -74,24 +78,48 @@ static void init_events(scene *scene)
 }
 
 
-static void setup_scene(scene *scene, const char *pwd)
+static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 {
-    // init_components(scene);
-    // init_systems(scene);
-    // init_events(scene);
+    init_components(scene);
+    init_systems(scene);
+    init_events(scene);
 
 
-    // std::string ship_path = std::string(pwd) + "/resources/ships/placeholder.bmp"; //TODO(Johan) replace std::string
+    
 
-    // Texture::load_texture(scene->renderer, scene->texture, SHIP_texture, ship_path.c_str());
-    // Texture::init_sprite(scene->texture, SHIP1, SHIP_texture, 0, 0, 114, 200);
+    std::string ship_path = std::string(pwd) + "/resources/ships/placeholder.bmp"; //TODO(Johan) replace std::string
 
 
-    // Camera_functions::set_camera_center(scene->camera, 0.0f, 0.0f);
+    Application::load_texture(app, SHIP_texture, ship_path.c_str());
+    Application::init_sprite(app, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
-    // PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
 
-    // Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);
+    Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
 
-    // PlayerSystem::set_player_entity(player);  
+    PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
+    assert(false); // TODO: implement
+    Entity player = ENTITY_NULL;
+    // Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse); //TODO(Johan) fix
+
+    PlayerSystem::set_player_entity(player);  
+}
+
+
+void init(Application_data *app, const char *pwd)
+{
+    scene *main_scene = Application::create_add_scene(app, "GamePlay_scene");
+    init_components(main_scene);
+    init_events(main_scene);
+    init_systems(main_scene);
+    
+
+
+
+    Application::run(app, main_scene, update, fixed_update, render);
+}
+
+
+void clean(Application_data *app)
+{
+
 }

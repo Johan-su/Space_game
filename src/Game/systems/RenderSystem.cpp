@@ -4,22 +4,22 @@
 
 //#include <stdint.h>
 
-static float RadToDeg(float angle)
+inline static float RadToDeg(float angle)
 {
     return angle * 57.2957786667f; // 180 / pi
 }
 
 
-void RenderSystem::render(Application_handle *app, scene *scene)
+void RenderSystem::render(Application_data *app, scene *scene)
 {
     Ecs::Registry *registry = scene->registry;
     Camera *camera = &scene->camera;
 
-    auto pos_view    = Ecs::get_view<Position, Size, Angle, Sprite>(registry);
-    auto size_view   = Ecs::get_view<Size, Angle, Sprite, Position>(registry);
+    auto pos_view    = Ecs::get_view<Position, Size, Angle, SpriteComponent>(registry);
+    auto size_view   = Ecs::get_view<Size, Angle, SpriteComponent, Position>(registry);
 
-    auto angle_view  = Ecs::get_view<Angle, Sprite, Position, Size>(registry);
-    auto sprite_view = Ecs::get_view<Sprite, Position, Size, Angle>(registry);
+    auto angle_view  = Ecs::get_view<Angle, SpriteComponent, Position, Size>(registry);
+    auto sprite_view = Ecs::get_view<SpriteComponent, Position, Size, Angle>(registry);
 
     for(size_t i = 0; i < pos_view.size; ++i)
     {

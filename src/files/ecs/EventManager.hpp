@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-
+/*
 namespace Ecs
 {
     struct event_data
@@ -55,3 +55,4 @@ namespace Ecs
 
 } // namespace Ecs
 
+*/

@@ -16,7 +16,7 @@ void PlayerSystem::set_player_entity(Entity id)
     player = id;
 }
 
-void PlayerSystem::update(Application_handle *app, Ecs::Registry *registry, float Ts)
+void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float Ts)
 {
     if (player == ENTITY_NULL)
     {
