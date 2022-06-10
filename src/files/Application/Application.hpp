@@ -126,4 +126,7 @@ namespace Application
 
     bool IsKeyPressed(Application_data *app, int keyCode);
 
+
+    void clear_view_buffer();
+
 }

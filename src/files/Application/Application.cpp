@@ -244,3 +244,8 @@ bool Application::IsKeyPressed(Application_data *app, int keyCode)
     return Hashmap::get_value(app->engine->key_map, keyCode);
 }
 
+
+void Application::clear_view_buffer()
+{
+    Arena::clear_top_arena(&g_memory.view_buffer);
+}

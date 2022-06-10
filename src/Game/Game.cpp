@@ -6,20 +6,13 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
+#include "systems/BoidSystem.hpp"
 
 #include <string>
 
 #include <assert.h>
 
-enum Texture_id_map
-{
-    SHIP_texture
-};
 
-enum Sprite_id_map
-{
-    SHIP1, SHIP2
-};
 
 
 
@@ -34,6 +27,7 @@ static void init_components(scene *scene)
     Ecs::init_component<Collision>(scene->registry);
     Ecs::init_component<Player>(scene->registry);
     Ecs::init_component<SpriteComponent>(scene->registry);
+    Ecs::init_component<Boid>(scene->registry);
 }
 
 
@@ -58,6 +52,8 @@ static void update(Application_data *app, scene *scene, float Ts)
     MovementSystem::update(scene->registry, Ts);
     PlayerSystem::update(app, scene->registry, Ts);
     AngleSystem::update(scene->registry, Ts);
+    BoidSystem::update(scene->registry, Ts);
+    
 }
 
 
@@ -75,6 +71,7 @@ static void init_events(scene *scene)
     Ecs::init_event<CollisionEvent, void>(scene->registry, NULL); //TODO(Johan) change to real function pointers
     Ecs::init_event<SpawnEvent, void>(scene->registry, NULL);
     Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_player);
+    Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_boid);
 }
 
 
@@ -95,6 +92,7 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 
 
     Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
+    Camera_functions::zoom(&scene->camera, 0.10f);
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
     Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);

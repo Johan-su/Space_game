@@ -14,12 +14,13 @@ namespace Ecs
     struct Registry
     {
         top_memory_arena *mm;
+        top_memory_arena *view_mm;
         Entity_data *edata;
         event_data *evdata;
         Component_data *cdata;      
     };
 
-    void init(Registry *registry, top_memory_arena *mm);
+    void init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm);
 
     Entity create_entity(Registry *registry);
     void destroy_entity(Registry *registry, Entity e);
@@ -78,9 +79,9 @@ namespace Ecs
     }
 
     template<typename T1, typename... Ts>
-    View<T1> get_view(Registry *registry)
+    View<T1> *get_view(Registry *registry)
     {
-        return Component_functions::get_view<T1, Ts...>(registry->mm, registry->cdata);
+        return Component_functions::get_view<T1, Ts...>(registry->mm, registry->view_mm, registry->cdata);
     }
 }
 

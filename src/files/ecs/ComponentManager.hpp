@@ -241,7 +241,7 @@ namespace Ecs
 
 
         template<typename T1, typename... Ts>
-        View<T1> get_view(top_memory_arena *mm, Component_data *cdata)
+        View<T1> *get_view(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
         {
             const size_t typeCount = 1 + sizeof...(Ts);
 
@@ -251,13 +251,15 @@ namespace Ecs
 
             _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
 
+            //TODO(Johan): allocation with minsize might waste alot of memory.
+            View<T1> *view = Arena::top_alloc<View<T1>>(view_mm); 
+            view->entity_list = Arena::top_alloc<Entity>(view_mm, minsize);
+            view->comparray = Arena::top_alloc<T1>(view_mm, minsize);
+            view->size = 0;
 
-            View<T1> view = View<T1>();
-            view.size = 0;
-
-            for(size_t i = 0; i < VIEW_SIZE; ++i)
+            for(size_t i = 0; i < minsize; ++i)
             {
-                view.entity_list[i] = ENTITY_NULL;
+                view->entity_list[i] = ENTITY_NULL;
             }
 
             Component_pool<T1> *comp_pool = get_component_pool<T1>(cdata);
@@ -313,7 +315,7 @@ namespace Ecs
                     }
 
                     ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
-                    view.entity_list[view.size++] = min_e;
+                    view->entity_list[view->size++] = min_e;
 
                     continue_entity_loop:;
                 }                    
@@ -325,17 +327,16 @@ namespace Ecs
             }
 
             // add components to view
-            ECS_assert(view.size < VIEW_SIZE, "View cannot be greater than max size");
-            for(size_t i = 0; i < view.size; ++i)
+            for(size_t i = 0; i < view->size; ++i)
             {
-                Entity e = view.entity_list[i];
+                Entity e = view->entity_list[i];
                 ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
                 
                 uint32_t page_id = e / PAGE_SIZE;
                 uint32_t page_entry = e % PAGE_SIZE;
 
                 Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
-                view.comparray[i] = page->dense_array[page->sparse_array[page_entry]];
+                view->comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
 
 

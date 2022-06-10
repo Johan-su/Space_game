@@ -17,7 +17,7 @@ struct global_memory
 
     top_memory_arena scratch_buffer; // used temporary memory
 
-    top_memory_arena system_buffer; // gets cleared after a game system function
+    top_memory_arena view_buffer; // gets cleared after a game system function
 
 
 
