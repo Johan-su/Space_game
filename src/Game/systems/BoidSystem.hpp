@@ -4,7 +4,6 @@
 
 namespace BoidSystem
 {
-    void init(game_data *game);
-    void update(float Ts);
+    void update(Ecs::Registry *registry, float Ts);
 
 } // namespace BoidSystem

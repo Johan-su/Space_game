@@ -1,16 +1,7 @@
 #include "BoidSystem.hpp"
-
-#include "../Game.hpp"
-
 #include "../Components_Events.hpp"
 
-static game_data *game;
-
-void BoidSystem::init(game_data *game)
-{
-    ::game = game;
-}
-
+#include <math.h>
 
 static Velocity avgVel(View<Position> *pos_view, View<Velocity> *vel_view, float visual_range, Position *e_pos,  Velocity *e_vel)
 {
@@ -86,11 +77,11 @@ static const float alignment  = 12.0f;
 
 static const float cohesion   = 3.0f;
 
-static void goToCenter(View<Position> *pos_view, Entity e, float Ts)
+static void goToCenter(Ecs::Registry *registry, View<Position> *pos_view, Entity e, float Ts)
 {
 
-    Position *pos = Ecs::get_component<Position>(game->registry, e);
-    Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+    Position *pos = Ecs::get_component<Position>(registry, e);
+    Velocity *vel = Ecs::get_component<Velocity>(registry, e);
 
     Position avg_pos = avgPos(pos_view, visualrange, pos);
 
@@ -102,10 +93,10 @@ static void goToCenter(View<Position> *pos_view, Entity e, float Ts)
 
 static const float minDistance = 50.0f;
 
-static void avoidOthers(View<Position> *pos_view, Entity e, float Ts)
+static void avoidOthers(Ecs::Registry *registry, View<Position> *pos_view, Entity e, float Ts)
 {
-    Position *pos = Ecs::get_component<Position>(game->registry, e);
-    Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+    Position *pos = Ecs::get_component<Position>(registry, e);
+    Velocity *vel = Ecs::get_component<Velocity>(registry, e);
 
     for(size_t i = 0; i < pos_view->size; ++i)
     {
@@ -125,10 +116,10 @@ static void avoidOthers(View<Position> *pos_view, Entity e, float Ts)
 }
 
 
-static void matchVelocity(View<Position> *pos_view, View<Velocity> *vel_view, Entity e, float Ts)
+static void matchVelocity(Ecs::Registry *registry, View<Position> *pos_view, View<Velocity> *vel_view, Entity e, float Ts)
 {
-    Position *pos = Ecs::get_component<Position>(game->registry, e);
-    Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+    Position *pos = Ecs::get_component<Position>(registry, e);
+    Velocity *vel = Ecs::get_component<Velocity>(registry, e);
 
     Velocity avg_vel = avgVel(pos_view, vel_view, visualrange, pos, vel);
         
@@ -138,11 +129,11 @@ static void matchVelocity(View<Position> *pos_view, View<Velocity> *vel_view, En
 }
 
 
-static float speed_limit = 4000000.0f;
+static float speed_limit = 40000.0f;
 
-static void limitSpeed(Entity e, float Ts)
+static void limitSpeed(Ecs::Registry *registry, Entity e, float Ts)
 {
-    Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+    Velocity *vel = Ecs::get_component<Velocity>(registry, e);
 
     float speed = hypotf(vel->x, vel->y);
 
@@ -153,30 +144,41 @@ static void limitSpeed(Entity e, float Ts)
     }
 }
 
-float spawn_timer = 0.0f;
+static float spawn_timer = 0.0f;
 
-void BoidSystem::update(float Ts)
+static float print_timer = 0.0f;
+
+void BoidSystem::update(Ecs::Registry *registry, float Ts)
 {
-    auto vel_view = Ecs::get_view<Velocity, Boid>(game->registry);
-    auto pos_view = Ecs::get_view<Position, Boid>(game->registry);
+    Application::clear_view_buffer();
+    auto vel_view = Ecs::get_view<Velocity, Boid>(registry);
+    auto pos_view = Ecs::get_view<Position, Boid>(registry);
 
 
     const float maxDistance = 5000.0f;
 
-    for(size_t i = 0; i < pos_view.size; ++i)
+    print_timer += Ts;
+    while(print_timer > 1.0f)
+    {
+        print_timer -= 1.0f;
+        printf("entity count: %llu\n", pos_view->size);
+    }
+
+    for(size_t i = 0; i < pos_view->size; ++i)
     {
 
-        Entity e = pos_view.entity_list[i];
+
+        Entity e = pos_view->entity_list[i];
         // coherence
-        goToCenter(&pos_view, e, Ts);
+        //goToCenter(registry, pos_view, e, Ts);
         // separation
-        avoidOthers(&pos_view, e, Ts);
+        //avoidOthers(registry, pos_view, e, Ts);
         // alignment
-        matchVelocity(&pos_view, &vel_view, e, Ts);
+        //matchVelocity(registry, pos_view, vel_view, e, Ts);
 
         // keep in bounds
-        Position *pos = Ecs::get_component<Position>(game->registry, e);
-        Velocity *vel = Ecs::get_component<Velocity>(game->registry, e);
+        Position *pos = Ecs::get_component<Position>(registry, e);
+        Velocity *vel = Ecs::get_component<Velocity>(registry, e);
 
         if(pos->x > maxDistance)
         {
@@ -187,8 +189,8 @@ void BoidSystem::update(float Ts)
 
         if(pos->x < -maxDistance)
         {
-            vel->x *= (-1.0f);
-            pos->x = -maxDistance + 50.0f;
+            Ecs::destroy_entity(registry, e);
+            continue;
         }
 
         
@@ -198,36 +200,39 @@ void BoidSystem::update(float Ts)
             pos->y = maxDistance - 50.0f;
         }
 
-
+        
         if(pos->y < -maxDistance)
         {
-            Ecs::destroy_entity(game->registry, e);
+            Ecs::destroy_entity(registry, e);
             continue;
         }
-
+        
         // set angle to velocity vector
 
-        Angle *ang    = Ecs::get_component<Angle>(game->registry, e);
+        Angle *ang    = Ecs::get_component<Angle>(registry, e);
         ang->angle = atan2(vel->y, vel->x);
 
 
         //limit speed
-        limitSpeed(e, Ts);
+        //limitSpeed(registry, e, Ts);
     }
 
     spawn_timer += Ts;
-    while(spawn_timer > 0.003f)
+    while(spawn_timer > 0.00001f)
     {
-        spawn_timer -= 0.003f;
+        spawn_timer -= 0.00001f;
         BoidSpawnEvent bse = BoidSpawnEvent();
 
-        bse.x = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
         bse.y = 1500.0f * (float)(rand() - rand()) / (float)RAND_MAX;
 
-        bse.vel_x = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
-        bse.vel_y = 100.0f * (float)(rand() - rand()) / (float)RAND_MAX;
+        float speed = 5000.0f;
+        float angle = (((float)rand() / (float)RAND_MAX) - 0.5f) * 2 * 3.141592741f;
+        bse.vel_x = speed * cos(angle);
+        bse.vel_y = speed * sin(angle);
+        
 
-        Ecs::broadcast_event<BoidSpawnEvent, Entity>(game->registry, &bse);
+
+        Ecs::broadcast_event<Entity>(registry, &bse);
     }
 }
 

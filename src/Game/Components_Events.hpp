@@ -163,3 +163,17 @@ struct PlanetSpawnEvent
 
     uint8_t planet_type;
 };
+
+
+
+struct Boid
+{
+};
+
+struct BoidSpawnEvent
+{
+    float x;
+    float y;
+    float vel_x;
+    float vel_y;
+};

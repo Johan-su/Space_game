@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-
+#include "../Game.hpp"
 
 
 Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent *event)
@@ -98,7 +98,41 @@ Entity EntityCreationSystem::create_ai(Ecs::Registry *registry, AiSpawnEvent *ev
 }
 
 
+Entity EntityCreationSystem::create_boid(Ecs::Registry *registry, BoidSpawnEvent *event)
+{
+    Entity e = Ecs::create_entity(registry);
 
+    Position pos = Position();
+    pos.x = event->x;
+    pos.y = event->y;
+
+    Velocity vel = Velocity();
+    vel.x = event->vel_x;
+    vel.y = event->vel_y;
+
+    Size size = Size();
+    size.height = 114.0f * 0.25f;
+    size.width  = 200.0f * 0.25f;
+
+    Angle ang = Angle();
+    ang.angle = 0.0f;
+
+    Boid boid = Boid();
+
+    SpriteComponent sprite = SpriteComponent();
+
+    sprite.texture_id = SHIP1;
+    
+
+    Ecs::set_component(registry, e, pos);
+    Ecs::set_component(registry, e, vel);
+    Ecs::set_component(registry, e, size);
+    Ecs::set_component(registry, e, ang);
+    Ecs::set_component(registry, e, boid);
+    Ecs::set_component(registry, e, sprite);
+
+    return e;
+}
 
 
 
