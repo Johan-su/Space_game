@@ -104,7 +104,7 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
 
     char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
 
-    strcat(config_path, pwd);
+    strcpy(config_path, pwd);
     strcat(config_path, "/config.ini");
 
     Config::init(engine->config, config_path);
