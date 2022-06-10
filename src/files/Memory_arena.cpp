@@ -38,29 +38,34 @@ void Arena::clean_arena(top_memory_arena *arena)
 
 void *Arena::top_alloc_bytes(top_memory_arena *arena, size_t bytes, size_t alignment)
 {
-    if(bytes + arena->bytes_allocated > arena->max_size_commited)
+    // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
+
+    void *non_aligned_data = (char *)arena->data + arena->bytes_allocated;
+    size_t alignment_shift = (size_t)non_aligned_data % alignment;
+       
+    size_t aligned_bytes = bytes + alignment_shift;
+
+    if(aligned_bytes + arena->bytes_allocated > arena->max_size_commited)
     {
         // if byte allocation is out of top_arena bounds, commit more from reserved memory.
-        void *last_data = (char *)arena->data + arena->max_size_commited;
         size_t page_size = Platform::get_page_size();
+        size_t page_amount = Platform::bytes_to_page_amount(arena->max_size_commited + aligned_bytes);
 
-        size_t page_amount = Platform::bytes_to_page_amount(bytes + arena->max_size_commited);
 
-        if(bytes + arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
+        if(arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
         {
             fprintf(stderr, "ERROR: allocation out of top arena reserved bounds");
             exit(1);
         }
-        memory_map::commit(last_data, page_amount * page_size);
+        memory_map::commit((char *)arena->data + arena->max_size_commited, page_amount);
         arena->max_size_commited += page_amount * page_size;
 
     }
 
-    void *non_aligned_data = (char *)arena->data + arena->bytes_allocated;
 
-    void *data = ((char*)non_aligned_data + ((size_t)non_aligned_data % alignment));
+    void *data = (char *)non_aligned_data + alignment_shift;
 
-    arena->bytes_allocated += bytes;
+    arena->bytes_allocated += aligned_bytes;
 
     return data;
 }
@@ -105,6 +110,6 @@ void Arena::clear_arena(memory_arena *arena)
 
 void Arena::clear_top_arena(top_memory_arena *arena)
 {
-    memset(arena->data, 0, arena->max_size_commited);
+   // memset(arena->data, 0, arena->max_size_commited);
     arena->bytes_allocated = 0;
 }
