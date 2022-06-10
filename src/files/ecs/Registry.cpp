@@ -13,9 +13,11 @@ void Ecs::init(Registry *registry, top_memory_arena *mm)
     registry->mm = mm;
 
     registry->edata  = Arena::top_alloc<Entity_data>(registry->mm);
+    registry->evdata = Arena::top_alloc<event_data>(registry->mm);
     registry->cdata  = Arena::top_alloc<Component_data>(registry->mm);
 
     Entity_functions::init(registry->edata);
+    Event_functions::init(registry->evdata);
     Component_functions::init(registry->cdata);
 }
 

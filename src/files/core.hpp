@@ -57,8 +57,6 @@ namespace Real
     void clean_engine(engine_data *engine);
 
     void clean(engine_data *engine);
-
-    void run(engine_data *engine);
 }
 
 

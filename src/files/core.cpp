@@ -37,7 +37,7 @@ void Real::init_global_memory()
     reserve_memory_begin = memory_map::reserve(NULL, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
-    Arena::init_top_arena(&g_memory.app_buffer, reserve_memory_begin, 4096, 2 * MiB); // 2 MiB
+    Arena::init_top_arena(&g_memory.app_buffer, reserve_memory_begin, 4 * KiB, 2 * MiB); // 2 MiB
     Arena::init_top_arena(&g_memory.scratch_buffer, (char *)reserve_memory_begin + 2 * MiB, 2 * MiB, 2 * MiB); // 2 MiB
 
 
@@ -100,16 +100,15 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
 
     engine->config = Arena::top_alloc<config_data>(arena);
 
-    {
-        char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
+    Arena::clear_top_arena(&g_memory.scratch_buffer);
 
-        strcat(config_path, pwd);
-        strcat(config_path, "/config.ini");
+    char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
 
-        Config::init(engine->config, config_path);
+    strcat(config_path, pwd);
+    strcat(config_path, "/config.ini");
 
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
-    }
+    Config::init(engine->config, config_path);
+
 
 
 
@@ -143,74 +142,6 @@ void Real::clean_engine(engine_data *engine) // exists because SDL uses its own 
     engine->key_map = NULL;
     engine->mouse_map = NULL;
 }
-
-
-
-
-static void handle_input_events(engine_data *engine, float Ts) //TODO(Johan) move to different file
-{
-    
-}
-
-
-void Real::run(engine_data *engine) //TODO:(Johan) make use of func pointers for update and render also pass through scene somehow
-{
-    // engine->active = true;
-    
-    // //uint64_t print_timer = 0;
-    // uint64_t fixed_update_count = 0;
-    // uint64_t target_time = 1000000 / engine->config->FPS_target;
-    // uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
-    
-    // uint64_t curr;
-    // uint64_t prev = deltaTime::get_micro_time();
-    // uint64_t dt; // dt in microseconds 10^-6 seconds
-    // float ts; // time step in seconds
-
-    // while(engine->active)
-    // {
-    //     curr = deltaTime::get_micro_time();
-    //     dt = curr - prev;
-    //     prev = curr;
-
-
-    //     /*
-    //     print_timer += dt;
-    //     if(print_timer > 1000000)
-    //     {
-    //         printf("count %-5llu fps: %-7.1f frametime: %f\n", count, 1000000.0f / dt, dt / 1000000.0f);
-    //         print_timer -= 1000000;
-    //     }
-    //     */
-    //     ts = dt / 1000000.0f;
-
-    //     handle_input_events(engine, ts);
-    //     update(engine, ts, NULL);
-
-    //     fixed_update_count += dt;
-    //     while(fixed_update_count >= target_fixed_update)
-    //     {
-    //         fixed_update(engine, target_fixed_update / 1000000.0f, NULL);
-    //         fixed_update_count -= target_fixed_update;
-    //     }
-
-    //     render(engine, ts, NULL);
-
-    //     do
-    //     {
-    //         curr = deltaTime::get_micro_time();
-    //         dt = curr - prev;
-    //     } while(dt < target_time);
-
-    // }
-}
-
-
-
-
-
-
-
 
 
 

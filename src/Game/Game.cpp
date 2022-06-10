@@ -72,9 +72,9 @@ static void render(Application_data *app, scene *scene, float Ts)
 
 static void init_events(scene *scene)
 {
-    // Ecs::init_event<CollisionEvent, void>(scene->registry, NULL); //TODO(Johan) change to real function pointers
-    // Ecs::init_event<SpawnEvent, void>(scene->registry, NULL);
-    // Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_player);
+    Ecs::init_event<CollisionEvent, void>(scene->registry, NULL); //TODO(Johan) change to real function pointers
+    Ecs::init_event<SpawnEvent, void>(scene->registry, NULL);
+    Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_player);
 }
 
 
@@ -97,9 +97,7 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
     Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
-    assert(false); // TODO: implement
-    Entity player = ENTITY_NULL;
-    // Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse); //TODO(Johan) fix
+    Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);
 
     PlayerSystem::set_player_entity(player);  
 }
@@ -108,10 +106,7 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 void init(Application_data *app, const char *pwd)
 {
     scene *main_scene = Application::create_add_scene(app, "GamePlay_scene");
-    init_components(main_scene);
-    init_events(main_scene);
-    init_systems(main_scene);
-    
+    setup_scene(app, main_scene, pwd);
 
 
 

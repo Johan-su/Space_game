@@ -10,7 +10,7 @@ using namespace Ecs;
 
 
 
-void Component_functions::init(Component_data *cdata) // TODO(johan) check if alignment actually works
+void Component_functions::init(Component_data *cdata)
 {
     memset(cdata, 0, sizeof(*cdata));
 }
@@ -39,14 +39,14 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
 
         if(pool_entity_count == 0) {
-            ECS_dbg3(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool component id: %llu\n", e, i));
+            ECS_dbg3(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool; component id: %llu\n", e, i));
             continue;
         }
 
         void *page = pool_component_pages[page_id];
         if(page == NULL)
         { 
-            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page component id: %ld, page id: %llu\n", e, i, page_id));
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page; component id: %ld, page id: %llu\n", e, i, page_id));
             continue;
         }
         size_t *page_entity_count = (size_t*)(page);
@@ -54,7 +54,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
         if(page_sparse_array[page_entry_e] == ENTITY_NULL)
         {
-            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu], does not exist page component id: %llu, page id: %ld\n", e, i, page_id));
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu], does not exist in page; component id: %llu, page id: %ld\n", e, i, page_id));
             continue;
         }
 

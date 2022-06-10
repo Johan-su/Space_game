@@ -15,6 +15,7 @@ namespace Ecs
     {
         top_memory_arena *mm;
         Entity_data *edata;
+        event_data *evdata;
         Component_data *cdata;      
     };
 
@@ -28,6 +29,19 @@ namespace Ecs
 
 namespace Ecs
 {
+    template<typename ReturnT, typename EventT>
+    void init_event(Registry *registry, ReturnT (event_listener)(Registry *, EventT *))
+    {
+        Event_functions::init_event<ReturnT, EventT>(registry->evdata, event_listener);
+    }
+
+
+    template<typename ReturnT, typename EventT>
+    ReturnT broadcast_event(Registry *registry, EventT *event)
+    {
+        return Event_functions::broadcast_event<ReturnT, EventT>(registry, registry->evdata, event);
+    }
+
 
     template<typename T>
     void init_component(Registry *registry)
@@ -60,10 +74,7 @@ namespace Ecs
     template<typename T>
     void destroy_component(Registry *registry, Entity e) //TODO(Johan) add all necessary deletions
     {
-        
-        auto *cdata = rdata->cdata;
-
-        Component_functions::destroy_component<T>(cdata, e);
+        Component_functions::destroy_component<T>(rdata->cdata, e);
     }
 
     template<typename T1, typename... Ts>
