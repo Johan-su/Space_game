@@ -44,7 +44,7 @@ namespace Ecs
         }
 
         template<typename ReturnT, typename EventT>
-        ReturnT broadcast_event(Registry *registry, event_data *ed, EventT *event)
+        ReturnT broadcast_event(Registry *registry, event_data *ed, EventT *event) // TODO:(Johan) maybe change as registry includes event_data
         {
             const size_t id = get_event_id<EventT>(ed);
             ECS_assert(ed->event_init[id], "event must be initalized");
