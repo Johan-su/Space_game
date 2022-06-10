@@ -3,7 +3,7 @@
 using namespace Ecs;
 
 
-void Ecs::init(Registry *registry, top_memory_arena *mm)
+void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm)
 {
     ECS_assert(registry != NULL, "Registry cannot be NULL");
 
@@ -11,6 +11,7 @@ void Ecs::init(Registry *registry, top_memory_arena *mm)
 
 
     registry->mm = mm;
+    registry->view_mm = view_mm;
 
     registry->edata  = Arena::top_alloc<Entity_data>(registry->mm);
     registry->evdata = Arena::top_alloc<event_data>(registry->mm);

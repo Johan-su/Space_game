@@ -80,7 +80,7 @@ scene *Application::create_add_scene(Application_data *app, const char *scene_na
         scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
         game_scene->registry = Arena::top_alloc<Ecs::Registry>(&g_memory.scene_buffers[scene_pos]);
 
-        Ecs::init(game_scene->registry, &g_memory.scene_buffers[scene_pos]);
+        Ecs::init(game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
         Camera_functions::init(&game_scene->camera, app->engine->config->screen_width, app->engine->config->screen_height);
         
         
@@ -138,7 +138,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
 
     app->active = true;
 
-    //uint64_t print_timer = 0;
+    uint64_t print_timer = 0;
     uint64_t fixed_update_count = 0;
     uint64_t target_time = 1000000 / app->engine->config->FPS_target;
     uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
@@ -155,14 +155,14 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         prev = curr;
 
 
-        /*
+        
         print_timer += dt;
         if(print_timer > 1000000)
         {
-            printf("count %-5llu fps: %-7.1f frametime: %f\n", count, 1000000.0f / dt, dt / 1000000.0f);
+            printf("fps: %-7.1f frametime: %f\n", 1000000.0f / dt, dt / 1000000.0f);
             print_timer -= 1000000;
         }
-        */
+        
         ts = dt / 1000000.0f;
 
         handle_input_events(app->engine, ts);
@@ -244,3 +244,8 @@ bool Application::IsKeyPressed(Application_data *app, int keyCode)
     return Hashmap::get_value(app->engine->key_map, keyCode);
 }
 
+
+void Application::clear_view_buffer()
+{
+    Arena::clear_top_arena(&g_memory.view_buffer);
+}

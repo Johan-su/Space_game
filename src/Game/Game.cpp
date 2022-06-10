@@ -11,15 +11,7 @@
 
 #include <assert.h>
 
-enum Texture_id_map
-{
-    SHIP_texture
-};
 
-enum Sprite_id_map
-{
-    SHIP1, SHIP2
-};
 
 
 
@@ -58,6 +50,7 @@ static void update(Application_data *app, scene *scene, float Ts)
     MovementSystem::update(scene->registry, Ts);
     PlayerSystem::update(app, scene->registry, Ts);
     AngleSystem::update(scene->registry, Ts);
+    
 }
 
 
@@ -95,6 +88,7 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 
 
     Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
+    Camera_functions::zoom(&scene->camera, 0.10f);
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
     Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);

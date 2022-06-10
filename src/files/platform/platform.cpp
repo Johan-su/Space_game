@@ -11,7 +11,7 @@
 #include "win64/win_init.hpp"
 
 
-#include <math.h>
+#include <stdio.h>
 #include <Windows.h>
 
 
@@ -65,6 +65,7 @@ void *memory_map::reserve(void *address, size_t page_amount)
 
 void *memory_map::commit(void *address, size_t page_amount)
 {
+    fprintf(stderr, "DEBUG: commit [%p, %llu]\n", address, page_amount);
     return Windows::commit(address, page_amount);
 }
 

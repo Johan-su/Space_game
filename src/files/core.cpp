@@ -37,8 +37,15 @@ void Real::init_global_memory()
     reserve_memory_begin = memory_map::reserve(NULL, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
-    Arena::init_top_arena(&g_memory.app_buffer, reserve_memory_begin, 4 * KiB, 2 * MiB); // 2 MiB
-    Arena::init_top_arena(&g_memory.scratch_buffer, (char *)reserve_memory_begin + 2 * MiB, 2 * MiB, 2 * MiB); // 2 MiB
+    void *app_buffer_start = reserve_memory_begin;
+    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, 4 * KiB, 2 * MiB); // 2 MiB
+
+    void *scratch_buffer_start = (char *)app_buffer_start + 2 * MiB;
+    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, 2 * MiB, 2 * MiB); // 2 MiB
+
+
+    void *view_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
+    Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start, 10 * MiB, 1 * GiB);
 
 
 
@@ -104,7 +111,7 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
 
     char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
 
-    strcat(config_path, pwd);
+    strcpy(config_path, pwd);
     strcat(config_path, "/config.ini");
 
     Config::init(engine->config, config_path);

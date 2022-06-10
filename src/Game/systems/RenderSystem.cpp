@@ -12,6 +12,7 @@ inline static float RadToDeg(float angle)
 
 void RenderSystem::render(Application_data *app, scene *scene)
 {
+    Application::clear_view_buffer();
     Ecs::Registry *registry = scene->registry;
     Camera *camera = &scene->camera;
 
@@ -21,16 +22,16 @@ void RenderSystem::render(Application_data *app, scene *scene)
     auto angle_view  = Ecs::get_view<Angle, SpriteComponent, Position, Size>(registry);
     auto sprite_view = Ecs::get_view<SpriteComponent, Position, Size, Angle>(registry);
 
-    for(size_t i = 0; i < pos_view.size; ++i)
+    for(size_t i = 0; i < pos_view->size; ++i)
     {
         //dbg(printf("running in render for loop\n"));
-        Texture_Sprite *sprite = Application::get_sprite(app, sprite_view.comparray[i].texture_id);
+        Texture_Sprite *sprite = Application::get_sprite(app, sprite_view->comparray[i].texture_id);
         Texture *texture       = Application::get_texture(app, sprite->texture_index);
 
         Rect srcrect     = Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
 
-        auto pos = pos_view.comparray[i];
-        auto size = size_view.comparray[i];
+        auto pos = pos_view->comparray[i];
+        auto size = size_view->comparray[i];
 
 
         FRect dstrect = FRect();
@@ -46,7 +47,7 @@ void RenderSystem::render(Application_data *app, scene *scene)
 
         //SDL_RenderCopyExF(renderer, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, SDL_FLIP_NONE);
 
-        Application::RenderCopyExF(app, texture, &srcrect, &dstrect, RadToDeg(angle_view.comparray[i].angle) + 90.0f, NULL, FLIP_NONE);
+        Application::RenderCopyExF(app, texture, &srcrect, &dstrect, RadToDeg(angle_view->comparray[i].angle) + 90.0f, NULL, FLIP_NONE);
     }
 }
 
