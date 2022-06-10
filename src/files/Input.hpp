@@ -1,10 +1,10 @@
 #pragma once
-#include "Game.hpp"
+#include "core.hpp"
 
 
 
 
 namespace Input
 {
-    void handle_input(game_data *game);
+    void handle_input(engine_data *engine);
 }

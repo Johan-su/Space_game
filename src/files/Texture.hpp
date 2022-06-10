@@ -6,15 +6,6 @@
 #define MAX_TEXTURE_TYPES 512
 #define MAX_SPRITE_TYPES 512
 
-enum Texture_id_map
-{
-    SHIP_texture
-};
-
-enum Sprite_id_map
-{
-    SHIP1, SHIP2
-};
 
 
 struct Tex_Sprite
@@ -29,17 +20,18 @@ struct Tex_Sprite
 
 struct textures_data
 {
+    uint32_t texture_count;
+    uint32_t sprite_count;
+
     SDL_Texture *texture_list[MAX_TEXTURE_TYPES]; //TODO(johan) maybe change to linked list
     uint32_t enum_to_texture[MAX_SPRITE_TYPES];
-    size_t texture_count;
     
     Tex_Sprite sprite_list[MAX_SPRITE_TYPES];
     uint32_t enum_to_sprite[MAX_SPRITE_TYPES];
-    size_t sprite_count;
 };
 
 
-namespace Texture
+namespace Texture_functions
 {
     void init(textures_data *td);
     void clean(textures_data *td);

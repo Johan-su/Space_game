@@ -16,7 +16,4 @@ struct config_data
 namespace Config
 {
     void init(config_data *settings, const char *path);
-    void clean(config_data *settings);
-
-
 }

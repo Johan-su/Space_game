@@ -3,6 +3,5 @@
 
 namespace RenderSystem
 {
-    void init(game_data *game);
-    void render();
+    void render(Application_data *app, scene *scene);
 } 

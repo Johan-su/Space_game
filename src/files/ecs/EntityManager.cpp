@@ -6,21 +6,16 @@ using namespace Ecs;
 
 
 
-void Entity_functions::init(Memory_pool *mem, Entity_data *e_data)
+void Entity_functions::init(Entity_data *e_data)
 {
-    e_data->m_entitycount = -1;
-}
-
-
-void Entity_functions::clean(Memory_pool *mem, Entity_data *e_data)
-{
+    e_data->m_entitycount = 0;
 }
 
 
 Entity Entity_functions::create_entity(Entity_data *e_data)
 {
     Entity e = Entity();
-    e = {++(e_data->m_entitycount)};
+    e = {e_data->m_entitycount++};
     return e;
 }
 

@@ -86,9 +86,3 @@ void Config::init(config_data *settings, const char *config_path)
         exit(1);
     }
 }
-
-
-void Config::clean(config_data *settings)
-{
-
-}

@@ -1,11 +1,14 @@
 #pragma once
-#include "MemoryManager.hpp"
 
 #include <stdint.h>
 
 
+
+#define MAX_EVENT_TYPES 256
+
 namespace Ecs
 {
+    struct Registry;
     struct event_data
     {
         bool event_init[MAX_EVENT_TYPES];
@@ -17,7 +20,6 @@ namespace Ecs
     namespace Event_functions
     {
         void init(event_data *ed);
-        void clean(Memory_pool *mm, event_data *ed);
         
     } // namespace Event_functions
     
@@ -32,24 +34,24 @@ namespace Ecs
         }
 
 
-        template<typename Event, typename Return>
-        void init_event(event_data *ed, Return (event_listener)(Event*))
+        template<typename ReturnT, typename EventT>
+        void init_event(event_data *ed, ReturnT (event_listener)(Registry *, EventT*))
         {
-            const size_t id = get_event_id<Event>(ed);
+            const size_t id = get_event_id<EventT>(ed);
             ECS_assert(id < MAX_EVENT_TYPES, "id must be lower than MAX_EVENT_TYPES");
             ed->event_listeners[id] = (void*)event_listener;
             ed->event_init[id] = true;
         }
 
-        template<typename EventT, typename ReturnT>
-        ReturnT broadcast_event(event_data *ed, EventT *event)
+        template<typename ReturnT, typename EventT>
+        ReturnT broadcast_event(Registry *registry, event_data *ed, EventT *event) // TODO:(Johan) maybe change as registry includes event_data
         {
             const size_t id = get_event_id<EventT>(ed);
             ECS_assert(ed->event_init[id], "event must be initalized");
 
-            auto *listener = (ReturnT (*)(EventT*))(ed->event_listeners[id]); // normal C++ things
+            auto *listener = (ReturnT (*)(Registry *, EventT*))(ed->event_listeners[id]); // normal C++ things
 
-            return listener(event);
+            return listener(registry, event);
         }
     } // namespace Event_functions
 

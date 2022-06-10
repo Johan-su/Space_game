@@ -1,6 +1,6 @@
 #pragma once
 #include "ecs_constants.hpp"
-#include "MemoryManager.hpp"
+#include "../Memory_arena.hpp"
 #include "Entity.hpp"
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
@@ -48,7 +48,6 @@ namespace Ecs
     namespace Component_functions 
     {
         void init(Component_data *cdata);
-        void clean(Memory_pool *mm, Component_data *cdata);
 
         void destroy_entity(Component_data *cdata, Entity e);
 
@@ -69,13 +68,13 @@ namespace Ecs
 
 
         template<typename T>
-        void init_component(Memory_pool *mm, Component_data *cdata)
+        void init_component(top_memory_arena *mm, Component_data *cdata)
         {
             const size_t compid = get_component_id<T>(cdata);
 
             Component_pool<T> *comp_pool = (Component_pool<T>*)cdata->component_pools[compid];
 
-            comp_pool = Memory::alloc<Component_pool<T>>(mm);
+            comp_pool = Arena::top_alloc<Component_pool<T>>(mm);
 
             comp_pool->page_count = 0;
             comp_pool->entity_count = 0;
@@ -106,10 +105,10 @@ namespace Ecs
 
 
         template<typename T>
-        Component_page<T> *init_page(Memory_pool *mm, Component_pool<T> *pool, uint32_t page_id)
+        Component_page<T> *init_page(top_memory_arena *mm, Component_pool<T> *pool, uint32_t page_id)
         {
             ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
-            Component_page<T> *page = Memory::alloc<Component_page<T>>(mm);
+            Component_page<T> *page = Arena::top_alloc<Component_page<T>>(mm);
 
             page->entity_count = 0;
             for(size_t i = 0; i < PAGE_SIZE; ++i)
@@ -128,7 +127,7 @@ namespace Ecs
 
 
         template<typename T>
-        Component_page<T> *get_page(Memory_pool *mm, Component_pool<T> *pool, uint32_t id)
+        Component_page<T> *get_page(top_memory_arena *mm, Component_pool<T> *pool, uint32_t id)
         {
             ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
 
@@ -142,7 +141,7 @@ namespace Ecs
 
 
         template<typename T>
-        void set_component(Memory_pool *mm, Component_data *cdata, Entity e, T &comp)
+        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T &comp)
         {
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
@@ -163,7 +162,7 @@ namespace Ecs
         }
 
         template<typename T>
-        Entity lookup_entity(Memory_pool *mm, Component_data *cdata, Entity e)
+        Entity lookup_entity(top_memory_arena *mm, Component_data *cdata, Entity e)
         {   
 
             uint32_t page_id = e / PAGE_SIZE;
@@ -198,7 +197,7 @@ namespace Ecs
         
 
         template<typename T>
-        T *get_component(Memory_pool *mm, Component_data *cdata, Entity e)
+        T *get_component(top_memory_arena *mm, Component_data *cdata, Entity e)
         {
             ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
             Component_pool<T> *pool = get_component_pool<T>(cdata);
@@ -242,7 +241,7 @@ namespace Ecs
 
 
         template<typename T1, typename... Ts>
-        View<T1> get_view(Memory_pool *mm, Component_data *cdata)
+        View<T1> get_view(top_memory_arena *mm, Component_data *cdata)
         {
             const size_t typeCount = 1 + sizeof...(Ts);
 
@@ -331,8 +330,10 @@ namespace Ecs
             {
                 Entity e = view.entity_list[i];
                 ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
+                
                 uint32_t page_id = e / PAGE_SIZE;
                 uint32_t page_entry = e % PAGE_SIZE;
+
                 Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
                 view.comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
