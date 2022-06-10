@@ -6,7 +6,6 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
-#include "systems/BoidSystem.hpp"
 
 #include <string>
 
@@ -27,7 +26,6 @@ static void init_components(scene *scene)
     Ecs::init_component<Collision>(scene->registry);
     Ecs::init_component<Player>(scene->registry);
     Ecs::init_component<SpriteComponent>(scene->registry);
-    Ecs::init_component<Boid>(scene->registry);
 }
 
 
@@ -52,7 +50,6 @@ static void update(Application_data *app, scene *scene, float Ts)
     MovementSystem::update(scene->registry, Ts);
     PlayerSystem::update(app, scene->registry, Ts);
     AngleSystem::update(scene->registry, Ts);
-    BoidSystem::update(scene->registry, Ts);
     
 }
 
@@ -71,7 +68,6 @@ static void init_events(scene *scene)
     Ecs::init_event<CollisionEvent, void>(scene->registry, NULL); //TODO(Johan) change to real function pointers
     Ecs::init_event<SpawnEvent, void>(scene->registry, NULL);
     Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_player);
-    Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_boid);
 }
 
 
