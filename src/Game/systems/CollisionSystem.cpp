@@ -44,8 +44,7 @@ void CollisionSystem::update(Ecs::Registry *registry)
 
                 ce.e1 = e;
                 ce.e2 = e2;
-                assert(false); // TODO: implement
-                // Ecs::broadcast_event<void>(registry, &ce); //TODO(Johan) fix
+                Ecs::broadcast_event<void>(registry, &ce);
             }
         }
     }
