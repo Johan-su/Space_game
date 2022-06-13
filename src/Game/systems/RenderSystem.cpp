@@ -16,11 +16,11 @@ void RenderSystem::render(Application_data *app, scene *scene)
     Ecs::Registry *registry = scene->registry;
     Camera *camera = &scene->camera;
 
-    auto pos_view    = Ecs::get_view<Position, Size, Angle, SpriteComponent>(registry);
-    auto size_view   = Ecs::get_view<Size, Angle, SpriteComponent, Position>(registry);
+    View<Position> *pos_view           = Ecs::get_view<Position, Size, Angle, SpriteComponent>(registry);
+    View<Size> *size_view              = Ecs::get_view<Size, Angle, SpriteComponent, Position>(registry);
 
-    auto angle_view  = Ecs::get_view<Angle, SpriteComponent, Position, Size>(registry);
-    auto sprite_view = Ecs::get_view<SpriteComponent, Position, Size, Angle>(registry);
+    View<Angle> *angle_view            = Ecs::get_view<Angle, SpriteComponent, Position, Size>(registry);
+    View<SpriteComponent> *sprite_view = Ecs::get_view<SpriteComponent, Position, Size, Angle>(registry);
 
     for(size_t i = 0; i < pos_view->size; ++i)
     {
