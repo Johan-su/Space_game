@@ -35,7 +35,6 @@ void Arena::clean_arena(top_memory_arena *arena)
 }
 
 
-
 void *Arena::top_alloc_bytes(top_memory_arena *arena, size_t bytes, size_t alignment)
 {
     // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
@@ -68,43 +67,6 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, size_t bytes, size_t align
     arena->bytes_allocated += aligned_bytes;
 
     return data;
-}
-
-
-
-void Arena::grow_arena(top_memory_arena *arena, size_t page_amount)
-{
-    size_t page_size = Platform::get_page_size();
-
-    void *last_data = (char *)arena->data + arena->max_size_commited;
-
-    memory_map::commit(last_data, page_amount * page_size);
-    arena->max_size_commited += page_amount * page_size;
-
-}
-
-
-memory_arena *Arena::create_sub_arena(top_memory_arena *parent_arena, size_t max_size)
-{
-    assert(false, "TODO: implement"); //TODO(Johan): implement
-    return NULL;
-    memory_arena *arena = top_alloc<memory_arena>(parent_arena);
-    arena->max_size = max_size;
-
-    arena->data = (char *)parent_arena->data + parent_arena->bytes_allocated; // cast to char * to do pointer arithmetic
-    parent_arena->bytes_allocated += max_size; // add bytes allocated from sub arena size
-
-    clear_arena(arena);
-
-
-    return arena;
-}
-
-
-void Arena::clear_arena(memory_arena *arena)
-{
-    memset(arena->data, 0, arena->max_size);
-    arena->bytes_allocated = 0;
 }
 
 
