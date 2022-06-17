@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 
+
 namespace Ecs
 {
     template<typename T>
@@ -251,7 +252,7 @@ namespace Ecs
 
             _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
 
-            //TODO(Johan): allocation with minsize might waste alot of memory.
+            //TODO(Johan): allocation with minsize might waste a lot of memory.
             View<T1> *view = Arena::top_alloc<View<T1>>(view_mm); 
             view->entity_list = Arena::top_alloc<Entity>(view_mm, minsize);
             view->comparray = Arena::top_alloc<T1>(view_mm, minsize);
@@ -264,7 +265,7 @@ namespace Ecs
 
             Component_pool<T1> *comp_pool = get_component_pool<T1>(cdata);
 
-            void *min_comp_pool = cdata->component_pools[mincompid]; // dangerous
+            void *min_comp_pool = cdata->component_pools[mincompid];
 
             size_t *page_count_pointer   = (size_t*)(min_comp_pool);
             size_t *entity_count_pointer = (size_t*)(page_count_pointer + 1);

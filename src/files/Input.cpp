@@ -20,23 +20,26 @@ void Input::handle_input(engine_data *engine)
         switch(event.type)
         {
             case SDL_QUIT:
-                //engine->active = false; //TODO(Johan) fix quit
+                engine->active = false;
                 break;
 
+            /*
             case SDL_WINDOWEVENT:
                 switch (event.window.event)
                 {
                     case SDL_WINDOWEVENT_ENTER:
+                    {
                         printf("mouse enter\n");
-                        break;
+                    } break;
                     
                     
                     case SDL_WINDOWEVENT_LEAVE:
+                    {
                         printf("mouse leave\n");
-                        break;
-                
+                    } break;
                 }
                 break;
+            */
 
 
             case SDL_MOUSEBUTTONDOWN:
