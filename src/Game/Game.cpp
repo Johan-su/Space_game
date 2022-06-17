@@ -7,10 +7,6 @@
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
 
-#include <string>
-
-#include <assert.h>
-
 
 
 
@@ -29,21 +25,11 @@ static void init_components(scene *scene)
 }
 
 
-static void init_systems(scene *scene)
-{
-    // MovementSystem::init(game);
-    // RenderSystem::init(game);
-    // TrackSystem::init(game);
-    // PlayerSystem::init(game);
-    // AngleSystem::init(game);
-    // EntityCreationSystem::init(game);
-}
-
-
 static void fixed_update(Application_data *app, scene *scene, float Ts)
 {
 
 }
+
 
 static void update(Application_data *app, scene *scene, float Ts)
 {
@@ -62,28 +48,33 @@ static void render(Application_data *app, scene *scene, float Ts)
 }
 
 
+static void collision_debug(Ecs::Registry *registry, CollisionEvent *event)
+{
+    printf("collision between [%llu, %llu]", event->e1, event->e2);
+}
+
 
 static void init_events(scene *scene)
 {
-    Ecs::init_event<CollisionEvent, void>(scene->registry, NULL); //TODO(Johan) change to real function pointers
-    Ecs::init_event<SpawnEvent, void>(scene->registry, NULL);
-    Ecs::init_event<Entity>(scene->registry, EntityCreationSystem::create_player);
+    Ecs::init_event(scene->registry, collision_debug); //TODO(Johan) change to real function pointers
+    Ecs::init_event<void, SpawnEvent>(scene->registry, NULL);
+    Ecs::init_event(scene->registry, EntityCreationSystem::create_player);
 }
 
 
 static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 {
     init_components(scene);
-    init_systems(scene);
     init_events(scene);
-
 
     
 
-    std::string ship_path = std::string(pwd) + "/resources/ships/placeholder.bmp"; //TODO(Johan) replace std::string
+    char *ship_path = Application::cat_string(pwd, "/resources/ships/placeholder.bmp");
+    char *planet_path = Application::cat_string(pwd, "/resources/planets/placeholder_planet.bmp");
 
 
-    Application::load_texture(app, SHIP_texture, ship_path.c_str());
+    Application::load_texture(app, SHIP_texture, ship_path);
+    Application::load_texture(app, PLANET_texture, planet_path);
     Application::init_sprite(app, SHIP1, SHIP_texture, 0, 0, 114, 200);
 
 

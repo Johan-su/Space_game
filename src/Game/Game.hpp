@@ -4,10 +4,12 @@
 
 enum Texture_id_map
 {
-    SHIP_texture
+    SHIP_texture,
+    PLANET_texture,
 };
 
 enum Sprite_id_map
 {
-    SHIP1, SHIP2
+    SHIP1,
+    SHIP2,
 };
