@@ -38,6 +38,8 @@ struct engine_data
 
     hash_map<bool> *key_map;
     hash_map<bool> *mouse_map;
+
+    bool active;
 };
 
 struct key_settings

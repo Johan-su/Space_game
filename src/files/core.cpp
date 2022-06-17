@@ -131,6 +131,8 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
     Hashmap::init(engine->key_map);
     Hashmap::init(engine->mouse_map);
 
+    engine->active = false;
+
 
     return engine;
 
