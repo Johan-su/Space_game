@@ -127,6 +127,8 @@ namespace Application
     bool IsKeyPressed(Application_data *app, int keyCode);
 
 
+    char *cat_string(const char *str1, const char *str2);
+
     void clear_view_buffer();
 
 }

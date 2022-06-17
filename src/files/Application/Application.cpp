@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Application.hpp"
 #include "../platform/platform.hpp"
 #include "../Input.hpp"
@@ -7,13 +8,11 @@
 
 
 
-
 struct Application_data
 {
     engine_data *engine;
     size_t scene_count;
     scene *scenes[MAX_SCENE_COUNT];
-    bool active;
 };
 
 
@@ -41,7 +40,7 @@ Application_data *Application::create_application(const char *pwd)
 
     app_data->engine = Real::create_engine(&g_memory.app_buffer, pwd);
 
-    app_data->active = false;
+    app_data->engine->active = false;
 
 
     return app_data;
@@ -136,7 +135,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         return;
     }
 
-    app->active = true;
+    app->engine->active = true;
 
     uint64_t print_timer = 0;
     uint64_t fixed_update_count = 0;
@@ -148,7 +147,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
     uint64_t dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
 
-    while(app->active)
+    while(app->engine->active)
     {
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
@@ -242,6 +241,17 @@ Texture_Sprite *Application::get_sprite(Application_data *app, uint32_t id)
 bool Application::IsKeyPressed(Application_data *app, int keyCode)
 {
     return Hashmap::get_value(app->engine->key_map, keyCode);
+}
+
+
+char *Application::cat_string(const char *str1, const char *str2) //TODO(Johan) change to not use C string functions
+{
+    char *buf = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, strlen(str1) + strlen(str2) + 10, 1);
+
+    strcpy(buf, str1);
+    strcat(buf, str2);
+
+    return buf;
 }
 
 
