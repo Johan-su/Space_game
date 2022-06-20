@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include "../int.hpp"
+
 
 #define ENTITY_NULL UINT64_MAX 
 

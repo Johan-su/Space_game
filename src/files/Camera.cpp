@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-void Camera_functions::init(Camera *camera, uint16_t screen_width, uint16_t screen_height)
+void Camera_functions::init(Camera *camera, U16 screen_width, U16 screen_height)
 {
     camera->world_x = 0.0f;
     camera->world_y = 0.0f;
@@ -16,13 +16,13 @@ void Camera_functions::init(Camera *camera, uint16_t screen_width, uint16_t scre
 }
 
 
-void Camera_functions::clean(Camera *camera)
+float Camera_functions::screen_to_world_x(Camera *camera, U16 x)
 {
     return;
 }
 
 
-float Camera_functions::screen_to_world_x(Camera *camera, uint16_t x)
+float Camera_functions::screen_to_world_y(Camera *camera, U16 y)
 {
     float worldunit_per_pixel_x = 1.0f / camera->world_scale_x;
 

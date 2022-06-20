@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "int.hpp"
 
 
 #define MAX_EVENT_LISTENERS 32

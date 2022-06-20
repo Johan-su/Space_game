@@ -2,7 +2,6 @@
 #include "ecs_constants.hpp"
 #include "ecs_assert.hpp"
 
-#include <stdint.h>
 
 /*
 namespace Ecs

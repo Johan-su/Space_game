@@ -5,7 +5,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include <sys/timeb.h>
-#include <stdint.h>
 
 static FILETIME time;
 

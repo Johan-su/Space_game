@@ -39,19 +39,19 @@ size_t Platform::page_amount_to_bytes(size_t page_amount)
 }
 
 
-uint64_t deltaTime::get_micro_time()
+U64 deltaTime::get_micro_time()
 {
     return Windows::get_micro_time();
 }
 
 
-uint64_t deltaTime::get_mili_time()
+U64 deltaTime::get_mili_time()
 {
     return Windows::get_mili_time();
 }
 
 
-uint64_t deltaTime::get_sec_time()
+U64 deltaTime::get_sec_time()
 {
     return Windows::get_sec_time();
 }

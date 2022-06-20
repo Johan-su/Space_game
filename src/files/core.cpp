@@ -9,11 +9,11 @@
 #include "Memory_arena.hpp"
 
 #include "ecs/ecs.hpp"
+#include "int.hpp"
 
 #include <SDL.h>
 
 #include <stdio.h>
-#include <stdint.h>
 #include <limits.h>
 
 #define KiB 1024llu
