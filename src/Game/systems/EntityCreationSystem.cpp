@@ -15,10 +15,13 @@ Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent
 
     Entity e = Ecs::create_entity(registry);
 
-    Collision collision = {};
-    
     Position position = {x, y};
     Velocity velocity = {0.0f, 0.0f};
+
+    Collision collision = {};
+    GravityAffected gravity_affected = {};
+    MassComponent mass = {1000.0f};
+    
 
     SizeComponent size = {width, height};
 
@@ -28,9 +31,11 @@ Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent
     SpriteComponent spriteComp = {ship_type};
 
 
-    Ecs::set_component(registry, e, collision);
     Ecs::set_component(registry, e, position);
     Ecs::set_component(registry, e, velocity);
+    Ecs::set_component(registry, e, collision);
+    Ecs::set_component(registry, e, gravity_affected);
+    Ecs::set_component(registry, e, mass);
     Ecs::set_component(registry, e, size);
     Ecs::set_component(registry, e, angle);
     Ecs::set_component(registry, e, angleVel);
@@ -111,6 +116,7 @@ Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnE
     Circle_size c_size = {event->radius};
     GravityAttractor grav = GravityAttractor();
 
+    MassComponent mass = {event->mass};
 
     SpriteComponent sprite = {event->planet_type};
 
@@ -124,6 +130,7 @@ Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnE
     Ecs::set_component(registry, e, pos);
     Ecs::set_component(registry, e, vel);
     Ecs::set_component(registry, e, c_size);
+    Ecs::set_component(registry, e, mass);
     Ecs::set_component(registry, e, grav);
     Ecs::set_component(registry, e, sprite);
 

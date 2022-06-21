@@ -24,9 +24,10 @@ static void init_components(scene *scene)
     Ecs::init_component<Collision>(scene->registry);
     Ecs::init_component<Player>(scene->registry);
     Ecs::init_component<SpriteComponent>(scene->registry);
-    Ecs::init_component<Mass>(scene->registry);
+    Ecs::init_component<MassComponent>(scene->registry);
     Ecs::init_component<GravityAttractor>(scene->registry);
-    Ecs::init_component<Gravity>(scene->registry);
+    Ecs::init_component<GravityAffected>(scene->registry);
+    Ecs::init_component<Circle_size>(scene->registry);
 }
 
 
@@ -94,7 +95,25 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
     Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);
 
-    PlayerSystem::set_player_entity(player);  
+    PlayerSystem::set_player_entity(player);
+
+    srand(0);
+
+    for (int i = 0; i < 500; ++i)
+    {     
+
+        float x = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
+        float y = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
+
+        float radius = 1000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
+        float mass = 1E20 * ((float)(rand()) / RAND_MAX);
+
+
+
+        PlanetSpawnEvent planetSE = {x, y, 0.0f, 0.0f, radius, mass, PLANET1};
+
+        Ecs::broadcast_event<Entity>(scene->registry, &planetSE);
+    }
 }
 
 
