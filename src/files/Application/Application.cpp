@@ -13,6 +13,9 @@ struct Application_data
     engine_data *engine;
     size_t scene_count;
     scene *scenes[MAX_SCENE_COUNT];
+
+    bool active;
+
 };
 
 
@@ -135,7 +138,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         return;
     }
 
-    app->engine->active = true;
+    app->active = true;
 
     U64 print_timer = 0;
     U64 fixed_update_count = 0;
@@ -147,7 +150,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
     U64 dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
 
-    while(app->engine->active)
+    while(app->active)
     {
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
