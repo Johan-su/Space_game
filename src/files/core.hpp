@@ -15,7 +15,7 @@ struct global_memory
 {
     top_memory_arena app_buffer; // only gets cleared at app destruction
 
-    top_memory_arena scratch_buffer; // used temporary memory
+    top_memory_arena scratch_buffer; // temporary memory
 
     top_memory_arena view_buffer; // gets cleared after a game system function
 
@@ -35,22 +35,12 @@ struct engine_data
     
     config_data *config;
     textures_data *texture;
-
-    hash_map<bool> *key_map;
-    hash_map<bool> *mouse_map;
-
-    bool active;
-};
-
-struct key_settings
-{
-    
 };
 
 
 extern global_memory g_memory;
 
-namespace Real
+namespace Internal
 {
     void init_global_memory();
 

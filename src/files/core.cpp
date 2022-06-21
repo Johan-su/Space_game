@@ -4,7 +4,7 @@
 
 
 #include "platform/platform.hpp"
-#include "Input.hpp"
+#include "input/Input.hpp"
 
 #include "Memory_arena.hpp"
 
@@ -31,7 +31,7 @@ static void *reserve_memory_end;
 global_memory g_memory = {};
 
 
-void Real::init_global_memory()
+void Internal::init_global_memory()
 {
     Platform::init();
     reserve_memory_begin = memory_map::reserve(NULL, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
@@ -101,7 +101,7 @@ static void sdl_clean(engine_data *engine)
 }
 
 
-engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
+engine_data *Internal::create_engine(top_memory_arena *arena, const char *pwd)
 {
     engine_data *engine = Arena::top_alloc<engine_data>(arena);
 
@@ -115,6 +115,7 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
     strcat(config_path, "/config.ini");
 
     Config::init(engine->config, config_path);
+    Internal::init_input();
 
 
 
@@ -124,22 +125,12 @@ engine_data *Real::create_engine(top_memory_arena *arena, const char *pwd)
     engine->texture = Arena::top_alloc<textures_data>(arena);
     Texture_functions::init(engine->texture);
 
-
-    engine->key_map = Arena::top_alloc<hash_map<bool>>(arena);
-    engine->mouse_map = Arena::top_alloc<hash_map<bool>>(arena);
-
-    Hashmap::init(engine->key_map);
-    Hashmap::init(engine->mouse_map);
-
-    engine->active = false;
-
-
     return engine;
 
 }
 
 
-void Real::clean_engine(engine_data *engine) // exists because SDL uses its own allocators
+void Internal::clean_engine(engine_data *engine) // exists because SDL uses its own allocators
 {
     engine->config = NULL;
 
@@ -147,9 +138,6 @@ void Real::clean_engine(engine_data *engine) // exists because SDL uses its own 
 
     Texture_functions::clean(engine->texture);
     engine->texture = NULL;
-
-    engine->key_map = NULL;
-    engine->mouse_map = NULL;
 }
 
 

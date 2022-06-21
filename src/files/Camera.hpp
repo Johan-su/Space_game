@@ -20,11 +20,14 @@ namespace Camera_functions
 {
     void init(Camera *camera, U16 screen_width, U16 screen_height);
 
+    float screen_to_world_x(Camera *camera, I32 x);
+    float screen_to_world_y(Camera *camera, I32 y);
 
-    U16 world_to_screen_x(Camera *camera, float x);
-    U16 world_to_screen_y(Camera *camera, float y);
+
+    I32 world_to_screen_x(Camera *camera, float x);
+    I32 world_to_screen_y(Camera *camera, float y);
 
     void set_camera_center(Camera *camera, float x, float y);
 
-    void zoom(Camera *camera, float scale);
+    void zoom(Camera *camera, I32 mx, I32 my, float scale);
 }

@@ -93,3 +93,13 @@ enum KeyCodes
 
 
 };
+
+
+enum mouseCodes
+{
+    MOUSE_BUTTON_LEFT   = 1,
+    MOUSE_BUTTON_MIDDLE = 2,
+    MOUSE_BUTTON_RIGHT  = 3,
+    MOUSE_BUTTON_X1     = 4,
+    MOUSE_BUTTON_X2     = 5,
+};
