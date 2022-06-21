@@ -37,8 +37,8 @@ void GravitySystem::update(Ecs::Registry *registry, float Ts)
             
             float velocity = force / mass2->mass; 
 
-            vel->x = cos(angle) * velocity;
-            vel->y = sin(angle) * velocity;
+            vel->x = cosf(angle) * velocity;
+            vel->y = sinf(angle) * velocity;
         }
     }
 
