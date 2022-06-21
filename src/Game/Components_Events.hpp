@@ -42,7 +42,7 @@ struct AnglularVelocity
     float angleV;
 };
 
-struct Mass
+struct MassComponent
 {
     float mass;
 };
@@ -95,7 +95,7 @@ struct GravityAttractor
 };
 
 
-struct Gravity
+struct GravityAffected
 {
 };
 
