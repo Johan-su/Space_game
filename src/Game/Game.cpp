@@ -6,7 +6,7 @@
 #include "systems/PlayerSystem.hpp"
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
-
+#include "systems/CameraController.hpp"
 
 
 
@@ -14,7 +14,7 @@
 static void init_components(scene *scene)
 {
     Ecs::init_component<Position>(scene->registry);
-    Ecs::init_component<Size>(scene->registry);
+    Ecs::init_component<SizeComponent>(scene->registry);
     Ecs::init_component<Velocity>(scene->registry);
     Ecs::init_component<Angle>(scene->registry);
     Ecs::init_component<AnglularVelocity>(scene->registry);
@@ -31,12 +31,13 @@ static void fixed_update(Application_data *app, scene *scene, float Ts)
 }
 
 
+
 static void update(Application_data *app, scene *scene, float Ts)
 {
+    CameraController::update(scene);
     MovementSystem::update(scene->registry, Ts);
     PlayerSystem::update(app, scene->registry, Ts);
     AngleSystem::update(scene->registry, Ts);
-    
 }
 
 
@@ -79,7 +80,6 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 
 
     Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
-    Camera_functions::zoom(&scene->camera, 0.10f);
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
     Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);

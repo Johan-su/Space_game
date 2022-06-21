@@ -45,7 +45,6 @@ void Camera_functions::set_camera_center(Camera *camera, float x, float y)
     I32 screen_cy = world_to_screen_y(camera, y) - camera->screen_height / 2;
 
 
-
     camera->world_x = screen_to_world_x(camera, screen_cx);
     camera->world_y = screen_to_world_y(camera, screen_cy);
 }
