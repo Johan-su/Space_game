@@ -5,12 +5,13 @@
 template<typename T>
 struct hash_map
 {
-    size_t keys[8192];
-    T values[8192];
     //size_t hash[8192];
 
+    size_t size;
     size_t count;
-    const size_t size;
+    
+    size_t keys[8192];
+    T values[8192];
 };
 
 namespace Hashmap // TODO(johan) implement good and real hash map
@@ -19,7 +20,7 @@ namespace Hashmap // TODO(johan) implement good and real hash map
     void init(hash_map<T> *map)
     {
         memset(map, 0, sizeof(*map));
-        memset(map, 0xFF, sizeof(map->keys));
+        memset(map->keys, 0xFF, sizeof(map->keys));
     }
 
     template<typename T>
