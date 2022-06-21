@@ -7,14 +7,14 @@
 void CollisionSystem::update(Ecs::Registry *registry)
 {
     Application::clear_view_buffer();
-    View<Position> *pos_view = Ecs::get_view<Position, Size, Collision>(registry);
-    View<Size> *size_view    = Ecs::get_view<Size, Position, Collision>(registry);
+    View<Position> *pos_view = Ecs::get_view<Position, SizeComponent, Collision>(registry);
+    View<SizeComponent> *size_view    = Ecs::get_view<SizeComponent, Position, Collision>(registry);
 
     for(size_t i = 0; i < pos_view->size; ++i)
     {
         Entity e = pos_view->entity_list[i];
         Position pos = pos_view->comparray[i];
-        Size size = size_view->comparray[i];
+        SizeComponent size = size_view->comparray[i];
 
         for(size_t j = 0; j < pos_view->size; ++j)
         {
@@ -25,17 +25,17 @@ void CollisionSystem::update(Ecs::Registry *registry)
             }
 
             Position pos2 = pos_view->comparray[j];
-            Size size2 = size_view->comparray[j];
+            SizeComponent size2 = size_view->comparray[j];
 
 
-            bool b1 = pos.x - size.width / 2 < pos2.x + size2.width / 2;
+            bool b1 = pos.x < pos2.x + size2.width;
 
-            bool b2 = pos.x + size.width / 2 > pos2.x - size2.width / 2;
+            bool b2 = pos.x + size.width > pos2.x;
 
 
-            bool b3 = pos.y - size.height / 2 < pos2.y + size2.height / 2;
+            bool b3 = pos.y < pos2.y + size2.height;
 
-            bool b4 = pos.y + size.height / 2 > pos2.y - size2.height / 2;
+            bool b4 = pos.y + size.height > pos2.y;
 
 
             if(b1 && b2 && b3 && b4)
