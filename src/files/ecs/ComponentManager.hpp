@@ -5,7 +5,6 @@
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
 
-
 namespace Ecs
 {
     template<typename T>
@@ -209,17 +208,14 @@ namespace Ecs
             return &page->dense_array[page->sparse_array[page_entry]];
         }
 
-
         // garbage function
         template<typename T1, typename... Ts>
         void _set_min_comp_array_size(Component_data *cdata, Usize &mincompid, Usize *compids, Usize &minsize, const Usize component_amount)
         {
             const Usize typeCount = 1 + sizeof...(Ts);
             const Usize compid = Component_functions::get_component_id<T1>(cdata);
-            ECS_dbg(
-                if(!cdata->pool_init[compid]) 
-                    fprintf(stderr, "ERROR: component pool not initalized: %llu", typeid(T1);)
-                );
+
+            ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
 
             const Component_pool<T1>* comparray = static_cast<Component_pool<T1>*>(cdata->component_pools[compid]);
             const Usize entity_count = comparray->entity_count;
