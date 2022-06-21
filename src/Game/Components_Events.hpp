@@ -11,7 +11,7 @@ struct Position
 };
 
 
-struct Size
+struct SizeComponent
 {
     float width;
     float height;

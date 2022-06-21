@@ -18,15 +18,13 @@ Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent
     Collision collision = {};
     
     Position position = {x, y};
-
     Velocity velocity = {0.0f, 0.0f};
 
-    Size size = {width, height};
+    SizeComponent size = {width, height};
 
     Angle angle = {0.0f};
 
-    AnglularVelocity angleVel = {0.0f};
-    
+    AnglularVelocity angleVel = {0.0f};  
     SpriteComponent spriteComp = {ship_type};
 
 
