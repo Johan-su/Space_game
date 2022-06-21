@@ -69,6 +69,8 @@ void Texture_functions::init_sprite(textures_data *td, U32 sprite_id, U32 textur
 
     td->sprite_list[td->sprite_count] = sprite;
 
+    ++td->sprite_count;
+
 }
 
 SDL_Texture *Texture_functions::get_texture(textures_data *td, U32 id)
