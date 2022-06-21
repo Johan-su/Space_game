@@ -46,7 +46,9 @@ void Texture_functions::load_texture(SDL_Renderer *renderer, textures_data *td, 
     }
 
     td->enum_to_texture[enum_id] = td->texture_count;
-    td->texture_list[td->texture_count++] = texture;
+    td->texture_list[td->texture_count] = texture;
+
+    ++td->texture_count;
 }
 
 
