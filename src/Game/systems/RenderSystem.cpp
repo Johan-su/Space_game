@@ -35,10 +35,6 @@ void RenderSystem::render(Application_data *app, scene *scene)
         FRect dstrect = FRect();
 
 
-       // dstrect.x = (pos.x - (size.width / 2) - (camera->world_x - worldunit_per_pixel_x * (camera->screen_width / 2))) * camera->world_scale_x;
-       // dstrect.y = (pos.y - (size.height / 2) - (camera->world_y - worldunit_per_pixel_y * (camera->screen_height / 2))) * camera->world_scale_y;
-
-
         dstrect.x = Camera_functions::world_to_screen_x(camera, pos.x);
         dstrect.y = Camera_functions::world_to_screen_y(camera, pos.y);
 
