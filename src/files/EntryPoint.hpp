@@ -1,6 +1,5 @@
 #pragma once
-#include "Application/Application.hpp"
-
+#include "Real.hpp"
 /*
 
 define init, clean in your application
