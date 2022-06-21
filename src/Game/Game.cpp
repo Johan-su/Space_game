@@ -7,6 +7,8 @@
 #include "systems/AngleSystem.hpp"
 #include "systems/EntityCreationSystem.hpp"
 #include "systems/CameraController.hpp"
+#include "systems/GravitySystem.hpp"
+#include "systems/CollisionSystem.hpp"
 
 
 
@@ -22,6 +24,9 @@ static void init_components(scene *scene)
     Ecs::init_component<Collision>(scene->registry);
     Ecs::init_component<Player>(scene->registry);
     Ecs::init_component<SpriteComponent>(scene->registry);
+    Ecs::init_component<Mass>(scene->registry);
+    Ecs::init_component<GravityAttractor>(scene->registry);
+    Ecs::init_component<Gravity>(scene->registry);
 }
 
 
@@ -38,6 +43,8 @@ static void update(Application_data *app, scene *scene, float Ts)
     MovementSystem::update(scene->registry, Ts);
     PlayerSystem::update(app, scene->registry, Ts);
     AngleSystem::update(scene->registry, Ts);
+    GravitySystem::update(scene->registry, Ts);
+    CollisionSystem::update(scene->registry);
 }
 
 
@@ -59,6 +66,7 @@ static void init_events(scene *scene)
 {
     Ecs::init_event(scene->registry, collision_debug); //TODO(Johan) change to real function pointers
     Ecs::init_event<void, SpawnEvent>(scene->registry, NULL);
+    Ecs::init_event(scene->registry, EntityCreationSystem::create_planet);
     Ecs::init_event(scene->registry, EntityCreationSystem::create_player);
 }
 
@@ -76,7 +84,9 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
 
     Application::load_texture(app, SHIP_texture, ship_path);
     Application::load_texture(app, PLANET_texture, planet_path);
+    
     Application::init_sprite(app, SHIP1, SHIP_texture, 0, 0, 114, 200);
+    Application::init_sprite(app, PLANET1, PLANET_texture, 0, 0, 132, 132);
 
 
     Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
