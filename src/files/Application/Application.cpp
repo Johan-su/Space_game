@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Application.hpp"
 #include "../platform/platform.hpp"
-#include "../Input.hpp"
+#include "../input/Input.hpp"
 #include "../core.hpp"
 #include "../assert.hpp"
 #include "../Memory_arena.hpp"
@@ -33,7 +33,7 @@ Application_data *Application::create_application(const char *pwd)
     }
     app_created = true;
 
-    Real::init_global_memory();
+    Internal::init_global_memory();
 
     
 
@@ -41,9 +41,9 @@ Application_data *Application::create_application(const char *pwd)
     Application_data *app_data = Arena::top_alloc<Application_data>(&g_memory.app_buffer);
     memset(app_data, 0, sizeof(*app_data));
 
-    app_data->engine = Real::create_engine(&g_memory.app_buffer, pwd);
+    app_data->engine = Internal::create_engine(&g_memory.app_buffer, pwd);
 
-    app_data->engine->active = false;
+    app_data->active = false;
 
 
     return app_data;
@@ -56,7 +56,7 @@ void Application::destroy_application(Application_data *app)
     {
         Arena::clean_arena(&g_memory.scene_buffers[i]);
     }
-    Real::clean_engine(app->engine);
+    Internal::clean_engine(app->engine);
 
     Arena::clean_arena(&g_memory.app_buffer);
 }
@@ -120,9 +120,9 @@ scene *Application::get_scene_by_name(Application_data *app, const char *scene_n
 
 
 
-static void handle_input_events(engine_data *engine, float Ts)
+static void handle_input_events()
 {
-    Input::handle_input(engine);
+    Internal::handle_input();
 }
 
 
@@ -167,7 +167,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         
         ts = dt / 1000000.0f;
 
-        handle_input_events(app->engine, ts);
+        handle_input_events();
         update_func(app, scene, ts);
 
         fixed_update_count += dt;
@@ -178,20 +178,15 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         }
 
         // begin render
-
         SDL_RenderClear(app->engine->renderer);
     
-
-        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 255);
-        SDL_RenderDrawPoint(app->engine->renderer, (app->engine->config->screen_width / 2), (app->engine->config->screen_height / 2));
-        SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 255);
         render_func(app, scene, ts);
 
         SDL_RenderPresent(app->engine->renderer);
 
         // end render
 
-
+        // wait if frame took less than 1 / maxFps seconds
         do
         {
             curr = deltaTime::get_micro_time();
@@ -238,12 +233,6 @@ Texture *Application::get_texture(Application_data *app, uint32_t id)
 Texture_Sprite *Application::get_sprite(Application_data *app, uint32_t id)
 {
     return (Texture_Sprite*)Texture_functions::get_sprite(app->engine->texture, id);
-}
-
-
-bool Application::IsKeyPressed(Application_data *app, int keyCode)
-{
-    return Hashmap::get_value(app->engine->key_map, keyCode);
 }
 
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Camera.hpp"
-#include "../KeyCodes.hpp"
+#include "../input/KeyCodes.hpp"
 
 
 // TODO(Johan) make better
