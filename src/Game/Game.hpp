@@ -12,4 +12,5 @@ enum Sprite_id_map
 {
     SHIP1,
     SHIP2,
+    PLANET1,
 };
