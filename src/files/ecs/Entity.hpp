@@ -1,4 +1,4 @@
 #pragma once
-#include <cstdint>
+#include "../int.hpp"
 
-typedef uint64_t Entity;
+typedef U64 Entity;

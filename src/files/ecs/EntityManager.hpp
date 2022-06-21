@@ -8,7 +8,7 @@ namespace Ecs
 
     struct Entity_data
     {
-        uint64_t m_entitycount;
+        U64 m_entitycount;
     };
 
     namespace Entity_functions

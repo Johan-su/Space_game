@@ -21,19 +21,19 @@ void Platform::init()
 }
 
 
-size_t Platform::get_page_size()
+Usize Platform::get_page_size()
 {
     return Windows::get_page_size();
 }
 
 
-size_t Platform::bytes_to_page_amount(size_t bytes)
+Usize Platform::bytes_to_page_amount(Usize bytes)
 {
     return 1 + (bytes / (get_page_size() + 1));
 }
 
 
-size_t Platform::page_amount_to_bytes(size_t page_amount)
+Usize Platform::page_amount_to_bytes(Usize page_amount)
 {
     return page_amount * get_page_size();
 }
@@ -57,20 +57,20 @@ U64 deltaTime::get_sec_time()
 }
 
 
-void *memory_map::reserve(void *address, size_t page_amount)
+void *memory_map::reserve(void *address, Usize page_amount)
 {
     return Windows::reserve(address, page_amount);
 }
 
 
-void *memory_map::commit(void *address, size_t page_amount)
+void *memory_map::commit(void *address, Usize page_amount)
 {
     fprintf(stderr, "DEBUG: commit [%p, %llu]\n", address, page_amount);
     return Windows::commit(address, page_amount);
 }
 
 
-void memory_map::free(void *address, size_t page_amount)
+void memory_map::free(void *address, Usize page_amount)
 {
     Windows::free(address, page_amount);
 }

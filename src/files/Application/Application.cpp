@@ -137,14 +137,14 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
 
     app->engine->active = true;
 
-    uint64_t print_timer = 0;
-    uint64_t fixed_update_count = 0;
-    uint64_t target_time = 1000000 / app->engine->config->FPS_target;
-    uint64_t target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
+    U64 print_timer = 0;
+    U64 fixed_update_count = 0;
+    U64 target_time = 1000000 / app->engine->config->FPS_target;
+    U64 target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
-    uint64_t curr;
-    uint64_t prev = deltaTime::get_micro_time();
-    uint64_t dt; // dt in microseconds 10^-6 seconds
+    U64 curr;
+    U64 prev = deltaTime::get_micro_time();
+    U64 dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
 
     while(app->engine->active)

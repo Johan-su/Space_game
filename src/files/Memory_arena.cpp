@@ -4,9 +4,9 @@
 #include "platform/platform.hpp"
 
 
-void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address, size_t page_pre_allocation, size_t max_pages_reserved)
+void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
 {
-    size_t page_size       = Platform::get_page_size();
+    Usize page_size = Platform::get_page_size();
     
     arena->data = memory_map::commit(reserved_space_address, page_pre_allocation);
 
@@ -35,20 +35,20 @@ void Arena::clean_arena(top_memory_arena *arena)
 }
 
 
-void *Arena::top_alloc_bytes(top_memory_arena *arena, size_t bytes, size_t alignment)
+void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignment)
 {
     // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
 
     void *non_aligned_data = (char *)arena->data + arena->bytes_allocated;
-    size_t alignment_shift = (size_t)non_aligned_data % alignment;
+    Usize alignment_shift = (Usize)non_aligned_data % alignment;
        
-    size_t aligned_bytes = bytes + alignment_shift;
+    Usize aligned_bytes = bytes + alignment_shift;
 
     if(aligned_bytes + arena->bytes_allocated > arena->max_size_commited)
     {
         // if byte allocation is out of top_arena bounds, commit more from reserved memory.
-        size_t page_size = Platform::get_page_size();
-        size_t page_amount = Platform::bytes_to_page_amount(arena->max_size_commited + aligned_bytes);
+        Usize page_size = Platform::get_page_size();
+        Usize page_amount = Platform::bytes_to_page_amount(arena->max_size_commited + aligned_bytes);
 
 
         if(arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)

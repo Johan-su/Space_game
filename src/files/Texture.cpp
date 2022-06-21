@@ -1,7 +1,6 @@
 #include "Texture.hpp"
 #include "assert.hpp"
 
-
 #include <string.h>
 #include <stdio.h>
 void Texture_functions::init(textures_data *td)
@@ -25,7 +24,7 @@ void Texture_functions::clean(textures_data *td)
 }
 
 
-void Texture_functions::load_texture(SDL_Renderer *renderer, textures_data *td, uint32_t enum_id, const char *path)
+void Texture_functions::load_texture(SDL_Renderer *renderer, textures_data *td, U32 enum_id, const char *path)
 {
     
 
@@ -51,7 +50,7 @@ void Texture_functions::load_texture(SDL_Renderer *renderer, textures_data *td, 
 }
 
 
-void Texture_functions::init_sprite(textures_data *td, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+void Texture_functions::init_sprite(textures_data *td, U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h)
 {
     assert(sprite_id <= MAX_SPRITE_TYPES, "sprite id too big");
 
@@ -72,13 +71,13 @@ void Texture_functions::init_sprite(textures_data *td, uint32_t sprite_id, uint3
 
 }
 
-SDL_Texture *Texture_functions::get_texture(textures_data *td, uint32_t id)
+SDL_Texture *Texture_functions::get_texture(textures_data *td, U32 id)
 {
     assert(id <= MAX_TEXTURE_TYPES, "id cannot be greater than MAX_TEXTURE_TYPES");
     return td->texture_list[td->enum_to_texture[id]];
 }
 
-Tex_Sprite *Texture_functions::get_sprite(textures_data *td, uint32_t id)
+Tex_Sprite *Texture_functions::get_sprite(textures_data *td, U32 id)
 {
     assert(id <= MAX_SPRITE_TYPES, "id cannot be greater than MAX_SPRITE_TYPES");
     return &td->sprite_list[td->enum_to_sprite[id]];

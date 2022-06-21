@@ -75,12 +75,12 @@ typedef enum
 
 struct Texture_Sprite
 {
-    uint32_t x;
-    uint32_t y;
-    uint32_t w;
-    uint32_t h;
+    U32 x;
+    U32 y;
+    U32 w;
+    U32 h;
 
-    uint32_t texture_index;
+    U32 texture_index;
 };
 
 
@@ -117,14 +117,11 @@ namespace Application
 
 
 
-    void load_texture(Application_data *app, uint32_t id, const char *path);
-    void init_sprite(Application_data *app, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+    void load_texture(Application_data *app, U32 id, const char *path);
+    void init_sprite(Application_data *app, U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h);
 
-    Texture *get_texture(Application_data *app, uint32_t id);
-    Texture_Sprite *get_sprite(Application_data *app, uint32_t id);
-
-
-    bool IsKeyPressed(Application_data *app, int keyCode);
+    Texture *get_texture(Application_data *app, U32 id);
+    Texture_Sprite *get_sprite(Application_data *app, U32 id);
 
 
     char *cat_string(const char *str1, const char *str2);

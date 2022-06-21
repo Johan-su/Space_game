@@ -45,6 +45,4 @@ namespace Texture_functions
     Tex_Sprite *get_sprite(textures_data *td, U32 id);
 
 
-
-
 }
