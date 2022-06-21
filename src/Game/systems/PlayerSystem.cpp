@@ -33,7 +33,7 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
 
     float speed;
 
-    if (Application::IsKeyPressed(app, VK_LSHIFT))
+    if (Real::IsKeyPressed(VK_LSHIFT))
     {
         speed = 5000.0f;
     }
@@ -42,12 +42,12 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
         speed = 500.0f;
     }
 
-    if (Application::IsKeyPressed(app, VK_w))
+    if (Real::IsKeyPressed(VK_w))
     {
         vel_x_target = speed * cosf(angle->angle);
         vel_y_target = speed * sinf(angle->angle);
     }
-    else if (Application::IsKeyPressed(app, VK_s))
+    else if (Real::IsKeyPressed(VK_s))
     {
         vel_x_target = -speed * cosf(angle->angle);
         vel_y_target = -speed * sinf(angle->angle);
@@ -61,11 +61,11 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
 
     float angle_vel_target;
 
-    if (Application::IsKeyPressed(app, VK_d))
+    if (Real::IsKeyPressed(VK_d))
     {
         angle_vel_target = 0.52359877559f *18; // pi/6
     }
-    else if (Application::IsKeyPressed(app, VK_a))
+    else if (Real::IsKeyPressed(VK_a))
     {
         angle_vel_target = -0.52359877559f *18; //  -pi/6
     }
