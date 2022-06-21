@@ -1,7 +1,6 @@
 #pragma once
 #include "ecs_constants.hpp"
 #include "Entity.hpp"
-#include "MemoryManager.hpp"
 
 namespace Ecs
 {
