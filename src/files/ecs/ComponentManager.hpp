@@ -216,7 +216,10 @@ namespace Ecs
         {
             const Usize typeCount = 1 + sizeof...(Ts);
             const Usize compid = Component_functions::get_component_id<T1>(cdata);
-            ECS_assert(cdata->pool_init[compid], "component pool not initalized");
+            ECS_dbg(
+                if(!cdata->pool_init[compid]) 
+                    fprintf(stderr, "ERROR: component pool not initalized: %llu", typeid(T1);)
+                );
 
             const Component_pool<T1>* comparray = static_cast<Component_pool<T1>*>(cdata->component_pools[compid]);
             const Usize entity_count = comparray->entity_count;
