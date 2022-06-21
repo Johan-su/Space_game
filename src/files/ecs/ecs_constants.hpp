@@ -3,7 +3,7 @@
 #include "../int.hpp"
 
 
-#define ENTITY_NULL UINT64_MAX 
+#define ENTITY_NULL MAX_ENTITY_AMOUNT 
 
 
 #define MAX_COMPONENT_TYPES 256
