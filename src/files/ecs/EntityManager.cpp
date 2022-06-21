@@ -11,7 +11,7 @@ void Entity_functions::init(Entity_data *e_data)
 }
 
 
-Entity Entity_functions::create_entity(Entity_data *e_data)
+Entity Entity_functions::create_entity(Entity_data *e_data) //TODO(Johan) add entity recycling
 {
     Entity e = Entity();
     e = {e_data->m_entitycount++};
