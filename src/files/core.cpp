@@ -88,6 +88,8 @@ static void sdl_init(engine_data *engine)
         fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s", SDL_GetError());
         exit(1);
     }
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 
