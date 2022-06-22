@@ -182,6 +182,13 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
     
         render_func(app, scene, ts);
 
+        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 0);
+        vec2i mpos = Real::getMousePos();
+        SDL_Rect rect = {mpos.x - 5, mpos.y - 5, 10, 10};
+        SDL_RenderFillRect(app->engine->renderer, &rect);
+
+        SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 0);
+
         SDL_RenderPresent(app->engine->renderer);
 
         // end render
