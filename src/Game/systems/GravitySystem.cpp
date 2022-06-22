@@ -16,7 +16,6 @@ void GravitySystem::update(Ecs::Registry *registry, float Ts)
 
     View<Position> *pos_view_affected       = Ecs::get_view<Position, SizeComponent, Velocity, MassComponent, GravityAffected>(registry);
     View<SizeComponent> *size_view_affected = Ecs::get_view<SizeComponent, Velocity, MassComponent, GravityAffected, Position>(registry);
-    View<MassComponent> *mass_view_affected = Ecs::get_view<MassComponent, GravityAffected, Position, SizeComponent, Velocity>(registry);
 
 
 
@@ -39,7 +38,6 @@ void GravitySystem::update(Ecs::Registry *registry, float Ts)
             SizeComponent size2 = size_view_affected->comparray[j];
 
             Velocity *vel       = Ecs::get_component<Velocity>(registry, e2);
-            MassComponent mass2 = mass_view_affected->comparray[j];
 
             float center1_x = pos.x + csize.radius;
             float center1_y = pos.y + csize.radius;
