@@ -110,29 +110,15 @@ Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnE
 {
     Entity e = Ecs::create_entity(registry);
 
-    Position pos = {event->x, event->y};
-    Velocity vel = {event->vel_x, event->vel_y};
 
-    Circle_size c_size = {event->radius};
-    GravityAttractor grav = GravityAttractor();
+    Ecs::set_component<Position>(registry, e, {.x = event->x, .y = event->y});
+    Ecs::set_component<Velocity>(registry, e, {.x = event->vel_x, .y = event->vel_y});
 
-    MassComponent mass = {event->mass};
+    Ecs::set_component<Circle_size>(registry, e, {.radius = event->radius});
+    Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
-    SpriteComponent sprite = {event->planet_type};
-
-
-
-
-
-
-
-
-    Ecs::set_component(registry, e, pos);
-    Ecs::set_component(registry, e, vel);
-    Ecs::set_component(registry, e, c_size);
-    Ecs::set_component(registry, e, mass);
-    Ecs::set_component(registry, e, grav);
-    Ecs::set_component(registry, e, sprite);
+    Ecs::set_component<GravityAttractor>(registry, e, {});
+    Ecs::set_component<SpriteComponent>(registry, e, {.texture_id = event->planet_type});
 
 
 
