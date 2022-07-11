@@ -73,8 +73,6 @@ void Internal::handle_input()
             } break;
 
 
-
-
             case SDL_MOUSEBUTTONUP:
             {
                 Hashmap::set(&input.mouse_map, event.button.button, false);
@@ -96,7 +94,6 @@ void Internal::handle_input()
             } break;
 
 
-
             case SDL_MOUSEMOTION:
             {
                 input.mouse_pos.x = event.motion.x;
@@ -111,6 +108,7 @@ void Internal::handle_input()
             {
                 Hashmap::set(&input.key_map, event.key.keysym.sym, true);
             } break;
+
 
             case SDL_KEYUP:
             {
