@@ -28,7 +28,7 @@ Application_data *Application::create_application(const char *pwd)
 {
     if(app_created)
     {
-        fprintf(stderr, "ERROR: tried to create application while already existing");
+        fprintf(stderr, "ERROR: tried to create application while an application already exists");
         exit(1);
     }
     app_created = true;
@@ -107,6 +107,7 @@ scene *Application::get_scene_by_name(Application_data *app, const char *scene_n
     {
         if(strcmp(app->scenes[i]->name, scene_name) == 0)
         {
+            scene = app->scenes[i];
             break;
         }
     }
@@ -155,9 +156,9 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
         prev = curr;
+      
 
 
-        
         print_timer += dt;
         if(print_timer > 1000000)
         {
@@ -228,7 +229,6 @@ void Application::init_sprite(Application_data *app, uint32_t sprite_id, uint32_
 {
     Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
 }
-
 
 
 Texture *Application::get_texture(Application_data *app, uint32_t id)
