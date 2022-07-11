@@ -20,13 +20,13 @@ void CameraController::update(scene *scene)
 
         case MOUSE_SCROLL_UP: //TODO(Johan) add zoom clamp to avoid floating point rounding errors.
         {
-            Camera_functions::zoom(&scene->camera, mouse_pos.x, mouse_pos.y, MOUSE_ZOOM_SCALE_SPEED);
+            Real::zoom(&scene->camera, mouse_pos.x, mouse_pos.y, MOUSE_ZOOM_SCALE_SPEED);
 
         } break;
 
         case MOUSE_SCROLL_DOWN:
         {
-            Camera_functions::zoom(&scene->camera, mouse_pos.x, mouse_pos.y, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
+            Real::zoom(&scene->camera, mouse_pos.x, mouse_pos.y, 1.0f / MOUSE_ZOOM_SCALE_SPEED);
         } break;
     }
 

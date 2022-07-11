@@ -90,7 +90,7 @@ static void setup_scene(Application_data *app, scene *scene, const char *pwd)
     Application::init_sprite(app, PLANET1, PLANET_texture, 0, 0, 132, 132);
 
 
-    Camera_functions::set_camera_center(&scene->camera, 0.0f, 0.0f);
+    Real::set_camera_center(&scene->camera, 0.0f, 0.0f);
 
     PlayerSpawnEvent pse = PlayerSpawnEvent{0.0f, 0.0f, 114.0f, 200.0f, SHIP1};
     Entity player = Ecs::broadcast_event<Entity>(scene->registry, &pse);

@@ -16,7 +16,7 @@ struct Camera
     
 };
 
-namespace Camera_functions
+namespace Real
 {
     void init(Camera *camera, U16 screen_width, U16 screen_height);
 

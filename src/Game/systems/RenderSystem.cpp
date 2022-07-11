@@ -35,8 +35,8 @@ static void render_angle_entities(Application_data *app, scene *scene)
         FRect dstrect = FRect();
 
 
-        dstrect.x = Camera_functions::world_to_screen_x(camera, pos.x);
-        dstrect.y = Camera_functions::world_to_screen_y(camera, pos.y);
+        dstrect.x = Real::world_to_screen_x(camera, pos.x);
+        dstrect.y = Real::world_to_screen_y(camera, pos.y);
 
         dstrect.w = size.width * camera->world_scale_x;
         dstrect.h = size.height * camera->world_scale_y;
@@ -73,8 +73,8 @@ static void render_circles(Application_data *app, scene *scene)
         FRect dstrect = FRect();
 
 
-        dstrect.x = Camera_functions::world_to_screen_x(camera, pos.x);
-        dstrect.y = Camera_functions::world_to_screen_y(camera, pos.y);
+        dstrect.x = Real::world_to_screen_x(camera, pos.x);
+        dstrect.y = Real::world_to_screen_y(camera, pos.y);
 
         dstrect.w = csize.radius * 2 * camera->world_scale_x;
         dstrect.h = csize.radius * 2 * camera->world_scale_y;

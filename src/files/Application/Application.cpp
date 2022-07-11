@@ -83,7 +83,7 @@ scene *Application::create_add_scene(Application_data *app, const char *scene_na
         game_scene->registry = Arena::top_alloc<Ecs::Registry>(&g_memory.scene_buffers[scene_pos]);
 
         Ecs::init(game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
-        Camera_functions::init(&game_scene->camera, app->engine->config->screen_width, app->engine->config->screen_height);
+        Real::init(&game_scene->camera, app->engine->config->screen_width, app->engine->config->screen_height);
         
         
         game_scene->name = "scene_name";
