@@ -81,12 +81,12 @@ void Internal::handle_input()
 
             case SDL_MOUSEWHEEL:
             {
-                if(event.wheel.y > 0)
+                if (event.wheel.y > 0)
                 {
                     input.scroll = MOUSE_SCROLL_UP;
                     //printf("Mouse scroll up\n");
                 }
-                else if(event.wheel.y < 0)
+                else if (event.wheel.y < 0)
                 {
                     input.scroll = MOUSE_SCROLL_DOWN;
                     //printf("Mouse scroll down\n");

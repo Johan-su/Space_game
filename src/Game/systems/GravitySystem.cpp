@@ -30,7 +30,7 @@ void GravitySystem::update(Ecs::Registry *registry, float Ts)
         for (size_t j = 0; j < pos_view_affected->size; ++j)
         {
             Entity e2 = pos_view_affected->entity_list[j];
-            if(e1 == e2)
+            if (e1 == e2)
             {
                 continue;
             }

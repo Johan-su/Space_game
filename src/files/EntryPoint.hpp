@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     const char *exe = *argv++;
     (void)exe;
     const char *pwd;
-    if(argc > 1)
+    if (argc > 1)
     {
         pwd = *argv++;
     }

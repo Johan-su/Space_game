@@ -127,7 +127,7 @@ namespace Ecs
         {
             ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
 
-            if(pool->component_pages[id] == NULL)
+            if (pool->component_pages[id] == NULL)
             {
                 pool->component_pages[id] = init_page<T>(mm, pool, id);
             }
@@ -200,7 +200,7 @@ namespace Ecs
             U32 page_id = e / PAGE_SIZE;
             U32 page_entry = e % PAGE_SIZE;
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
-            if(page->sparse_array[page_entry] == ENTITY_NULL)
+            if (page->sparse_array[page_entry] == ENTITY_NULL)
             {
                 return NULL;
             }
@@ -219,7 +219,7 @@ namespace Ecs
             const Component_pool<T1>* comparray = static_cast<Component_pool<T1>*>(cdata->component_pools[compid]);
             const Usize entity_count = comparray->entity_count;
 
-            if(entity_count < minsize)
+            if (entity_count < minsize)
             {
                 minsize = entity_count;
                 mincompid = compid;
@@ -270,7 +270,7 @@ namespace Ecs
             for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i)
             {
                 void *page = component_pages[i];
-                if(page == NULL)
+                if (page == NULL)
                 {
                     continue;
                 }
@@ -294,7 +294,7 @@ namespace Ecs
                         void **curr_component_pages       = (void**)(curr_entity_count_pointer + 1); // almost three star programming
 
                         void *curr_page = curr_component_pages[i];
-                        if(curr_page == NULL)
+                        if (curr_page == NULL)
                         {
                             goto continue_page_loop;
                         }
@@ -303,7 +303,7 @@ namespace Ecs
                         Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
                     //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
 
-                        if(curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
+                        if (curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
                         {
                             goto continue_entity_loop;
                         }

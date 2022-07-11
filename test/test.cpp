@@ -75,7 +75,7 @@ int64_t strrfind(char s, char *buf)
     size_t buf_len = strlen(buf);
     for(int64_t i = buf_len - 1; i > 0 ; --i)
     {
-        if(*(buf + i) == s)
+        if (*(buf + i) == s)
         {
             index = i;
             break;
@@ -90,7 +90,7 @@ int64_t strfind(char s, char *buf)
     size_t buf_len = strlen(buf);
     for(int64_t i = 0; i < buf_len ; ++i)
     {
-        if(*(buf + i) == s)
+        if (*(buf + i) == s)
         {
             index = i;
             break;
@@ -248,7 +248,7 @@ int run_test(const char *function, const char *program)
     int diff = -1;
 
     FILE *fp = fopen(buffer, "r");
-    if(!fp)
+    if (!fp)
     {
         std::cout << "[WARNING] no test file found -- Skipping test\n";
 
@@ -281,7 +281,7 @@ int run_test(const char *function, const char *program)
         strcat(buffer, "diff_.txt");
 
     FILE *fpDiff = fopen(buffer, "r");
-    if(fpDiff)
+    if (fpDiff)
     {
         fread(stdout_diff, BUFFER_SIZE, 1, fpDiff);
         fclose(fpDiff);
@@ -290,7 +290,7 @@ int run_test(const char *function, const char *program)
     size_t firstnewline = 0;
     for(size_t i = 0; i < strlen(stdout_diff); ++i)
     {
-        if(stdout_diff[i] == '\n')
+        if (stdout_diff[i] == '\n')
         {
             firstnewline = i;
             break;
@@ -310,7 +310,7 @@ int run_test(const char *function, const char *program)
 
 
 
-    if(diff)
+    if (diff)
     {
         memset(buffer, 0 , 512);
         memset(stdout_new, 0, BUFFER_SIZE);
@@ -322,7 +322,7 @@ int run_test(const char *function, const char *program)
         strcat(buffer, ".txt");
 
         FILE *fp_new = fopen(buffer, "r");
-        if(fp_new)
+        if (fp_new)
         {
             fread(stdout_new, 1, BUFFER_SIZE, fp_new);
             fclose(fp_new);
@@ -335,7 +335,7 @@ int run_test(const char *function, const char *program)
         strcat(buffer, ".txt");
 
         FILE *fp_old = fopen(buffer, "r");
-        if(fp_old)
+        if (fp_old)
         {
             fread(stdout_old, 1, BUFFER_SIZE, fp_old);
             fclose(fp_old);
@@ -431,16 +431,16 @@ int main(int argc, char *argv[])
     char *flag;
     set_path_to_exe(program);
     set_path_to_test_file();
-    if(*argv == nullptr) usage(program);
+    if (*argv == nullptr) usage(program);
     flag = *argv++;
-    if(*argv == nullptr) // only flag run all test files.
+    if (*argv == nullptr) // only flag run all test files.
     {
-        if(flag[0] != '-') usage(program);
-        if(flag[1] == 'T' && flag[2] == 'S')
+        if (flag[0] != '-') usage(program);
+        if (flag[1] == 'T' && flag[2] == 'S')
         {
             usage("TS"); // -TS flag requires function argument
         }
-        else if(flag[1] == 'r')
+        else if (flag[1] == 'r')
         {
             for(auto & it: str_to_func) // runs all tests
             {
@@ -448,7 +448,7 @@ int main(int argc, char *argv[])
             }
             return 0;  
         }
-        else if(flag[1] == 'u')
+        else if (flag[1] == 'u')
         {
             for(auto & it: str_to_func) // updates all tests
             {
@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
             }
             return 0;  
         }
-        else if(flag[1] == 'l')
+        else if (flag[1] == 'l')
         {
             std::cout << "Test list: " << "\n";
             for(auto & pair : str_to_func)
@@ -472,7 +472,7 @@ int main(int argc, char *argv[])
         int it = 0;
         for(auto &pair : str_to_func)
         {
-            if(arg == pair.first)
+            if (arg == pair.first)
             {
                 break;
             }
@@ -483,16 +483,16 @@ int main(int argc, char *argv[])
             std::cout << "[ERROR] test not found" << "\n";
             exit(1);
         }
-        if(flag[0] != '-') usage(program);
-        if(flag[1] == 'T' && flag[2] == 'S')
+        if (flag[0] != '-') usage(program);
+        if (flag[1] == 'T' && flag[2] == 'S')
         {
             exit(run_function(str_to_func[arg]));
         }
-        else if(flag[1] == 'r')
+        else if (flag[1] == 'r')
         {
             run_test(arg, program);
         }
-        else if(flag[1] == 'u')
+        else if (flag[1] == 'u')
         {
             update_test(arg);
         }

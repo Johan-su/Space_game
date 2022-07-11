@@ -10,7 +10,7 @@ void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address
     
     arena->data = memory_map::commit(reserved_space_address, page_pre_allocation);
 
-    if(page_pre_allocation > max_pages_reserved)
+    if (page_pre_allocation > max_pages_reserved)
     {
         fprintf(stderr, "ERROR: resulting commit size %llu cannot be greater than max reserved size %llu\n", page_pre_allocation, max_pages_reserved);
         exit(1);
@@ -44,14 +44,14 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignme
        
     Usize aligned_bytes = bytes + alignment_shift;
 
-    if(aligned_bytes + arena->bytes_allocated > arena->max_size_commited)
+    if (aligned_bytes + arena->bytes_allocated > arena->max_size_commited)
     {
         // if byte allocation is out of top_arena bounds, commit more from reserved memory.
         Usize page_size = Platform::get_page_size();
         Usize page_amount = Platform::bytes_to_page_amount(arena->max_size_commited + aligned_bytes);
 
 
-        if(arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
+        if (arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
         {
             fprintf(stderr, "ERROR: allocation out of top arena reserved bounds");
             exit(1);

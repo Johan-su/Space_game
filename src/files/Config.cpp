@@ -8,17 +8,17 @@
 
 static int set_value(config_data *settings, const char *var, uint16_t val)
 {
-    if(strcmp(var, "screen_width") == 0)
+    if (strcmp(var, "screen_width") == 0)
     {
         printf("NOTE: %s = %du\n", var, val);
         settings->screen_width = val;
     } 
-    else if(strcmp(var, "screen_height") == 0)
+    else if (strcmp(var, "screen_height") == 0)
     {
         printf("NOTE: %s = %du\n", var, val);
         settings->screen_height = val;
     }
-    else if(strcmp(var, "FPS_target") == 0)
+    else if (strcmp(var, "FPS_target") == 0)
     {
         printf("NOTE: %s = %du\n", var, val);
         settings->FPS_target = val;
@@ -38,7 +38,7 @@ static void substring(char *buf1, char *buf2, const char *str , const char divid
     int64_t pos = -1;
     for(size_t i = 0; i < strlen(str); ++i)
     {
-        if(str[i] == divider)
+        if (str[i] == divider)
         {
             pos = i;
             break;
@@ -63,7 +63,7 @@ void Config::init(config_data *settings, const char *config_path)
     char line[128];
 
     FILE *fp = fopen(config_path, "r");
-    if(fp == NULL)
+    if (fp == NULL)
     {
         fprintf(stderr, "ERROR: Failed to open file: %s\n", config_path);
         return;
@@ -80,7 +80,7 @@ void Config::init(config_data *settings, const char *config_path)
     }
     
 
-    if(fclose(fp) != 0)
+    if (fclose(fp) != 0)
     {
         fprintf(stderr, "ERROR: failed to close file, closing program");
         exit(1);

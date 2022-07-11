@@ -19,7 +19,7 @@ void CollisionSystem::update(Ecs::Registry *registry)
         for(size_t j = 0; j < pos_view->size; ++j)
         {
             Entity e2 = pos_view->entity_list[j];
-            if(e == e2)
+            if (e == e2)
             {
                 continue;
             }
@@ -38,7 +38,7 @@ void CollisionSystem::update(Ecs::Registry *registry)
             bool b4 = pos.y + size.height > pos2.y;
 
 
-            if(b1 && b2 && b3 && b4)
+            if (b1 && b2 && b3 && b4)
             {
                 CollisionEvent ce = CollisionEvent();
 

@@ -28,7 +28,7 @@ namespace Hashmap // TODO(johan) implement good and real hash map
     {
         T *value_pointer = get_pointer(map, key);
 
-        if(value_pointer == NULL) // check if map does not include key
+        if (value_pointer == NULL) // check if map does not include key
         {
             map->values[map->count] = value;
             map->keys[map->count] = key;
@@ -47,14 +47,14 @@ namespace Hashmap // TODO(johan) implement good and real hash map
         size_t pos = SIZE_MAX;
         for(size_t i = 0; i < map->count; ++i)
         {
-            if(map->keys[i] == key)
+            if (map->keys[i] == key)
             {
                 pos = i;
                 break;
             }
         }
 
-        if(pos == SIZE_MAX)
+        if (pos == SIZE_MAX)
         {
             return NULL;
         }
@@ -70,7 +70,7 @@ namespace Hashmap // TODO(johan) implement good and real hash map
     {
         T *value_pointer = get_pointer(map, key);
 
-        if(value_pointer)
+        if (value_pointer)
         {
             return *value_pointer;
         }

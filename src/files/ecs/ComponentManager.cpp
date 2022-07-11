@@ -37,13 +37,13 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         void **pool_component_pages = (void**)(pool_entity_count + 1);
 
 
-        if(pool_entity_count == 0) {
+        if (pool_entity_count == 0) {
             ECS_dbg3(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool; component id: %llu\n", e, i));
             continue;
         }
 
         void *page = pool_component_pages[page_id];
-        if(page == NULL)
+        if (page == NULL)
         { 
             ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page; component id: %ld, page id: %llu\n", e, i, page_id));
             continue;
@@ -51,7 +51,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         size_t *page_entity_count = (size_t*)(page);
         Entity *page_sparse_array = (Entity*)(page_entity_count + 1);
 
-        if(page_sparse_array[page_entry_e] == ENTITY_NULL)
+        if (page_sparse_array[page_entry_e] == ENTITY_NULL)
         {
             ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu], does not exist in page; component id: %llu, page id: %ld\n", e, i, page_id));
             continue;

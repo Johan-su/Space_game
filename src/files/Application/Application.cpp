@@ -26,7 +26,7 @@ static bool app_created = false;
 
 Application_data *Application::create_application(const char *pwd)
 {
-    if(app_created)
+    if (app_created)
     {
         fprintf(stderr, "ERROR: tried to create application while an application already exists");
         exit(1);
@@ -70,14 +70,14 @@ scene *Application::create_add_scene(Application_data *app, const char *scene_na
     // get unoccupied scene position in app
     for(int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
-        if(app->scenes[i] == NULL)
+        if (app->scenes[i] == NULL)
         {
             scene_pos = i;
             break;
         }
     }
 
-    if(scene_pos != -1)
+    if (scene_pos != -1)
     {
         scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
         game_scene->registry = Arena::top_alloc<Ecs::Registry>(&g_memory.scene_buffers[scene_pos]);
@@ -105,14 +105,14 @@ scene *Application::get_scene_by_name(Application_data *app, const char *scene_n
     scene *scene = NULL;
     for(int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
-        if(strcmp(app->scenes[i]->name, scene_name) == 0)
+        if (strcmp(app->scenes[i]->name, scene_name) == 0)
         {
             scene = app->scenes[i];
             break;
         }
     }
 
-    if(scene == NULL)
+    if (scene == NULL)
     {
         fprintf(stderr, "WARNING: failed to find scene by name");
     }
@@ -133,7 +133,7 @@ static void handle_input_events()
 void Application::run(Application_data *app, scene *scene, void (*update_func)(Application_data *, struct scene *, float), void (*fixed_update_func)(Application_data *, struct scene *, float), void (*render_func)(Application_data *, struct scene *, float))
 {
 
-    if(scene == NULL)
+    if (scene == NULL)
     {
         fprintf(stderr, "ERROR: scene cannot be NULL\n");
         return;
@@ -160,7 +160,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
 
 
         print_timer += dt;
-        if(print_timer > 1000000)
+        if (print_timer > 1000000)
         {
             printf("fps: %-7.1f frametime: %f\n", 1000000.0f / dt, dt / 1000000.0f);
             print_timer -= 1000000;
