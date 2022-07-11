@@ -49,7 +49,6 @@ namespace Ecs
         void destroy_entity(Component_data *cdata, Entity e);
 
         Usize get_id();
-
     }
 
 
@@ -138,7 +137,7 @@ namespace Ecs
 
 
         template<typename T>
-        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T &comp)
+        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T comp)
         {
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");

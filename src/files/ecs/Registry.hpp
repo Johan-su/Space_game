@@ -52,7 +52,7 @@ namespace Ecs
 
 
     template<typename T>
-    void set_component(Registry *registry, Entity e, T& comp)
+    void set_component(Registry *registry, Entity e, T comp)
     {
 
         Component_functions::set_component<T>(registry->mm, registry->cdata, e, comp);
