@@ -1,7 +1,5 @@
 #include "Input.hpp"
-
-#include "../Camera.hpp"
-
+#include "../Application/Application.hpp"
 #include <SDL.h>
 
 
@@ -32,17 +30,25 @@ void Internal::init_input()
 
 void Internal::handle_input()
 {
+
+    if (Hashmap::get_value(&input.key_map, SDLK_ESCAPE))
+    {
+        // TODO(Johan): probably change to something better
+        Application::quit_app(Application::Get());
+    }
+
     SDL_Event event;
     // TODO(Johan) maybe find better solution to mouse scroll
     input.scroll = MOUSE_SCROLL_NONE;
-    while(SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
         //printf("event type: %d\n", event.type);
         switch(event.type)
         {
             case SDL_QUIT:
             {
-                // TODO(Johan) implement quitting
+                 // TODO(Johan): probably change to something better
+                Application::quit_app(Application::Get());
             } break;
 
             /*
@@ -79,6 +85,7 @@ void Internal::handle_input()
                 //printf("up %u\n", event.button.button);
             } break;
 
+
             case SDL_MOUSEWHEEL:
             {
                 if (event.wheel.y > 0)
@@ -101,7 +108,6 @@ void Internal::handle_input()
 
                // printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
             } break;
-
 
 
             case SDL_KEYDOWN:
