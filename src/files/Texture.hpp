@@ -8,7 +8,7 @@
 
 
 
-struct Tex_Sprite
+struct Sprite
 {
     U32 x;
     U32 y;
@@ -26,7 +26,7 @@ struct textures_data
     SDL_Texture *texture_list[MAX_TEXTURE_TYPES]; //TODO(johan) maybe change to linked list
     U32 enum_to_texture[MAX_SPRITE_TYPES];
     
-    Tex_Sprite sprite_list[MAX_SPRITE_TYPES];
+    Sprite sprite_list[MAX_SPRITE_TYPES];
     U32 enum_to_sprite[MAX_SPRITE_TYPES];
 };
 
@@ -42,7 +42,7 @@ namespace Texture_functions
 
     SDL_Texture *get_texture(textures_data *td, U32 id);
 
-    Tex_Sprite *get_sprite(textures_data *td, U32 id);
+    Sprite *get_sprite(textures_data *td, U32 id);
 
 
 }

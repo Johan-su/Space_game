@@ -60,7 +60,7 @@ void Texture_functions::init_sprite(textures_data *td, U32 sprite_id, U32 textur
 
     assert(texture_id <= MAX_TEXTURE_TYPES, "texture id too big");
 
-    Tex_Sprite sprite = Tex_Sprite();
+    Sprite sprite = Sprite();
 
     sprite.x = x;
     sprite.y = y;
@@ -81,7 +81,7 @@ SDL_Texture *Texture_functions::get_texture(textures_data *td, U32 id)
     return td->texture_list[td->enum_to_texture[id]];
 }
 
-Tex_Sprite *Texture_functions::get_sprite(textures_data *td, U32 id)
+Sprite *Texture_functions::get_sprite(textures_data *td, U32 id)
 {
     assert(id <= MAX_SPRITE_TYPES, "id cannot be greater than MAX_SPRITE_TYPES");
     return &td->sprite_list[td->enum_to_sprite[id]];
