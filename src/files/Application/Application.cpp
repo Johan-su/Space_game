@@ -5,7 +5,8 @@
 #include "../core.hpp"
 #include "../assert.hpp"
 #include "../Memory_arena.hpp"
-
+#include "../scene/component.hpp"
+#include "../scene/Camera.hpp"
 
 
 struct Application_data
@@ -18,35 +19,35 @@ struct Application_data
 
 };
 
+Application_data *Application::n_app_instance = NULL;
 
-static bool app_created = false;
+
 
 
 
 
 Application_data *Application::create_application(const char *pwd)
 {
-    if (app_created)
+    if (n_app_instance != NULL)
     {
         fprintf(stderr, "ERROR: tried to create application while an application already exists");
         exit(1);
     }
-    app_created = true;
 
     Internal::init_global_memory();
 
     
 
 
-    Application_data *app_data = Arena::top_alloc<Application_data>(&g_memory.app_buffer);
-    memset(app_data, 0, sizeof(*app_data));
+    n_app_instance = Arena::top_alloc<Application_data>(&g_memory.app_buffer);
+    memset(n_app_instance, 0, sizeof(*n_app_instance));
 
-    app_data->engine = Internal::create_engine(&g_memory.app_buffer, pwd);
+    n_app_instance->engine = Internal::create_engine(&g_memory.app_buffer, pwd);
 
-    app_data->active = false;
+    n_app_instance->active = false;
 
 
-    return app_data;
+    return n_app_instance;
 }
 
 
@@ -59,12 +60,14 @@ void Application::destroy_application(Application_data *app)
     Internal::clean_engine(app->engine);
 
     Arena::clean_arena(&g_memory.app_buffer);
+
+    n_app_instance = NULL;
 }
 
 
-scene *Application::create_add_scene(Application_data *app, const char *scene_name = "unnamed_scene")
+scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
 {
-
+    Application_data *app = Application::Get();
     int scene_pos = -1;
 
     // get unoccupied scene position in app
@@ -80,11 +83,28 @@ scene *Application::create_add_scene(Application_data *app, const char *scene_na
     if (scene_pos != -1)
     {
         scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
-        game_scene->registry = Arena::top_alloc<Ecs::Registry>(&g_memory.scene_buffers[scene_pos]);
 
-        Ecs::init(game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
-        Real::init(&game_scene->camera, app->engine->config->screen_width, app->engine->config->screen_height);
-        
+        Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
+
+        Ecs::init_component<Transform>(&game_scene->registry);
+        Ecs::init_component<CameraComponent>(&game_scene->registry);
+        Ecs::init_component<Velocity>(&game_scene->registry);
+        Ecs::init_component<SpriteComponent>(&game_scene->registry);
+        Ecs::init_component<BoxCollider>(&game_scene->registry);
+        Ecs::init_component<CircleCollider>(&game_scene->registry);
+
+        {
+            Transform camera_transform = {};
+            CameraComponent camera_comp = {};
+
+            Real::init_camera(&camera_transform, &camera_comp, true, app->engine->config->screen_width, app->engine->config->screen_height);
+
+            Entity main_camera = Ecs::create_entity(&game_scene->registry);
+            Ecs::set_component<Transform>(&game_scene->registry, main_camera, camera_transform);
+            Ecs::set_component<CameraComponent>(&game_scene->registry, main_camera, camera_comp);
+
+        }
+
         
         game_scene->name = "scene_name";
         app->scenes[scene_pos] = game_scene;
@@ -100,8 +120,9 @@ scene *Application::create_add_scene(Application_data *app, const char *scene_na
 }
 
 
-scene *Application::get_scene_by_name(Application_data *app, const char *scene_name)
+scene *Application::get_scene_by_name(const char *scene_name)
 {
+    Application_data *app = Application::Get();
     scene *scene = NULL;
     for(int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
@@ -130,7 +151,7 @@ static void handle_input_events()
 
 #define FIXED_UPDATE_FREQUENCY_PER_SEC 60
 
-void Application::run(Application_data *app, scene *scene, void (*update_func)(Application_data *, struct scene *, float), void (*fixed_update_func)(Application_data *, struct scene *, float), void (*render_func)(Application_data *, struct scene *, float))
+void Application::run(Application_data *app, scene *scene)
 {
 
     if (scene == NULL)
@@ -151,7 +172,7 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
     U64 dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
 
-    while(app->active)
+    while (app->active)
     {
         curr = deltaTime::get_micro_time();
         dt = curr - prev;
@@ -169,23 +190,30 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         ts = dt / 1000000.0f;
 
         handle_input_events();
-        update_func(app, scene, ts);
+        
 
         fixed_update_count += dt;
-        while(fixed_update_count >= target_fixed_update)
+        while (fixed_update_count >= target_fixed_update)
         {
-            fixed_update_func(app, scene, target_fixed_update / 1000000.0f);
+            // TODO(Johan): figure out a way to do fixed_update for certain systems
             fixed_update_count -= target_fixed_update;
         }
 
         // begin render
         SDL_RenderClear(app->engine->renderer);
     
-        render_func(app, scene, ts);
+        Ecs::progress_systems(&scene->registry, ts);
 
         SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 0);
         vec2i mpos = Real::getMousePos();
-        SDL_Rect rect = {mpos.x - 5, mpos.y - 5, 10, 10};
+
+        SDL_Rect rect = {
+            .x = mpos.x - 5,
+            .y = mpos.y - 5,
+            .w = 5,
+            .h = 5
+        };
+
         SDL_RenderFillRect(app->engine->renderer, &rect);
 
         SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 0);
@@ -199,47 +227,83 @@ void Application::run(Application_data *app, scene *scene, void (*update_func)(A
         {
             curr = deltaTime::get_micro_time();
             dt = curr - prev;
-        } while(dt < target_time);
+        } while (dt < target_time);
 
     }
 }
 
 
-int Application::RenderCopyExF(Application_data *app,
-                               Texture *texture,
-                               const Rect *srcrect,
-                               const FRect *dstrect,
-                               const double angle,
-                               const FPoint *center,
-                               const Flip_flag flip)
+static inline float RadToDeg(float angle)
 {
+    return angle * 57.2957786667f; // 180 / pi
+}
 
-    return SDL_RenderCopyExF(app->engine->renderer, (SDL_Texture*)texture, (SDL_Rect*)srcrect, (const SDL_FRect*)dstrect, angle, (const SDL_FPoint*)center, (const SDL_RendererFlip)flip);
+
+int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, SpriteComponent *sprite_comp)
+{
+        Application_data *app = Application::Get();
+
+
+        Sprite *sprite = Texture_functions::get_sprite(app->engine->texture, sprite_comp->texture_id);
+        SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
+
+
+        Entity camera_e = get_first_active_camera(registry);
+
+
+        Transform *camera_transform  = Ecs::get_component<Transform>(registry, camera_e);
+        CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(registry, camera_e);
+
+
+
+        SDL_Rect srcrect = {
+            .x = (int)sprite->x,
+            .y = (int)sprite->y,
+
+            .w = (int)sprite->w,
+            .h = (int)sprite->h,
+        };
+
+
+        SDL_FRect dstrect = {
+            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x),
+            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y),
+
+            .w = transform->scale.x * sprite->w * camera_comp->world_scale.x,
+            .h = transform->scale.y * sprite->h * camera_comp->world_scale.y,
+        };
+
+
+        double angle = RadToDeg(atan2(transform->rot.y, transform->rot.x)) + 90.0f;
+
+    return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
 }
 
 
 
-void Application::load_texture(Application_data *app, uint32_t id, const char *path)
+void Application::load_texture(U32 id, const char *path)
 {
+    Application_data *app = Application::Get();
     Texture_functions::load_texture(app->engine->renderer, app->engine->texture, id, path);
 }
 
 
-void Application::init_sprite(Application_data *app, uint32_t sprite_id, uint32_t texture_id, uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+void Application::init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h)
 {
+    Application_data *app = Application::Get();
     Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
 }
 
 
-Texture *Application::get_texture(Application_data *app, uint32_t id)
+Application_data *Application::Get()
 {
-    return (Texture*)Texture_functions::get_texture(app->engine->texture, id);
+    return n_app_instance;
 }
 
 
-Texture_Sprite *Application::get_sprite(Application_data *app, uint32_t id)
+void Application::quit_app(Application_data *app)
 {
-    return (Texture_Sprite*)Texture_functions::get_sprite(app->engine->texture, id);
+    app->active = false;
 }
 
 
@@ -257,4 +321,22 @@ char *Application::cat_string(const char *str1, const char *str2) //TODO(Johan) 
 void Application::clear_view_buffer()
 {
     Arena::clear_top_arena(&g_memory.view_buffer);
+}
+
+
+Entity Application::get_first_active_camera(Ecs::Registry *registry)
+{
+    View<CameraComponent> *camera_view = Ecs::get_view<CameraComponent, Transform>(registry);
+    Entity active_camera = ENTITY_NULL;
+
+    for (int i = 0; i < camera_view->size; ++i)
+    {
+        if (camera_view->comparray[i].active == true)
+        {
+            active_camera = camera_view->entity_list[i];
+            break;
+        }
+    }
+
+    return active_camera;
 }

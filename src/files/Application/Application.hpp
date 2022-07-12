@@ -1,7 +1,7 @@
 #pragma once
-#include "../Camera.hpp"
 #include "../input/KeyCodes.hpp"
-
+#include "../scene/scene.hpp"
+#include "../scene/component.hpp"
 
 // TODO(Johan) make better
 
@@ -17,14 +17,6 @@ namespace Ecs
     struct Registry;
 }
 
-struct scene
-{
-    Camera camera;
-    const char *name;
-    Ecs::Registry *registry;
-};
-
-typedef struct scene scene;
 
 
 
@@ -87,15 +79,17 @@ struct Texture_Sprite
 
 namespace Application
 {
-    
+    extern Application_data *n_app_instance;
+
+
     Application_data *create_application(const char *pwd);
     void destroy_application(Application_data *app);
 
-    scene *create_add_scene(Application_data *app, const char *scene_name);
+    scene *create_add_scene( const char *scene_name);
 
-    scene *get_scene_by_name(Application_data *app, const char *scene_name);
+    scene *get_scene_by_name(const char *scene_name);
 
-    void run(Application_data *app, scene *scene, void (*update_func)(Application_data *, struct scene *, float), void (*fixed_update_func)(Application_data *, struct scene *, float), void (*render_func)(Application_data *, struct scene *, float));
+    void run(Application_data *app, scene *scene);
 
     //void set_scene(Application_data *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
 
@@ -107,25 +101,29 @@ namespace Application
      * 
      *
      */
-    int RenderCopyExF(Application_data *app,
-                      Texture *texture,
-                      const Rect *srcrect,
-                      const FRect *dstrect,
-                      const double angle,
-                      const FPoint *center,
-                      const Flip_flag flip);
+    int RenderCopyExF(Ecs::Registry *registry, Transform *transform, SpriteComponent *sprite_comp);
 
 
 
-    void load_texture(Application_data *app, U32 id, const char *path);
-    void init_sprite(Application_data *app, U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h);
+    void load_texture(U32 id, const char *path);
+    void init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h);
 
-    Texture *get_texture(Application_data *app, U32 id);
-    Texture_Sprite *get_sprite(Application_data *app, U32 id);
+    Application_data *Get();
+    void quit_app(Application_data *app);
 
 
     char *cat_string(const char *str1, const char *str2);
 
     void clear_view_buffer();
+
+    /**
+     * 
+     * 
+     * 
+     * does not clear view buffer
+     * 
+     * 
+     */ 
+    Entity get_first_active_camera(Ecs::Registry *registry);
 
 }
