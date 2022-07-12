@@ -1,14 +1,13 @@
 #pragma once
 
 #include <stdint.h>
+#include "ecs_assert.hpp"
+#include "ecs_constants.hpp"
+#include "../scene/iter.hpp"
 
-
-
-#define MAX_EVENT_TYPES 256
 
 namespace Ecs
 {
-    struct Registry;
     struct event_data
     {
         bool event_init[MAX_EVENT_TYPES];
@@ -35,7 +34,7 @@ namespace Ecs
 
 
         template<typename ReturnT, typename EventT>
-        void init_event(event_data *ed, ReturnT (event_listener)(Registry *, EventT*))
+        void init_event(event_data *ed, ReturnT (event_listener)(Iter *))
         {
             const size_t id = get_event_id<EventT>(ed);
             ECS_assert(id < MAX_EVENT_TYPES, "id must be lower than MAX_EVENT_TYPES");
@@ -44,14 +43,16 @@ namespace Ecs
         }
 
         template<typename ReturnT, typename EventT>
-        ReturnT broadcast_event(Registry *registry, event_data *ed, EventT *event) // TODO:(Johan) maybe change as registry includes event_data
+        ReturnT broadcast_event(event_data *ed, Iter *iter)
         {
+            typedef ReturnT (Listener)(Iter *);
+
             const size_t id = get_event_id<EventT>(ed);
             ECS_assert(ed->event_init[id], "event must be initalized");
 
-            auto *listener = (ReturnT (*)(Registry *, EventT*))(ed->event_listeners[id]); // normal C++ things
+            Listener *listener = (Listener *)(ed->event_listeners[id]); // normal C++ things
 
-            return listener(registry, event);
+            return listener(iter);
         }
     } // namespace Event_functions
 
