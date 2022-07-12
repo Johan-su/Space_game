@@ -4,37 +4,6 @@
 
 
 // components
-struct Position
-{
-    float x; // center x 
-    float y; // center y
-};
-
-
-struct SizeComponent
-{
-    float width;
-    float height;
-};
-
-struct Circle_size
-{
-    float radius;
-};
-
-
-
-struct Velocity
-{
-    float x;
-    float y;
-};
-
-
-struct Angle
-{
-    float angle;
-};
 
 
 struct AnglularVelocity
@@ -42,31 +11,16 @@ struct AnglularVelocity
     float angleV;
 };
 
+
 struct MassComponent
 {
     float mass;
 };
 
 
-struct RigidCollision
-{
-};
-
-
-struct Collision
-{
-};
-
-
 struct Player 
 {
     uint32_t id; //TODO(Johan) probably not needed
-};
-
-
-struct SpriteComponent
-{
-    uint32_t texture_id;
 };
 
 
@@ -154,6 +108,9 @@ struct PlanetSpawnEvent
 {
     float x;
     float y;
+
+    float rot_x;
+    float rot_y;
 
     float vel_x;
     float vel_y;
