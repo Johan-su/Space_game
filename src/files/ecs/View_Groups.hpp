@@ -7,7 +7,7 @@
 template<typename T>
 struct View
 {
-    size_t size;
+    Usize size;
     Entity *entity_list;
     T *comparray;
 };
