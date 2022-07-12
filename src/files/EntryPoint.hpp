@@ -7,8 +7,8 @@ define init, clean in your application
 */
 
 
-void init(Application_data *app, const char *pwd);
-void clean(Application_data *app);
+void init(const char *pwd);
+void clean();
 
 int main(int argc, char *argv[])
 {   
@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
 
     Application_data *app = Application::create_application(pwd);
 
-    init(app, pwd);
-    clean(app);
+    init(pwd);
+    clean();
 
     Application::destroy_application(app);
     app = NULL;
