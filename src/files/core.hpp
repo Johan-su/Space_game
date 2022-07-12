@@ -1,7 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #include "Texture.hpp"
-#include "Camera.hpp"
 #include "Config.hpp"
 
 #include "ecs/ecs.hpp"
