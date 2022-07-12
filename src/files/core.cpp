@@ -1,6 +1,5 @@
 #include "core.hpp"
 #include "assert.hpp"
-#include "Camera.hpp"
 
 
 #include "platform/platform.hpp"
@@ -100,6 +99,8 @@ static void sdl_clean(engine_data *engine)
 
     engine->renderer = NULL;
     engine->window = NULL;
+
+    SDL_Quit();
 }
 
 
