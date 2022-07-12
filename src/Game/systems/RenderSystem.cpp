@@ -2,96 +2,29 @@
 #include "../Components_Events.hpp"
 
 
-static inline float RadToDeg(float angle)
-{
-    return angle * 57.2957786667f; // 180 / pi
-}
 
 
-static void render_angle_entities(Application_data *app, scene *scene)
-{
-    Application::clear_view_buffer();
-    Ecs::Registry *registry = scene->registry;
-    Camera *camera = &scene->camera;
 
-    View<Position> *pos_view           = Ecs::get_view<Position, SizeComponent, Angle, SpriteComponent>(registry);
-    View<SizeComponent> *size_view     = Ecs::get_view<SizeComponent, Angle, SpriteComponent, Position>(registry);
+void RenderSystem::render(Iter *iter)
+{  
+    View<Transform> *transform_view = Ecs::get_view<Transform, SpriteComponent>(iter->curr_registry);
+    View<SpriteComponent> *sprite_view = Ecs::get_view<SpriteComponent, Transform>(iter->curr_registry);
 
-    View<Angle> *angle_view            = Ecs::get_view<Angle, SpriteComponent, Position, SizeComponent>(registry);
-    View<SpriteComponent> *sprite_view = Ecs::get_view<SpriteComponent, Position, SizeComponent, Angle>(registry);
-
-    for(Usize i = 0; i < pos_view->size; ++i)
+    for (Usize i = 0; i < transform_view->size; ++i)
     {
         //dbg(printf("running in render for loop\n"));
-        Texture_Sprite *sprite = Application::get_sprite(app, sprite_view->comparray[i].texture_id);
-        Texture *texture = Application::get_texture(app, sprite->texture_index);
-
-        Rect srcrect = Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
-
-        Position pos = pos_view->comparray[i];
-        SizeComponent size = size_view->comparray[i];
 
 
-        FRect dstrect = FRect();
+        Transform *transform = &transform_view->comparray[i];
+        SpriteComponent *sprite_comp = &sprite_view->comparray[i];
 
 
-        dstrect.x = Real::world_to_screen_x(camera, pos.x);
-        dstrect.y = Real::world_to_screen_y(camera, pos.y);
-
-        dstrect.w = size.width * camera->world_scale_x;
-        dstrect.h = size.height * camera->world_scale_y;
 
         // printf("camerapos [x = %f, y = %f, scale_x = %f, scale_y = %f] ", camera->world_x, camera->world_y, camera->world_scale_x, camera->world_scale_y);
         // printf("renderpos [x = %f, y = %f, w = %f, h = %f]\n", dstrect.x, dstrect.y, dstrect.w, dstrect.h);
 
-        Application::RenderCopyExF(app, texture, &srcrect, &dstrect, RadToDeg(angle_view->comparray[i].angle) + 90.0f, NULL, FLIP_NONE);
+        Application::RenderCopyExF(iter->curr_registry, transform, sprite_comp);
     }
-}
-
-
-static void render_circles(Application_data *app, scene *scene)
-{
-    Application::clear_view_buffer();
-
-    Camera *camera = &scene->camera;
-
-    View<Position> *pos_view           = Ecs::get_view<Position, Circle_size, SpriteComponent>(scene->registry);
-    View<Circle_size> *csize_view      = Ecs::get_view<Circle_size, SpriteComponent, Position>(scene->registry);
-    View<SpriteComponent> *sprite_view = Ecs::get_view<SpriteComponent, Position, Circle_size>(scene->registry);
-
-    for(Usize i = 0; i < pos_view->size; ++i)
-    {
-        Texture_Sprite *sprite = Application::get_sprite(app, sprite_view->comparray[i].texture_id);
-        Texture *texture = Application::get_texture(app, sprite->texture_index);
-
-        Rect srcrect = Rect{(int)sprite->x, (int)sprite->y, (int)sprite->w, (int)sprite->h};
-
-        Position pos = pos_view->comparray[i];
-        Circle_size csize = csize_view->comparray[i];
-
-
-        FRect dstrect = FRect();
-
-
-        dstrect.x = Real::world_to_screen_x(camera, pos.x);
-        dstrect.y = Real::world_to_screen_y(camera, pos.y);
-
-        dstrect.w = csize.radius * 2 * camera->world_scale_x;
-        dstrect.h = csize.radius * 2 * camera->world_scale_y;
-
-        // printf("camerapos [x = %f, y = %f, scale_x = %f, scale_y = %f] ", camera->world_x, camera->world_y, camera->world_scale_x, camera->world_scale_y);
-        // printf("renderpos [x = %f, y = %f, w = %f, h = %f]\n", dstrect.x, dstrect.y, dstrect.w, dstrect.h);
-
-        Application::RenderCopyExF(app, texture, &srcrect, &dstrect, 90.0f, NULL, FLIP_NONE);
-    }
-}
-
-
-
-void RenderSystem::render(Application_data *app, scene *scene)
-{
-    render_angle_entities(app, scene);
-    render_circles(app, scene);
 }
 
 

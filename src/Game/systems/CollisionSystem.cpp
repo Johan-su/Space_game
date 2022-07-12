@@ -4,9 +4,8 @@
 
 #include <assert.h>
 
-void CollisionSystem::update(Ecs::Registry *registry)
-{
-    Application::clear_view_buffer();
+void BoxCollisionSystem::update(Iter *iter)
+{/*
     View<Position> *pos_view = Ecs::get_view<Position, SizeComponent, Collision>(registry);
     View<SizeComponent> *size_view    = Ecs::get_view<SizeComponent, Position, Collision>(registry);
 
@@ -49,6 +48,6 @@ void CollisionSystem::update(Ecs::Registry *registry)
         }
     }
 
-}
+*/}
 
 

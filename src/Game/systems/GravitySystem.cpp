@@ -6,9 +6,8 @@
 
 static const float G = 6.6743E-11f;
 
-void GravitySystem::update(Ecs::Registry *registry, float Ts)
-{
-    Application::clear_view_buffer();
+void GravitySystem::update(Iter *iter)
+{/*
     View<Position> *pos_view       = Ecs::get_view<Position, MassComponent, Circle_size, GravityAttractor>(registry);
     View<MassComponent> *mass_view = Ecs::get_view<MassComponent, Circle_size, GravityAttractor, Position>(registry);
     View<Circle_size> *csize_view  = Ecs::get_view<Circle_size, GravityAttractor, Position, MassComponent>(registry);
@@ -59,4 +58,4 @@ void GravitySystem::update(Ecs::Registry *registry, float Ts)
 
 
 
-}
+*/}

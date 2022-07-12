@@ -6,9 +6,8 @@
 namespace EntityCreationSystem
 {
     
-    Entity create_ship(Ecs::Registry *registry, ShipSpawnEvent *event);
-    Entity create_player(Ecs::Registry *registry, PlayerSpawnEvent *event);
-    Entity create_ai(Ecs::Registry *registry, AiSpawnEvent *event);
-    Entity create_planet(Ecs::Registry *registry, PlanetSpawnEvent *event);
-
+    Entity create_ship(Iter *iter);
+    Entity create_player(Iter *iter);
+    Entity create_ai(Iter *iter);
+    Entity create_planet(Iter *iter);
 } // namespace EntityCreationSystem

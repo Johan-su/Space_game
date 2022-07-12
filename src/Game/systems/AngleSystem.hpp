@@ -6,6 +6,6 @@
 
 namespace AngleSystem
 {
-    void update(Ecs::Registry *registry, float Ts);
+    void update(Iter *iter);
 
 } // namespace AngleSystem

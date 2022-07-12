@@ -5,6 +5,6 @@
 namespace PlayerSystem
 {
     void set_player_entity(Entity id);
-    void update(Application_data *app, Ecs::Registry *registry, float Ts);
+    void update(Iter *iter);
 
 } // namespace PlayerSystem

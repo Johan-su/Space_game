@@ -5,41 +5,34 @@
 
 
 
-Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent *event)
+Entity EntityCreationSystem::create_ship(Iter *iter)
 {
-    float x            = event->x;
-    float y            = event->y;
-    float width        = event->width;
-    float height       = event->height;
-    uint32_t ship_type = event->ship_type;
+    ShipSpawnEvent *event = (ShipSpawnEvent *)iter->curr_event; 
+    Entity e = Ecs::create_entity(iter->curr_registry);
 
-    Entity e = Ecs::create_entity(registry);
-
-    Position position = {x, y};
-    Velocity velocity = {0.0f, 0.0f};
-
-    Collision collision = {};
-    GravityAffected gravity_affected = {};
-    MassComponent mass = {1000.0f};
     
+    Ecs::set_component<Transform>(iter->curr_registry, e, {
+        .pos = {
+            .x = event->x,
+            .y = event->y
+        },
+        .rot = {
+            .x = 0.0f,
+            .y = 0.0f
+        },
+        .scale = {
+            .x = 1.0f,
+            .y = 1.0f
+        }
+    });
 
-    SizeComponent size = {width, height};
 
-    Angle angle = {0.0f};
-
-    AnglularVelocity angleVel = {0.0f};  
-    SpriteComponent spriteComp = {ship_type};
-
-
-    Ecs::set_component(registry, e, position);
-    Ecs::set_component(registry, e, velocity);
-    Ecs::set_component(registry, e, collision);
-    Ecs::set_component(registry, e, gravity_affected);
-    Ecs::set_component(registry, e, mass);
-    Ecs::set_component(registry, e, size);
-    Ecs::set_component(registry, e, angle);
-    Ecs::set_component(registry, e, angleVel);
-    Ecs::set_component(registry, e, spriteComp);
+    Ecs::set_component<Velocity>(iter->curr_registry, e, {0.0f, 0.0f});
+   // Ecs::set_component(iter->curr_registry, e, collision);
+    Ecs::set_component<GravityAffected>(iter->curr_registry, e, {});
+    Ecs::set_component<MassComponent>(iter->curr_registry, e, {1000.0f});
+    Ecs::set_component<AnglularVelocity>(iter->curr_registry, e, {0.0f});
+    Ecs::set_component<SpriteComponent>(iter->curr_registry, e, {event->ship_type});
 
 
     return e;
@@ -50,23 +43,25 @@ Entity EntityCreationSystem::create_ship(Ecs::Registry *registry, ShipSpawnEvent
 
 
 
-static uint32_t player_id_count = 0;
+static U32 player_id_count = 0;
 
-Entity EntityCreationSystem::create_player(Ecs::Registry *registry, PlayerSpawnEvent *event)
+Entity EntityCreationSystem::create_player(Iter *iter)
 {
+    PlayerSpawnEvent *event = (PlayerSpawnEvent *)iter->curr_event; 
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
-
-    Entity e = create_ship(registry, &sse);
-    Player player_comp = Player();
-    player_comp.id = player_id_count++;
-    Ecs::set_component(registry, e, player_comp);
+    iter->curr_event = &sse;
+    Entity e = create_ship(iter);
+    
+    Ecs::set_component<Player>(iter->curr_registry, e, {
+        .id = player_id_count++
+    });
 
     return e;
 }
 
 
-Entity EntityCreationSystem::create_ai(Ecs::Registry *registry, AiSpawnEvent *event) //TODO(Johan) maybe separate to different functions
-{
+Entity EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate to different functions
+{/*
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
     auto nai = NeutralAI(); // TODO(Johan) make better
@@ -98,7 +93,7 @@ Entity EntityCreationSystem::create_ai(Ecs::Registry *registry, AiSpawnEvent *ev
     }
 
     return e;
-}
+*/return 0;}
 
 
 
@@ -106,15 +101,31 @@ Entity EntityCreationSystem::create_ai(Ecs::Registry *registry, AiSpawnEvent *ev
 
 
 
-Entity EntityCreationSystem::create_planet(Ecs::Registry *registry, PlanetSpawnEvent *event)
+Entity EntityCreationSystem::create_planet(Iter *iter)
 {
+    PlanetSpawnEvent *event = (PlanetSpawnEvent *)iter->curr_event;
+    Ecs::Registry *registry = iter->curr_registry;
+    
     Entity e = Ecs::create_entity(registry);
 
 
-    Ecs::set_component<Position>(registry, e, {.x = event->x, .y = event->y});
+    Ecs::set_component<Transform>(registry, e, {
+        .pos = {
+            .x = event->x,
+            .y = event->y
+        },
+        .rot = {
+            .x = event->rot_x,
+            .y = event->rot_y
+        },
+        .scale = {
+            .x = 1.0f,
+            .y = 1.0f
+        }
+    });
+
     Ecs::set_component<Velocity>(registry, e, {.x = event->vel_x, .y = event->vel_y});
 
-    Ecs::set_component<Circle_size>(registry, e, {.radius = event->radius});
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
     Ecs::set_component<GravityAttractor>(registry, e, {});

@@ -5,5 +5,5 @@
 
 namespace CameraController
 {
-    void update(scene *scene);
+    void update(Iter *iter);
 } // namespace CameraController

@@ -13,13 +13,32 @@ void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_
     registry->mm = mm;
     registry->view_mm = view_mm;
 
-    registry->edata  = Arena::top_alloc<Entity_data>(registry->mm);
-    registry->evdata = Arena::top_alloc<event_data>(registry->mm);
-    registry->cdata  = Arena::top_alloc<Component_data>(registry->mm);
+    registry->edata   = Arena::top_alloc<Entity_data>(registry->mm);
+    registry->evdata  = Arena::top_alloc<event_data>(registry->mm);
+    registry->sysdata = Arena::top_alloc<system_data>(registry->mm);
+    registry->cdata   = Arena::top_alloc<Component_data>(registry->mm);
 
     Entity_functions::init(registry->edata);
     Event_functions::init(registry->evdata);
+    System_functions::init(registry->sysdata);
     Component_functions::init(registry->cdata);
+}
+
+
+void Ecs::init_system(Registry *registry, Phase phase, SystemFunc *system_function)
+{
+    System_functions::init_system(registry->sysdata, phase, system_function);
+}
+
+
+void Ecs::progress_systems(Registry *registry, float Ts)
+{
+    Iter iter = {
+        .curr_registry = registry,
+        .curr_event    = NULL,
+        .Ts = Ts
+    };
+    System_functions::progess_systems(registry->sysdata, &iter);
 }
 
 

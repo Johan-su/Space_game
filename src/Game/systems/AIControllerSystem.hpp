@@ -4,5 +4,5 @@
 
 namespace AIControllerSystem
 {
-    void update();
+    void update(Iter *iter);
 } // namespace AIControllerSystem

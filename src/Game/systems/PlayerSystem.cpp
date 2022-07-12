@@ -16,17 +16,16 @@ void PlayerSystem::set_player_entity(Entity id)
     player = id;
 }
 
-void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float Ts)
+void PlayerSystem::update(Iter *iter)
 {
     if (player == ENTITY_NULL)
     {
         return;
     }
 
-
-    Velocity *vel               = Ecs::get_component<Velocity>(registry, player);
-    AnglularVelocity *angle_vel = Ecs::get_component<AnglularVelocity>(registry, player);
-    Angle *angle                = Ecs::get_component<Angle>(registry, player);
+    Transform *transform        = Ecs::get_component<Transform>(iter->curr_registry, player);
+    Velocity *vel               = Ecs::get_component<Velocity>(iter->curr_registry, player);
+    AnglularVelocity *angle_vel = Ecs::get_component<AnglularVelocity>(iter->curr_registry, player);
 
     float vel_x_target;
     float vel_y_target;
@@ -44,13 +43,13 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
 
     if (Real::IsKeyPressed(VK_w))
     {
-        vel_x_target = speed * cosf(angle->angle);
-        vel_y_target = speed * sinf(angle->angle);
+        vel_x_target = speed * transform->rot.x;
+        vel_y_target = speed * transform->rot.y;
     }
     else if (Real::IsKeyPressed(VK_s))
     {
-        vel_x_target = -speed * cosf(angle->angle);
-        vel_y_target = -speed * sinf(angle->angle);
+        vel_x_target = -speed * transform->rot.x;
+        vel_y_target = -speed * transform->rot.y;
     }
     else
     {
@@ -63,7 +62,7 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
 
     if (Real::IsKeyPressed(VK_d))
     {
-        angle_vel_target = 0.52359877559f *18; // pi/6
+        angle_vel_target = 0.52359877559f * 18; // pi/6
     }
     else if (Real::IsKeyPressed(VK_a))
     {
@@ -74,10 +73,10 @@ void PlayerSystem::update(Application_data *app, Ecs::Registry *registry, float 
         angle_vel_target = 0.0f;
     }
 
-    vel->x = lerp(vel->x, vel_x_target, Ts * 6);
-    vel->y = lerp(vel->y, vel_y_target, Ts * 6);
+    vel->x = lerp(vel->x, vel_x_target, iter->Ts * 6);
+    vel->y = lerp(vel->y, vel_y_target, iter->Ts * 6);
 
-    angle_vel->angleV = lerp(angle_vel->angleV, angle_vel_target, Ts * 4);
+   angle_vel->angleV = lerp(angle_vel->angleV, angle_vel_target, iter->Ts * 4);
 }
 
 

@@ -1,26 +1,31 @@
 #pragma once
+#include "EventManager.hpp"
 
-#include "../Memory_arena.hpp"
 #include "EntityManager.hpp"
 #include "ComponentManager.hpp"
-#include "EventManager.hpp"
+#include "SystemManager.hpp"
 #include "View_Groups.hpp"
 
-#include <stdint.h>
+#include "../Memory_arena.hpp"
 
 
 namespace Ecs
 {
+   // struct event_data;
     struct Registry
     {
         top_memory_arena *mm;
         top_memory_arena *view_mm;
         Entity_data *edata;
         event_data *evdata;
+        system_data *sysdata;
         Component_data *cdata;      
     };
 
     void init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm);
+    void init_system(Registry *registry, Phase phase, SystemFunc *system_function);
+
+    void progress_systems(Registry *registry, float Ts);
 
     Entity create_entity(Registry *registry);
     void destroy_entity(Registry *registry, Entity e);
@@ -31,16 +36,16 @@ namespace Ecs
 namespace Ecs
 {
     template<typename ReturnT, typename EventT>
-    void init_event(Registry *registry, ReturnT (event_listener)(Registry *, EventT *))
+    void init_event(Registry *registry, ReturnT (event_listener)(Iter *))
     {
         Event_functions::init_event<ReturnT, EventT>(registry->evdata, event_listener);
     }
 
 
-    template<typename ReturnT, typename EventT>
-    ReturnT broadcast_event(Registry *registry, EventT *event)
+    template<typename ReturnT, typename EventT> // TODO(Johan): very unsafe as EventT does not get auto deduced
+    ReturnT broadcast_event(Registry *registry, Iter *iter)
     {
-        return Event_functions::broadcast_event<ReturnT, EventT>(registry, registry->evdata, event);
+        return Event_functions::broadcast_event<ReturnT, EventT>(registry->evdata, iter);
     }
 
 

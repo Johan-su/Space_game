@@ -3,8 +3,8 @@
 
 #include "../Game.hpp"
 
-namespace CollisionSystem
+namespace BoxCollisionSystem
 {
-    void update(Ecs::Registry *registry);
+    void update(Iter *iter);
     
 } // namespace CollisionSystem

@@ -3,19 +3,18 @@
 
 
 
-void MovementSystem::update(Ecs::Registry *registry, float Ts)
+void MovementSystem::update(Iter *iter)
 {
-    Application::clear_view_buffer();
-    View<Velocity> *vel_view = Ecs::get_view<Velocity, Position>(registry);
+    View<Velocity> *vel_view = Ecs::get_view<Velocity, Transform>(iter->curr_registry);
 
     for(size_t i = 0; i < vel_view->size; ++i)
     {
         Entity e = vel_view->entity_list[i];
-        Position *pos = Ecs::get_component<Position>(registry, e);
+        Transform *transform = Ecs::get_component<Transform>(iter->curr_registry, e);
         Velocity vel = vel_view->comparray[i];
 
         
-        pos->x += vel.x * Ts;
-        pos->y += vel.y * Ts;
+        transform->pos.x += vel.x * iter->Ts;
+        transform->pos.y += vel.y * iter->Ts;
     }
 }
