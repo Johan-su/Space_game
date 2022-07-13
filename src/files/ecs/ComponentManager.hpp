@@ -245,7 +245,6 @@ namespace Ecs
             const Usize typeCount = 1 + sizeof...(Ts);
 
 
-
             Usize compids[typeCount];
             Usize mincompid;
             Usize minsize;
@@ -272,7 +271,7 @@ namespace Ecs
             void **component_pages       = (void**)(entity_count_pointer + 1); // almost three star programming
 
 
-            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i)
+            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
             {
                 void *page = component_pages[i];
                 if (page == NULL)
@@ -285,12 +284,12 @@ namespace Ecs
                 Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
             //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
 
-                for(Usize j = 0; j < *page_size_pointer; ++j)
+                for(Usize j = 0; j < *page_size_pointer; ++j) // for every entity in min pool's page
                 {
                     Entity min_e  = entity_list_pointer[j];
                     U32 page_entry_min_e = min_e % PAGE_SIZE;
 
-                    for(Usize k = 0; k < typeCount; ++k)
+                    for(Usize k = 0; k < typeCount; ++k) // for every type except T1
                     {
                         void *curr_comp_pool = cdata->component_pools[compids[k]];
 
@@ -321,9 +320,7 @@ namespace Ecs
                     continue_entity_loop:;
                 }                    
 
-
-
-
+                
                 continue_page_loop:;
             }
 
@@ -342,6 +339,149 @@ namespace Ecs
 
 
             return view;
+        }
+
+
+
+
+        template<typename... T>
+        Group *get_group(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
+        {
+            const Usize typeCount = sizeof...(T);
+
+            Usize compids[typeCount];
+            Usize mincompid;
+            Usize min_count;
+
+            set_min_array_data<T...>(cdata, compids, &mincompid, &min_count);
+
+
+            Group *group = Arena::top_alloc<Group>(view_mm);
+
+            group->entity_list = Arena::top_alloc<Entity>(view_mm, min_count);
+            group->comp_arrays  = Arena::top_alloc<void *>(view_mm, typeCount);
+
+            for (Usize i = 0; i < typeCount; ++i)
+            {
+                Usize comp_alignment = cdata->component_alignments[compids[i]];
+                Usize comp_size      = cdata->component_sizes[compids[i]];
+
+                group->comp_arrays[i] = Arena::top_alloc_bytes(view_mm, comp_size, comp_alignment);
+            }
+            
+            for(Usize i = 0; i < min_count; ++i)
+            {
+                group->entity_list[i] = ENTITY_NULL;
+            }
+
+            void *min_comp_pool = cdata->component_pools[mincompid];
+
+            Usize *page_count_pointer   = (Usize*)(min_comp_pool);
+            Usize *entity_count_pointer = (Usize*)(page_count_pointer + 1);
+            void **component_pages       = (void**)(entity_count_pointer + 1); // almost three star programming
+
+
+            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
+            {
+                void *page = component_pages[i];
+                if (page == NULL)
+                {
+                    continue;
+                }
+
+                Usize *page_size_pointer    = (Usize*)page;
+                Entity *sparse_array_pointer = (Entity*)(page_size_pointer + 1);
+                Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
+            //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
+
+                for(Usize j = 0; j < *page_size_pointer; ++j) // for every entity in min page
+                {
+                    Entity min_e  = entity_list_pointer[j];
+                    U32 page_entry_min_e = min_e % PAGE_SIZE;
+
+                    for(Usize k = 0; k < typeCount; ++k) // for every type
+                    {
+                        void *curr_comp_pool = cdata->component_pools[compids[k]];
+
+                        Usize *curr_page_count_pointer   = (Usize*)(curr_comp_pool);
+                        Usize *curr_entity_count_pointer = (Usize*)(curr_page_count_pointer + 1);
+                        void **curr_component_pages       = (void**)(curr_entity_count_pointer + 1); // almost three star programming
+
+                        void *curr_page = curr_component_pages[i];
+                        if (curr_page == NULL)
+                        {
+                            goto continue_page_loop;
+                        }
+
+                        Usize *curr_page_size_pointer    = (Usize*)curr_page;
+                        Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
+                    //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
+
+                        if (curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
+                        {
+                            goto continue_entity_loop;
+                        }
+
+                    }
+
+                    ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
+                    group->entity_list[group->size++] = min_e;
+
+                    continue_entity_loop:;
+                }                    
+
+                
+                continue_page_loop:;
+            }
+
+            // add components to group
+            for (Usize i = 0; i < group->size; ++i) //TODO(Johan): finish
+            {
+                Entity e = group->entity_list[i];
+                ECS_assert(e != ENTITY_NULL, "Entity in group cannot be ENTITY_NULL");
+                
+                U32 page_id = e / PAGE_SIZE;
+                U32 page_entry = e % PAGE_SIZE;
+
+
+                for (Usize j = 0; j < typeCount; ++j)
+                {
+                    Usize comp_alignment = cdata->component_alignments[compids[j]];
+                    Usize comp_size      = cdata->component_sizes[compids[j]];
+
+                    void *comp_pool             = cdata->component_pools[compids[j]];
+                    Usize *page_count_pointer   = (Usize *)comp_pool;
+                    Usize *entity_count_pointer = (Usize *)(page_count_pointer + 1);
+                    void **comp_pages           = (void **)(entity_count_pointer + 1);
+                    void *comp_page             = comp_pages[page_id];
+
+
+                    memcpy(group->comp_arrays[j] ,);
+
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            return group;
         }
 
 

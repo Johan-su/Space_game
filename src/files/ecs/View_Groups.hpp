@@ -11,3 +11,13 @@ struct View
     Entity *entity_list;
     T *comparray;
 };
+
+
+
+struct Group
+{
+    Usize size;
+    Entity *entity_list;
+    void **comp_arrays;
+};
+
