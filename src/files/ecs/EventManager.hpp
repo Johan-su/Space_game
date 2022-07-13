@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "ecs_assert.hpp"
 #include "ecs_constants.hpp"
-#include "../scene/iter.hpp"
+#include "iter.hpp"
 
 
 namespace Ecs
