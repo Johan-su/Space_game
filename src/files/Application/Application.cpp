@@ -108,6 +108,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
         
         game_scene->name = "scene_name";
         app->scenes[scene_pos] = game_scene;
+        ++app->scene_count;
     }
     else
     {
