@@ -5,13 +5,13 @@
 #include <stdio.h>
 void Texture_functions::init(textures_data *td)
 {
-    memset(td->texture_list, 0, sizeof(td->texture_list[0]) * MAX_TEXTURE_TYPES);
-    memset(td->enum_to_texture, 0xFF, sizeof(td->enum_to_texture[0]) * MAX_TEXTURE_TYPES);
+    memset(td->texture_list, 0, sizeof(*td->texture_list) * MAX_TEXTURE_TYPES);
+    memset(td->enum_to_texture, 0xFF, sizeof(*td->enum_to_texture) * MAX_TEXTURE_TYPES);
 
-    memset(td->sprite_list, 0xFF, sizeof(td->sprite_list[0]) * MAX_SPRITE_TYPES);
-    memset(td->enum_to_sprite, 0xFF, sizeof(td->enum_to_sprite[0]) * MAX_SPRITE_TYPES);
+    memset(td->sprite_list, 0xFF, sizeof(*td->sprite_list) * MAX_SPRITE_TYPES);
+    memset(td->enum_to_sprite, 0xFF, sizeof(*td->enum_to_sprite) * MAX_SPRITE_TYPES);
     td->texture_count = 0;
-    td->sprite_count = 0;
+    td->sprite_count  = 0;
 }
 
 
@@ -77,13 +77,15 @@ void Texture_functions::init_sprite(textures_data *td, U32 sprite_id, U32 textur
 
 SDL_Texture *Texture_functions::get_texture(textures_data *td, U32 id)
 {
-    assert(id <= MAX_TEXTURE_TYPES, "id cannot be greater than MAX_TEXTURE_TYPES");
+    assert(id < MAX_TEXTURE_TYPES, "id cannot be greater than MAX_TEXTURE_TYPES");
+    assert(td->enum_to_texture[id] < MAX_TEXTURE_TYPES, "enum mapping value cannot be greater than MAX_TEXTURE_TYPES");
     return td->texture_list[td->enum_to_texture[id]];
 }
 
 Sprite *Texture_functions::get_sprite(textures_data *td, U32 id)
 {
-    assert(id <= MAX_SPRITE_TYPES, "id cannot be greater than MAX_SPRITE_TYPES");
+    assert(id < MAX_SPRITE_TYPES, "id cannot be greater than MAX_SPRITE_TYPES");
+    assert(td->enum_to_sprite[id] < MAX_SPRITE_TYPES, "enum mapping value cannot be greater than MAX_SPRITE_TYPES");
     return &td->sprite_list[td->enum_to_sprite[id]];
 }
 
