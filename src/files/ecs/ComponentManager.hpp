@@ -207,31 +207,34 @@ namespace Ecs
             return &page->dense_array[page->sparse_array[page_entry]];
         }
 
-        // garbage function
-        template<typename T1, typename... Ts>
-        void _set_min_comp_array_size(Component_data *cdata, Usize &mincompid, Usize *compids, Usize &minsize, const Usize component_amount)
+
+        template<typename... T>
+        void set_min_array_data(Component_data *cdata, Usize *compids, Usize *min_id, Usize *min_count)
         {
-            const Usize typeCount = 1 + sizeof...(Ts);
-            const Usize compid = Component_functions::get_component_id<T1>(cdata);
+            Usize compid_count = 0;
 
-            ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
+            *min_id    = SIZE_MAX;
+            *min_count = SIZE_MAX;
 
-            const Component_pool<T1>* comparray = static_cast<Component_pool<T1>*>(cdata->component_pools[compid]);
-            const Usize entity_count = comparray->entity_count;
-
-            if (entity_count < minsize)
+            ([&]()
             {
-                minsize = entity_count;
-                mincompid = compid;
-            }
+                Usize compid = Component_functions::get_component_id<T>(cdata);
 
+                compids[compid_count++] = compid;
 
-            compids[component_amount - typeCount] = compid;
+                ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
 
-            if constexpr (typeCount - 1) // just works with constexpr
-            {
-                _set_min_comp_array_size<Ts...>(cdata, mincompid, compids, minsize, component_amount);
-            }
+                Component_pool<T> *comppool = (Component_pool<T> *)cdata->component_pools[compid];
+
+                Usize entity_count = comppool->entity_count;
+
+                if (entity_count < *min_count)
+                {
+                    *min_count = entity_count;
+                    *min_id = compid;
+                }
+
+            }(), ...);
         }
         
 
@@ -241,11 +244,13 @@ namespace Ecs
         {
             const Usize typeCount = 1 + sizeof...(Ts);
 
-            Usize mincompid;
-            Usize compids[typeCount];
-            Usize minsize = SIZE_MAX;
 
-            _set_min_comp_array_size<T1, Ts...>(cdata, mincompid, compids, minsize, typeCount);
+
+            Usize compids[typeCount];
+            Usize mincompid;
+            Usize minsize;
+            set_min_array_data<T1, Ts...>(cdata, compids, &mincompid, &minsize);
+
 
             //TODO(Johan): allocation with minsize might waste a lot of memory.
             View<T1> *view = Arena::top_alloc<View<T1>>(view_mm); 
