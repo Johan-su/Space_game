@@ -195,7 +195,7 @@ namespace Ecs
         template<typename T>
         T *get_component(top_memory_arena *mm, Component_data *cdata, Entity e)
         {
-            ECS_assert(e <= ENTITY_NULL, "Entity outside scope");
+            ECS_assert(e < ENTITY_NULL, "Entity outside scope");
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             U32 page_id = e / PAGE_SIZE;
             U32 page_entry = e % PAGE_SIZE;
@@ -239,36 +239,13 @@ namespace Ecs
         
 
 
-        template<typename T1, typename... Ts>
-        View<T1> *get_view(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
+        inline void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount)
         {
-            const Usize typeCount = 1 + sizeof...(Ts);
-
-
-            Usize compids[typeCount];
-            Usize mincompid;
-            Usize minsize;
-            set_min_array_data<T1, Ts...>(cdata, compids, &mincompid, &minsize);
-
-
-            //TODO(Johan): allocation with minsize might waste a lot of memory.
-            View<T1> *view = Arena::top_alloc<View<T1>>(view_mm); 
-            view->entity_list = Arena::top_alloc<Entity>(view_mm, minsize);
-            view->comparray = Arena::top_alloc<T1>(view_mm, minsize);
-            view->size = 0;
-
-            for(Usize i = 0; i < minsize; ++i)
-            {
-                view->entity_list[i] = ENTITY_NULL;
-            }
-
-            Component_pool<T1> *comp_pool = get_component_pool<T1>(cdata);
-
-            void *min_comp_pool = cdata->component_pools[mincompid];
+            void *min_comp_pool = cdata->component_pools[min_id];
 
             Usize *page_count_pointer   = (Usize*)(min_comp_pool);
             Usize *entity_count_pointer = (Usize*)(page_count_pointer + 1);
-            void **component_pages       = (void**)(entity_count_pointer + 1); // almost three star programming
+            void **component_pages      = (void**)(entity_count_pointer + 1); // almost three star programming
 
 
             for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
@@ -291,7 +268,7 @@ namespace Ecs
 
                     for(Usize k = 0; k < typeCount; ++k) // for every type except T1
                     {
-                        void *curr_comp_pool = cdata->component_pools[compids[k]];
+                        void *curr_comp_pool = cdata->component_pools[comp_ids[k]];
 
                         Usize *curr_page_count_pointer   = (Usize*)(curr_comp_pool);
                         Usize *curr_entity_count_pointer = (Usize*)(curr_page_count_pointer + 1);
@@ -315,7 +292,7 @@ namespace Ecs
                     }
 
                     ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
-                    view->entity_list[view->size++] = min_e;
+                    entity_list[(*count)++] = min_e;
 
                     continue_entity_loop:;
                 }                    
@@ -323,9 +300,38 @@ namespace Ecs
                 
                 continue_page_loop:;
             }
+        }
+
+
+        template<typename T1, typename... Ts>
+        View<T1> *get_view(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
+        {
+            const Usize typeCount = 1 + sizeof...(Ts);
+
+
+            Usize compids[typeCount];
+            Usize mincompid;
+            Usize minsize;
+            set_min_array_data<T1, Ts...>(cdata, compids, &mincompid, &minsize);
+
+
+            //TODO(Johan): allocation with minsize might waste a lot of memory.
+            View<T1> *view = Arena::top_alloc<View<T1>>(view_mm); 
+            view->entity_list = Arena::top_alloc<Entity>(view_mm, minsize);
+            view->comparray = Arena::top_alloc<T1>(view_mm, minsize);
+            view->size = 0;
+
+            for (Usize i = 0; i < minsize; ++i)
+            {
+                view->entity_list[i] = ENTITY_NULL;
+            }
+
+            Component_pool<T1> *comp_pool = get_component_pool<T1>(cdata);
+
+            fill_similar_entities(cdata, view->entity_list, &view->size, compids, mincompid, typeCount);
 
             // add components to view
-            for(Usize i = 0; i < view->size; ++i)
+            for (Usize i = 0; i < view->size; ++i)
             {
                 Entity e = view->entity_list[i];
                 ECS_assert(e != ENTITY_NULL, "Entity in view cannot be ENTITY_NULL");
@@ -358,86 +364,31 @@ namespace Ecs
 
             Group *group = Arena::top_alloc<Group>(view_mm);
 
-            group->entity_list = Arena::top_alloc<Entity>(view_mm, min_count);
+            group->entity_list  = Arena::top_alloc<Entity>(view_mm, min_count);
             group->comp_arrays  = Arena::top_alloc<void *>(view_mm, typeCount);
+
+            group->size = 0;
 
             for (Usize i = 0; i < typeCount; ++i)
             {
                 Usize comp_alignment = cdata->component_alignments[compids[i]];
                 Usize comp_size      = cdata->component_sizes[compids[i]];
 
-                group->comp_arrays[i] = Arena::top_alloc_bytes(view_mm, comp_size, comp_alignment);
+                group->comp_arrays[i] = Arena::top_alloc_bytes(view_mm,  min_count * comp_size, comp_alignment);
             }
             
-            for(Usize i = 0; i < min_count; ++i)
+            for (Usize i = 0; i < min_count; ++i)
             {
                 group->entity_list[i] = ENTITY_NULL;
             }
 
-            void *min_comp_pool = cdata->component_pools[mincompid];
-
-            Usize *page_count_pointer   = (Usize*)(min_comp_pool);
-            Usize *entity_count_pointer = (Usize*)(page_count_pointer + 1);
-            void **component_pages       = (void**)(entity_count_pointer + 1); // almost three star programming
-
-
-            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
-            {
-                void *page = component_pages[i];
-                if (page == NULL)
-                {
-                    continue;
-                }
-
-                Usize *page_size_pointer    = (Usize*)page;
-                Entity *sparse_array_pointer = (Entity*)(page_size_pointer + 1);
-                Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
-            //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
-
-                for(Usize j = 0; j < *page_size_pointer; ++j) // for every entity in min page
-                {
-                    Entity min_e  = entity_list_pointer[j];
-                    U32 page_entry_min_e = min_e % PAGE_SIZE;
-
-                    for(Usize k = 0; k < typeCount; ++k) // for every type
-                    {
-                        void *curr_comp_pool = cdata->component_pools[compids[k]];
-
-                        Usize *curr_page_count_pointer   = (Usize*)(curr_comp_pool);
-                        Usize *curr_entity_count_pointer = (Usize*)(curr_page_count_pointer + 1);
-                        void **curr_component_pages       = (void**)(curr_entity_count_pointer + 1); // almost three star programming
-
-                        void *curr_page = curr_component_pages[i];
-                        if (curr_page == NULL)
-                        {
-                            goto continue_page_loop;
-                        }
-
-                        Usize *curr_page_size_pointer    = (Usize*)curr_page;
-                        Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
-                    //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
-
-                        if (curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
-                        {
-                            goto continue_entity_loop;
-                        }
-
-                    }
-
-                    ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
-                    group->entity_list[group->size++] = min_e;
-
-                    continue_entity_loop:;
-                }                    
-
-                
-                continue_page_loop:;
-            }
+            fill_similar_entities(cdata, group->entity_list, &group->size, compids, mincompid, typeCount);
 
             // add components to group
-            for (Usize i = 0; i < group->size; ++i) //TODO(Johan): finish
+            for (Usize i = 0; i < group->size; ++i)
             {
                 Entity e = group->entity_list[i];
+
                 ECS_assert(e != ENTITY_NULL, "Entity in group cannot be ENTITY_NULL");
                 
                 U32 page_id = e / PAGE_SIZE;
@@ -446,17 +397,19 @@ namespace Ecs
 
                 for (Usize j = 0; j < typeCount; ++j)
                 {
-                    Usize comp_alignment = cdata->component_alignments[compids[j]];
                     Usize comp_size      = cdata->component_sizes[compids[j]];
 
-                    void *comp_pool             = cdata->component_pools[compids[j]];
-                    Usize *page_count_pointer   = (Usize *)comp_pool;
-                    Usize *entity_count_pointer = (Usize *)(page_count_pointer + 1);
-                    void **comp_pages           = (void **)(entity_count_pointer + 1);
-                    void *comp_page             = comp_pages[page_id];
 
+                    // not actually a pool of U8:s, it is used to read individual bytes.
+                    Component_pool<U8> *comp_pool = (Component_pool<U8> *)cdata->component_pools[compids[j]];
+                    Component_page<U8> *comp_page = comp_pool->component_pages[page_id];
 
-                    memcpy(group->comp_arrays[j] ,);
+                    Entity *sparse_array = comp_page->sparse_array;
+                    U8 *dense_array = comp_page->dense_array;
+                    
+                    U8 *comp_array = (U8 *)group->comp_arrays[j];
+
+                    memcpy(&comp_array[i * comp_size], &dense_array[sparse_array[page_entry] * comp_size], comp_size);
 
                 }
 
