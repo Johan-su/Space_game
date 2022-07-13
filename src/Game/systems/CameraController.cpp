@@ -11,6 +11,11 @@ void CameraController::update(Iter *iter)
 {
     Entity active_camera = Application::get_first_active_camera(iter->curr_registry);
 
+    if (active_camera == ENTITY_NULL)
+    {
+        return;
+    }
+
     CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(iter->curr_registry, active_camera);
     Transform *camera_transform  = Ecs::get_component<Transform>(iter->curr_registry, active_camera);
 
