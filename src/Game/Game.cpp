@@ -77,7 +77,7 @@ static void setup_scene(scene *scene, const char *pwd)
         .y         = 0.0f,
         .width     = 114.0f,
         .height    = 200.0f,
-        .ship_type = SHIP1
+        .ship_type = SHIP1,
     };
 
 
@@ -125,6 +125,7 @@ static void setup_scene(scene *scene, const char *pwd)
 
         Ecs::broadcast_event<Entity, PlanetSpawnEvent>(&scene->registry, &iter2);
     }
+    
     
 }
 
