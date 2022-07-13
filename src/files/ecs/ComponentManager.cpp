@@ -74,7 +74,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         page_sparse_array[page_entry_laste] = page_sparse_array[page_entry_e];
         
         page_sparse_array[page_entry_e] = ENTITY_NULL;
-        --*page_entity_count;
+        --(*page_entity_count);
     }
 
 }
