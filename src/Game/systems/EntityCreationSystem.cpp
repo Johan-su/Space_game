@@ -112,16 +112,16 @@ Entity EntityCreationSystem::create_planet(Iter *iter)
     Ecs::set_component<Transform>(registry, e, {
         .pos = {
             .x = event->x,
-            .y = event->y
+            .y = event->y,
         },
         .rot = {
             .x = event->rot_x,
-            .y = event->rot_y
+            .y = event->rot_y,
         },
         .scale = {
-            .x = 1.0f,
-            .y = 1.0f
-        }
+            .x = event->radius,
+            .y = event->radius,
+        },
     });
 
     Ecs::set_component<Velocity>(registry, e, {.x = event->vel_x, .y = event->vel_y});

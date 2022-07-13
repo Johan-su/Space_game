@@ -99,12 +99,22 @@ static void setup_scene(scene *scene, const char *pwd)
         float x = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5f));
         float y = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5f));
 
-        float radius = 1000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
+        float radius = 25.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
         float mass = 1E20 * ((float)(rand()) / RAND_MAX);
 
 
 
-        PlanetSpawnEvent planetSE = {x, y, 0.0f, 0.0f, radius, mass, PLANET1};
+        PlanetSpawnEvent planetSE = {
+            .x           = x,
+            .y           = y,
+            .rot_x       = 0.0f,
+            .rot_y       = 0.0f,
+            .vel_x       = 0.0f,
+            .vel_y       = 0.0f,
+            .radius      = radius,
+            .mass        = mass,
+            .planet_type = PLANET1,
+        };
 
 
         Iter iter2 = {
