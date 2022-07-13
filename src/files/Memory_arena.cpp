@@ -37,6 +37,7 @@ void Arena::clean_arena(top_memory_arena *arena)
 
 void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignment)
 {
+    #if 0
     // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
 
     void *non_aligned_data = (char *)arena->data + arena->bytes_allocated;
@@ -67,6 +68,9 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignme
     arena->bytes_allocated += aligned_bytes;
 
     return data;
+    #else
+    return malloc(bytes);
+    #endif
 }
 
 
