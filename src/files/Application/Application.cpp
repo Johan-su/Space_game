@@ -242,14 +242,16 @@ static inline float RadToDeg(float angle)
 
 int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, SpriteComponent *sprite_comp)
 {
+        Entity camera_e = get_first_active_camera(registry); //TODO(Johan): probably move this call outside render
+        if (camera_e == ENTITY_NULL)
+        {
+            return 0;
+        }
         Application_data *app = Application::Get();
 
 
         Sprite *sprite = Texture_functions::get_sprite(app->engine->texture, sprite_comp->texture_id);
         SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
-
-
-        Entity camera_e = get_first_active_camera(registry);
 
 
         Transform *camera_transform  = Ecs::get_component<Transform>(registry, camera_e);
