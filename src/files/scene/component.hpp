@@ -3,10 +3,14 @@
 
 #include "../int.hpp"
 
-struct Vector2
+class Vector2
 {
+public:
     float x;
     float y;
+
+    float magnitude();
+    void normalize();
 };
 
 
