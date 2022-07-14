@@ -45,10 +45,11 @@ namespace Ecs
     namespace Component_functions 
     {
         void init(Component_data *cdata);
+        void init_component_bytes(top_memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment);
 
         void destroy_entity(Component_data *cdata, Entity e);
 
-        Usize get_id();
+        void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount);
     }
 
 
@@ -67,24 +68,7 @@ namespace Ecs
         void init_component(top_memory_arena *mm, Component_data *cdata)
         {
             const Usize compid = get_component_id<T>(cdata);
-
-            Component_pool<T> *comp_pool = (Component_pool<T>*)cdata->component_pools[compid];
-
-            comp_pool = Arena::top_alloc<Component_pool<T>>(mm);
-
-            comp_pool->page_count = 0;
-            comp_pool->entity_count = 0;
-            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i)
-            {
-                comp_pool->component_pages[i] = NULL;
-            }
-
-
-            cdata->pool_init[compid]            = true;
-            cdata->component_alignments[compid] = alignof(T);
-            cdata->component_sizes[compid]      = sizeof(T);
-            cdata->component_pools[compid]      = comp_pool;
-
+            init_component_bytes(mm, cdata, compid, sizeof(T), alignof(T));
         }
 
         template<typename T>
@@ -160,7 +144,6 @@ namespace Ecs
         template<typename T>
         Entity lookup_entity(top_memory_arena *mm, Component_data *cdata, Entity e)
         {   
-
             U32 page_id = e / PAGE_SIZE;
             U32 page_entry = e % PAGE_SIZE;
 
@@ -235,71 +218,6 @@ namespace Ecs
                 }
 
             }(), ...);
-        }
-        
-
-
-        inline void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount)
-        {
-            void *min_comp_pool = cdata->component_pools[min_id];
-
-            Usize *page_count_pointer   = (Usize*)(min_comp_pool);
-            Usize *entity_count_pointer = (Usize*)(page_count_pointer + 1);
-            void **component_pages      = (void**)(entity_count_pointer + 1); // almost three star programming
-
-
-            for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
-            {
-                void *page = component_pages[i];
-                if (page == NULL)
-                {
-                    continue;
-                }
-
-                Usize *page_size_pointer    = (Usize*)page;
-                Entity *sparse_array_pointer = (Entity*)(page_size_pointer + 1);
-                Entity *entity_list_pointer  = (Entity*)(sparse_array_pointer + PAGE_SIZE);
-            //  T1 *dense_array_pointer      = (T1*)(entity_list_pointer + PAGE_SIZE);
-
-                for(Usize j = 0; j < *page_size_pointer; ++j) // for every entity in min pool's page
-                {
-                    Entity min_e  = entity_list_pointer[j];
-                    U32 page_entry_min_e = min_e % PAGE_SIZE;
-
-                    for(Usize k = 0; k < typeCount; ++k) // for every type except T1
-                    {
-                        void *curr_comp_pool = cdata->component_pools[comp_ids[k]];
-
-                        Usize *curr_page_count_pointer   = (Usize*)(curr_comp_pool);
-                        Usize *curr_entity_count_pointer = (Usize*)(curr_page_count_pointer + 1);
-                        void **curr_component_pages       = (void**)(curr_entity_count_pointer + 1); // almost three star programming
-
-                        void *curr_page = curr_component_pages[i];
-                        if (curr_page == NULL)
-                        {
-                            goto continue_page_loop;
-                        }
-
-                        Usize *curr_page_size_pointer    = (Usize*)curr_page;
-                        Entity *curr_sparse_array_pointer = (Entity*)(curr_page_size_pointer + 1);
-                    //  Entity *curr_entity_list_pointer  = (Entity*)(curr_sparse_array_pointer + PAGE_SIZE);
-
-                        if (curr_sparse_array_pointer[page_entry_min_e] == ENTITY_NULL)
-                        {
-                            goto continue_entity_loop;
-                        }
-
-                    }
-
-                    ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
-                    entity_list[(*count)++] = min_e;
-
-                    continue_entity_loop:;
-                }                    
-
-                
-                continue_page_loop:;
-            }
         }
 
 

@@ -15,6 +15,27 @@ void Component_functions::init(Component_data *cdata)
 }
 
 
+void Component_functions::init_component_bytes(top_memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment)
+{
+        // not actually a pool of U8.
+        Component_pool<U8> *comp_pool = (Component_pool<U8> *)cdata->component_pools[compid];
+
+        comp_pool = Arena::top_alloc<Component_pool<U8>>(mm);
+        comp_pool->page_count = 0;
+        comp_pool->entity_count = 0;
+
+        for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i)
+        {
+            comp_pool->component_pages[i] = NULL;
+        }
+
+        cdata->pool_init[compid]            = true;
+        cdata->component_alignments[compid] = comp_alignment;
+        cdata->component_sizes[compid]      = comp_size;
+        cdata->component_pools[compid]      = comp_pool;
+}
+
+
 #define ECS_DEBUG3 0
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)
@@ -72,4 +93,55 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
         --page->entity_count;
     }
 
+}
+
+
+void Component_functions::fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount)
+{
+    // not actually pool of U8, used for manipulating indiviudal bytes.
+
+    Component_pool<U8> *min_comp_pool = (Component_pool<U8> *)cdata->component_pools[min_id];
+
+    for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i) // for every page in min component pool
+    {
+        // not actually page of U8, used for manipulating indiviudal bytes.
+        Component_page<U8> *page = min_comp_pool->component_pages[i];
+        if (page == NULL)
+        {
+            continue;
+        }
+
+        for(Usize j = 0; j < page->entity_count; ++j) // for every entity in min pool's page
+        {
+            Entity min_e  = page->entity_list[j];
+            U32 page_entry_min_e = min_e % PAGE_SIZE;
+
+            for(Usize k = 0; k < typeCount; ++k) // for every type except T1
+            {
+                // not actually pool of U8, used for manipulating indiviudal bytes.
+                Component_pool<U8> *curr_comp_pool = (Component_pool<U8> *)cdata->component_pools[comp_ids[k]];
+
+                // not actually page of U8, used for manipulating indiviudal bytes.
+                Component_page<U8> *curr_page = curr_comp_pool->component_pages[i];
+                if (curr_page == NULL)
+                {
+                    goto continue_page_loop;
+                }
+
+                if (curr_page->sparse_array[page_entry_min_e] == ENTITY_NULL)
+                {
+                    goto continue_entity_loop;
+                }
+
+            }
+
+            ECS_assert(min_e != ENTITY_NULL, "Entity to be added to view cannot be ENTITY_NULL");
+            entity_list[(*count)++] = min_e;
+
+            continue_entity_loop:;
+        }                    
+
+                
+        continue_page_loop:;
+    }
 }
