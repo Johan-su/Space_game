@@ -348,8 +348,6 @@ namespace Ecs
         }
 
 
-
-
         template<typename... T>
         Group *get_group(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
         {
@@ -364,8 +362,10 @@ namespace Ecs
 
             Group *group = Arena::top_alloc<Group>(view_mm);
 
-            group->entity_list  = Arena::top_alloc<Entity>(view_mm, min_count);
-            group->comp_arrays  = Arena::top_alloc<void *>(view_mm, typeCount);
+            group->comp_arrays     = Arena::top_alloc<void *>(view_mm, typeCount);
+            group->comp_sizes      = Arena::top_alloc<Usize>(view_mm, typeCount);
+            group->comp_alignments = Arena::top_alloc<Usize>(view_mm, typeCount);
+            group->entity_list     = Arena::top_alloc<Entity>(view_mm, min_count);
 
             group->size = 0;
 
@@ -374,9 +374,12 @@ namespace Ecs
                 Usize comp_alignment = cdata->component_alignments[compids[i]];
                 Usize comp_size      = cdata->component_sizes[compids[i]];
 
+                group->comp_alignments[i] = comp_alignment;
+                group->comp_sizes[i]      = comp_size;
+
                 group->comp_arrays[i] = Arena::top_alloc_bytes(view_mm,  min_count * comp_size, comp_alignment);
             }
-            
+
             for (Usize i = 0; i < min_count; ++i)
             {
                 group->entity_list[i] = ENTITY_NULL;
@@ -397,7 +400,7 @@ namespace Ecs
 
                 for (Usize j = 0; j < typeCount; ++j)
                 {
-                    Usize comp_size      = cdata->component_sizes[compids[j]];
+                    Usize comp_size = cdata->component_sizes[compids[j]];
 
 
                     // not actually a pool of U8:s, it is used to read individual bytes.
@@ -415,9 +418,6 @@ namespace Ecs
 
             return group;
         }
-
-
-
 
     }
 }
