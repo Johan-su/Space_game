@@ -40,8 +40,7 @@ struct CameraComponent
 
 struct Velocity
 {
-    float x;
-    float y;
+    Vector2 v;
 };
 
 
