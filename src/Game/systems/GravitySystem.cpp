@@ -6,43 +6,51 @@
 
 static const float G = 6.6743E-11f;
 
-void GravitySystem::update(Iter *iter)
-{/*
-    View<Position> *pos_view       = Ecs::get_view<Position, MassComponent, Circle_size, GravityAttractor>(registry);
-    View<MassComponent> *mass_view = Ecs::get_view<MassComponent, Circle_size, GravityAttractor, Position>(registry);
-    View<Circle_size> *csize_view  = Ecs::get_view<Circle_size, GravityAttractor, Position, MassComponent>(registry);
+// hardcoded from planet texture
+static const Usize PLANET_WIDTH  = 132;
+static const Usize PLANET_HEIGHT = 132;
 
 
-    View<Position> *pos_view_affected       = Ecs::get_view<Position, SizeComponent, Velocity, MassComponent, GravityAffected>(registry);
-    View<SizeComponent> *size_view_affected = Ecs::get_view<SizeComponent, Velocity, MassComponent, GravityAffected, Position>(registry);
+void GravitySystem::update(Iter *it)
+{
+
+    Group *group = Ecs::get_group<Transform, MassComponent, GravityAttractor>(it->registry);
+
+    Transform *t_list     = Ecs::get_comp_array<Transform>(group, 0);
+    MassComponent *m_list = Ecs::get_comp_array<MassComponent>(group, 1);
+
+
+    Group *group_affected = Ecs::get_group<Transform, MassComponent, Velocity, GravityAffected>(it->registry);
+
+    Transform *t_list_a     = Ecs::get_comp_array<Transform>(group_affected, 0);
 
 
 
-    for (size_t i = 0; i < pos_view->size; ++i)
+    for (Usize i = 0; i < group->size; ++i)
     {
-        Entity e1          = pos_view->entity_list[i];
+        Entity e1 = group->entity_list[i];
 
-        Position pos       = pos_view->comparray[i];
-        Circle_size csize  = csize_view->comparray[i];
-        MassComponent mass = mass_view->comparray[i];
 
-        for (size_t j = 0; j < pos_view_affected->size; ++j)
+        Transform t = t_list[i];
+        MassComponent mass = m_list[i];
+
+        for (Usize j = 0; j < group_affected->size; ++j)
         {
-            Entity e2 = pos_view_affected->entity_list[j];
+            Entity e2 = group_affected->entity_list[j];
             if (e1 == e2)
             {
                 continue;
             }
-            Position pos2       = pos_view_affected->comparray[j];
-            SizeComponent size2 = size_view_affected->comparray[j];
 
-            Velocity *vel       = Ecs::get_component<Velocity>(registry, e2);
+            Transform t2 = t_list_a[j]; 
 
-            float center1_x = pos.x + csize.radius;
-            float center1_y = pos.y + csize.radius;
+            Velocity *vel = Ecs::get_component<Velocity>(it->registry, e2);
 
-            float center2_x = pos2.x + size2.width / 2;
-            float center2_y = pos2.y + size2.height / 2;
+            float center1_x = t.pos.x + t.scale.x * PLANET_WIDTH;
+            float center1_y = t.pos.y + t.scale.y * PLANET_HEIGHT;
+
+            float center2_x = t2.pos.x; // not actually center fix later
+            float center2_y = t2.pos.y;
 
             float distance2 = (center1_x - center2_x) * (center1_x - center2_x) + (center1_y - center2_y) * (center1_y - center2_y);
             float angle = atan2f((center1_y - center2_y), (center1_x - center2_x));
@@ -50,12 +58,12 @@ void GravitySystem::update(Iter *iter)
            
             float accl = G * mass.mass / distance2; 
 
-            vel->x += cosf(angle) * accl * Ts;
-            vel->y += sinf(angle) * accl * Ts;
+            vel->v.x += cosf(angle) * accl * it->Ts;
+            vel->v.y += sinf(angle) * accl * it->Ts;
         }
     }
 
 
 
 
-*/}
+}
