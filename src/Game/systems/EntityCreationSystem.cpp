@@ -7,11 +7,11 @@
 
 Entity EntityCreationSystem::create_ship(Iter *iter)
 {
-    ShipSpawnEvent *event = (ShipSpawnEvent *)iter->curr_event; 
-    Entity e = Ecs::create_entity(iter->curr_registry);
+    ShipSpawnEvent *event = (ShipSpawnEvent *)iter->event; 
+    Entity e = Ecs::create_entity(iter->registry);
 
     
-    Ecs::set_component<Transform>(iter->curr_registry, e, {
+    Ecs::set_component<Transform>(iter->registry, e, {
         .pos = {
             .x = event->x,
             .y = event->y
@@ -27,12 +27,12 @@ Entity EntityCreationSystem::create_ship(Iter *iter)
     });
 
 
-    Ecs::set_component<Velocity>(iter->curr_registry, e, {0.0f, 0.0f});
+    Ecs::set_component<Velocity>(iter->registry, e, {0.0f, 0.0f});
    // Ecs::set_component(iter->curr_registry, e, collision);
-    Ecs::set_component<GravityAffected>(iter->curr_registry, e, {});
-    Ecs::set_component<MassComponent>(iter->curr_registry, e, {1000.0f});
-    Ecs::set_component<AnglularVelocity>(iter->curr_registry, e, {0.0f});
-    Ecs::set_component<SpriteComponent>(iter->curr_registry, e, {event->ship_type});
+    Ecs::set_component<GravityAffected>(iter->registry, e, {});
+    Ecs::set_component<MassComponent>(iter->registry, e, {1000.0f});
+    Ecs::set_component<AnglularVelocity>(iter->registry, e, {0.0f});
+    Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
 
 
     return e;
@@ -47,12 +47,12 @@ static U32 player_id_count = 0;
 
 Entity EntityCreationSystem::create_player(Iter *iter)
 {
-    PlayerSpawnEvent *event = (PlayerSpawnEvent *)iter->curr_event; 
+    PlayerSpawnEvent *event = (PlayerSpawnEvent *)iter->event; 
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
-    iter->curr_event = &sse;
+    iter->event = &sse;
     Entity e = create_ship(iter);
     
-    Ecs::set_component<Player>(iter->curr_registry, e, {
+    Ecs::set_component<Player>(iter->registry, e, {
         .id = player_id_count++
     });
 
@@ -103,8 +103,8 @@ Entity EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate 
 
 Entity EntityCreationSystem::create_planet(Iter *iter)
 {
-    PlanetSpawnEvent *event = (PlanetSpawnEvent *)iter->curr_event;
-    Ecs::Registry *registry = iter->curr_registry;
+    PlanetSpawnEvent *event = (PlanetSpawnEvent *)iter->event;
+    Ecs::Registry *registry = iter->registry;
     
     Entity e = Ecs::create_entity(registry);
 

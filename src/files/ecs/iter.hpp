@@ -1,16 +1,19 @@
 #pragma once
+#include "ecs_constants.hpp"
+
 
 namespace Ecs
 {
     struct Registry;
 }
 
-
+struct Group;
 
 struct Iter 
 {
-    Ecs::Registry *curr_registry;
-    void *curr_event;
+    Ecs::Registry *registry;
+    Group *group;
+    void *event;
     float Ts;
 };
 

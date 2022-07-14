@@ -37,7 +37,7 @@ static void init_systems(scene *scene)
 
 static void collision_debug(Iter *iter)
 {
-    CollisionEvent *event = (CollisionEvent *)iter->curr_event;
+    CollisionEvent *event = (CollisionEvent *)iter->event;
     printf("collision between [%llu, %llu]", event->e1, event->e2);
 }
 
@@ -59,8 +59,8 @@ static void setup_scene(scene *scene, const char *pwd)
 
     
 
-    char *ship_path = Application::cat_string(pwd, "/resources/ships/placeholder.bmp");
-    char *planet_path = Application::cat_string(pwd, "/resources/planets/placeholder_planet.bmp");
+    char *ship_path = Application::cat_string(pwd, "resources/ships/placeholder.bmp");
+    char *planet_path = Application::cat_string(pwd, "resources/planets/placeholder_planet.bmp");
 
 
     Application::load_texture(SHIP_texture, ship_path);
@@ -82,8 +82,9 @@ static void setup_scene(scene *scene, const char *pwd)
 
 
     Iter iter = {
-        .curr_registry = &scene->registry,
-        .curr_event = &pse,
+        .registry = &scene->registry,
+        .group = NULL,
+        .event = &pse,
         .Ts = 0.0f,
     };
 
@@ -118,9 +119,10 @@ static void setup_scene(scene *scene, const char *pwd)
 
 
         Iter iter2 = {
-            .curr_registry = &scene->registry,
-            .curr_event    = &planetSE,
-            .Ts            = 0.0f,
+            .registry = &scene->registry,
+            .group    = NULL,
+            .event    = &planetSE,
+            .Ts       = 0.0f,
         };
 
         Ecs::broadcast_event<Entity, PlanetSpawnEvent>(&scene->registry, &iter2);

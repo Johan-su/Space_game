@@ -5,12 +5,12 @@
 
 void MovementSystem::update(Iter *iter)
 {
-    View<Velocity> *vel_view = Ecs::get_view<Velocity, Transform>(iter->curr_registry);
+    View<Velocity> *vel_view = Ecs::get_view<Velocity, Transform>(iter->registry);
 
     for(size_t i = 0; i < vel_view->size; ++i)
     {
         Entity e = vel_view->entity_list[i];
-        Transform *transform = Ecs::get_component<Transform>(iter->curr_registry, e);
+        Transform *transform = Ecs::get_component<Transform>(iter->registry, e);
         Velocity vel = vel_view->comparray[i];
 
         
