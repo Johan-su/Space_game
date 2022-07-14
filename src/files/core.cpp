@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <limits.h>
 
-#define KiB 1024llu
-#define MiB 1024llu * KiB
-#define GiB 1024llu * MiB
-#define TiB 1024llu * GiB
+const Usize KiB = 1024llu;
+const Usize MiB = 1024llu * KiB;
+const Usize GiB = 1024llu * MiB;
+const Usize TiB = 1024llu * GiB;
 
 
 
@@ -45,8 +45,6 @@ void Internal::init_global_memory()
 
     void *view_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
     Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start, 10 * MiB, 1 * GiB);
-
-
 
 
 
