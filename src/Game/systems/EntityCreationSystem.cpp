@@ -124,7 +124,9 @@ Entity EntityCreationSystem::create_planet(Iter *iter)
         },
     });
 
-    Ecs::set_component<Velocity>(registry, e, {.x = event->vel_x, .y = event->vel_y});
+    Ecs::set_component<Velocity>(registry, e, {
+        .v = {event->vel_x, event->vel_y}
+    });
 
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 

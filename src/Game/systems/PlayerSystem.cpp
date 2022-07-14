@@ -73,8 +73,8 @@ void PlayerSystem::update(Iter *iter)
         angle_vel_target = 0.0f;
     }
 
-    vel->x = lerp(vel->x, vel_x_target, iter->Ts * 6);
-    vel->y = lerp(vel->y, vel_y_target, iter->Ts * 6);
+    vel->v.x = lerp(vel->v.x, vel_x_target, iter->Ts * 6);
+    vel->v.y = lerp(vel->v.y, vel_y_target, iter->Ts * 6);
 
    angle_vel->angleV = lerp(angle_vel->angleV, angle_vel_target, iter->Ts * 4);
 }

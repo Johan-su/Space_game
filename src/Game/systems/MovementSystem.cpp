@@ -14,7 +14,7 @@ void MovementSystem::update(Iter *iter)
         Velocity vel = vel_view->comparray[i];
 
         
-        transform->pos.x += vel.x * iter->Ts;
-        transform->pos.y += vel.y * iter->Ts;
+        transform->pos.x += vel.v.x * iter->Ts;
+        transform->pos.y += vel.v.y * iter->Ts;
     }
 }
