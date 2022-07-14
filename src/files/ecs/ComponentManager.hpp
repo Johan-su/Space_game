@@ -410,29 +410,8 @@ namespace Ecs
                     U8 *comp_array = (U8 *)group->comp_arrays[j];
 
                     memcpy(&comp_array[i * comp_size], &dense_array[sparse_array[page_entry] * comp_size], comp_size);
-
                 }
-
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             return group;
         }
