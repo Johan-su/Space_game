@@ -59,8 +59,8 @@ static void setup_scene(scene *scene, const char *pwd)
 
     
 
-    char *ship_path = Application::cat_string(pwd, "resources/ships/placeholder.bmp");
-    char *planet_path = Application::cat_string(pwd, "resources/planets/placeholder_planet.bmp");
+    char *ship_path = Application::cat_string(pwd, "/resources/ships/placeholder.bmp");
+    char *planet_path = Application::cat_string(pwd, "/resources/planets/placeholder_planet.bmp");
 
 
     Application::load_texture(SHIP_texture, ship_path);
