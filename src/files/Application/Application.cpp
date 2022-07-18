@@ -268,12 +268,15 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         };
 
 
-        SDL_FRect dstrect = {
-            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x),
-            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y),
+        float width  = transform->scale.x * sprite->w * camera_comp->world_scale.x;
+        float height = transform->scale.y * sprite->h * camera_comp->world_scale.y;
 
-            .w = transform->scale.x * sprite->w * camera_comp->world_scale.x,
-            .h = transform->scale.y * sprite->h * camera_comp->world_scale.y,
+        SDL_FRect dstrect = {
+            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - width / 2.0f,
+            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y) - height / 2.0f,
+
+            .w = width,
+            .h = height,
         };
 
 
