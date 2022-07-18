@@ -37,14 +37,14 @@ void Internal::init_global_memory()
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
-    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, 4 * KiB, 2 * MiB); // 2 MiB
+    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start,  Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *scratch_buffer_start = (char *)app_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, 2 * MiB, 2 * MiB); // 2 MiB
+    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start,  Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
 
     void *view_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start, 10 * MiB, 1 * GiB);
+    Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start,  Platform::bytes_to_page_amount(10 * MiB),  Platform::bytes_to_page_amount(1 * GiB));
 
 
 
