@@ -71,7 +71,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
     int scene_pos = -1;
 
     // get unoccupied scene position in app
-    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+    for (int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
         if (app->scenes[i] == NULL)
         {
@@ -84,7 +84,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
     {
         scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
 
-        Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
+        Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer, &g_memory.event_buffer);
 
         Ecs::init_component<Transform>(&game_scene->registry);
         Ecs::init_component<CameraComponent>(&game_scene->registry);

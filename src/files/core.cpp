@@ -37,16 +37,16 @@ void Internal::init_global_memory()
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
-    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start,  Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
+    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *scratch_buffer_start = (char *)app_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start,  Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
+    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
+    void *event_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
+    Arena::init_top_arena(&g_memory.event_buffer, event_buffer_start, Platform::bytes_to_page_amount(10 * MiB), Platform::bytes_to_page_amount(1 * GiB));
 
-    void *view_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
+    void *view_buffer_start = (char *)event_buffer_start + 1 * GiB;
     Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start,  Platform::bytes_to_page_amount(10 * MiB),  Platform::bytes_to_page_amount(1 * GiB));
-
-
 
 
     // scene buffers
@@ -57,7 +57,6 @@ void Internal::init_global_memory()
             Arena::init_top_arena(&g_memory.scene_buffers[i], (char *)base + i * 16 * GiB, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(16 * GiB));
         }
     }
-
 }
 
 
@@ -119,15 +118,12 @@ engine_data *Internal::create_engine(top_memory_arena *arena, const char *pwd)
     Internal::init_input();
 
 
-
-
     sdl_init(engine);
 
     engine->texture = Arena::top_alloc<textures_data>(arena);
     Texture_functions::init(engine->texture);
 
     return engine;
-
 }
 
 
@@ -140,7 +136,3 @@ void Internal::clean_engine(engine_data *engine) // exists because SDL uses its 
     Texture_functions::clean(engine->texture);
     engine->texture = NULL;
 }
-
-
-
-

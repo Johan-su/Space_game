@@ -5,7 +5,7 @@
 
 
 
-Entity EntityCreationSystem::create_ship(Iter *iter)
+void EntityCreationSystem::create_ship(Iter *iter)
 {
     ShipSpawnEvent *event = (ShipSpawnEvent *)iter->event; 
     Entity e = Ecs::create_entity(iter->registry);
@@ -34,8 +34,6 @@ Entity EntityCreationSystem::create_ship(Iter *iter)
     Ecs::set_component<AnglularVelocity>(iter->registry, e, {0.0f});
     Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
 
-
-    return e;
 }
 
 
@@ -45,22 +43,43 @@ Entity EntityCreationSystem::create_ship(Iter *iter)
 
 static U32 player_id_count = 0;
 
-Entity EntityCreationSystem::create_player(Iter *iter)
+void EntityCreationSystem::create_player(Iter *iter)
 {
     PlayerSpawnEvent *event = (PlayerSpawnEvent *)iter->event; 
-    ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
-    iter->event = &sse;
-    Entity e = create_ship(iter);
+    Entity e = Ecs::create_entity(iter->registry);
+
     
+    Ecs::set_component<Transform>(iter->registry, e, {
+        .pos = {
+            .x = event->x,
+            .y = event->y
+        },
+        .rot = {
+            .x = 0.0f,
+            .y = 0.0f
+        },
+        .scale = {
+            .x = 1.0f,
+            .y = 1.0f
+        }
+    });
+
+
+    Ecs::set_component<Velocity>(iter->registry, e, {0.0f, 0.0f});
+   // Ecs::set_component(iter->curr_registry, e, collision);
+    Ecs::set_component<GravityAffected>(iter->registry, e, {});
+    Ecs::set_component<MassComponent>(iter->registry, e, {1000.0f});
+    Ecs::set_component<AnglularVelocity>(iter->registry, e, {0.0f});
+    Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
+
+   
     Ecs::set_component<Player>(iter->registry, e, {
         .id = player_id_count++
     });
-
-    return e;
 }
 
 
-Entity EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate to different functions
+void EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate to different functions
 {/*
     ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
 
@@ -93,7 +112,7 @@ Entity EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate 
     }
 
     return e;
-*/return 0;}
+*/}
 
 
 
@@ -101,7 +120,7 @@ Entity EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate 
 
 
 
-Entity EntityCreationSystem::create_planet(Iter *iter)
+void EntityCreationSystem::create_planet(Iter *iter)
 {
     PlanetSpawnEvent *event = (PlanetSpawnEvent *)iter->event;
     Ecs::Registry *registry = iter->registry;
@@ -132,10 +151,4 @@ Entity EntityCreationSystem::create_planet(Iter *iter)
 
     Ecs::set_component<GravityAttractor>(registry, e, {});
     Ecs::set_component<SpriteComponent>(registry, e, {.texture_id = event->planet_type});
-
-
-
-
-
-    return e;
 }
