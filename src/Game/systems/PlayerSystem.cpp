@@ -8,20 +8,18 @@ static float lerp(float current, float target, float step)
     return current + step * (target - current);
 }
 
-static Entity player = ENTITY_NULL;
-
-
-void PlayerSystem::set_player_entity(Entity id)
-{
-    player = id;
-}
 
 void PlayerSystem::update(Iter *iter)
 {
-    if (player == ENTITY_NULL)
+    Group *group = Ecs::get_group<Player>(iter->registry);
+
+    if (group->size < 1)
     {
         return;
     }
+
+    Entity player = group->entity_list[0]; 
+
 
     Transform *transform        = Ecs::get_component<Transform>(iter->registry, player);
     Velocity *vel               = Ecs::get_component<Velocity>(iter->registry, player);
