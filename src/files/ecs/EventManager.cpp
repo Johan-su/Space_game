@@ -19,7 +19,7 @@ void Event_functions::run_events(event_data *ed, top_memory_arena *event_mm, Ite
 {
     void *after_latest_event = event_mm->data;
 
-    for (int i = 0; i < ed->events_in_buffer_count; ++i)
+    while (ed->events_in_buffer_count != 0)
     {
         Usize *event_id = (Usize *)after_latest_event;
         void *event = event_id + 1;
@@ -28,10 +28,10 @@ void Event_functions::run_events(event_data *ed, top_memory_arena *event_mm, Ite
 
         after_latest_event = Utils::align_pointer(after_latest_event_unaligned, alignof(Usize));
 
-        for (int j = 0; j < ed->listener_data[*event_id].event_sub_count; ++j)
+        for (int i = 0; i < ed->listener_data[*event_id].event_sub_count; ++i)
         {
             it->event = event;
-            ed->listener_data[*event_id].event_listeners[j](it);
+            ed->listener_data[*event_id].event_listeners[i](it);
         }
         --ed->events_in_buffer_count;
     }
