@@ -258,7 +258,6 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(registry, camera_e);
 
 
-
         SDL_Rect srcrect = {
             .x = (int)sprite->x,
             .y = (int)sprite->y,
@@ -284,7 +283,6 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
 
     return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
 }
-
 
 
 void Application::load_texture(U32 id, const char *path)
@@ -321,12 +319,6 @@ char *Application::cat_string(const char *str1, const char *str2) //TODO(Johan) 
     strcat(buf, str2);
 
     return buf;
-}
-
-
-void Application::clear_view_buffer()
-{
-    Arena::clear_top_arena(&g_memory.view_buffer);
 }
 
 
