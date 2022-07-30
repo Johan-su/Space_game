@@ -1,17 +1,13 @@
 #include "EntityCreationSystem.hpp"
 
-#include <stdio.h>
 
-
-
-
-void EntityCreationSystem::create_ship(Iter *iter)
+void EntityCreationSystem::create_ship(Iter *it)
 {
-    ShipSpawnEvent *event = (ShipSpawnEvent *)iter->event; 
-    Entity e = Ecs::create_entity(iter->registry);
+    ShipSpawnEvent *event = (ShipSpawnEvent *)it->event; 
+    Entity e = Ecs::create_entity(it->registry);
 
     
-    Ecs::set_component<Transform>(iter->registry, e, {
+    Ecs::set_component<Transform>(it->registry, e, {
         .pos = {
             .x = event->x,
             .y = event->y
@@ -27,12 +23,12 @@ void EntityCreationSystem::create_ship(Iter *iter)
     });
 
 
-    Ecs::set_component<Velocity>(iter->registry, e, {0.0f, 0.0f});
+    Ecs::set_component<Velocity>(it->registry, e, {0.0f, 0.0f});
    // Ecs::set_component(iter->curr_registry, e, collision);
-    Ecs::set_component<GravityAffected>(iter->registry, e, {});
-    Ecs::set_component<MassComponent>(iter->registry, e, {1000.0f});
-    Ecs::set_component<AnglularVelocity>(iter->registry, e, {0.0f});
-    Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
+    Ecs::set_component<GravityAffected>(it->registry, e, {});
+    Ecs::set_component<MassComponent>(it->registry, e, {1000.0f});
+    Ecs::set_component<AnglularVelocity>(it->registry, e, {0.0f});
+    Ecs::set_component<SpriteComponent>(it->registry, e, {event->ship_type});
 
 }
 
