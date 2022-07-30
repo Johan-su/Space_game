@@ -1,6 +1,6 @@
 #include "SystemManager.hpp"
-#include "../Application/Application.hpp"
 #include "ecs_assert.hpp"
+
 #include <string.h>
 
 using namespace Ecs;
@@ -49,31 +49,31 @@ void System_functions::init_system(system_data *sys_data, Phase phase, SystemFun
 }
 
 
-static void run_system(SystemFunc *sys_func, Iter *iter)
+static void run_system(SystemFunc *sys_func, top_memory_arena *view_mm, Iter *iter)
 {
-    Application::clear_view_buffer();
-
+    Arena::clear_top_arena(view_mm);
     sys_func(iter);
 }
 
 
-void System_functions::progess_systems(system_data *sys_data, Iter *iter)
+void System_functions::progess_systems(system_data *sys_data, top_memory_arena *view_mm, Iter *iter)
 {
     for (int i = 0; i < sys_data->pre_update_funcs.count; ++i)
     {
-        run_system(sys_data->pre_update_funcs.funcs[i], iter);
+        run_system(sys_data->pre_update_funcs.funcs[i], view_mm, iter);
     }
 
 
     for (int i = 0; i < sys_data->on_update_funcs.count; ++i)
     {
-        run_system(sys_data->on_update_funcs.funcs[i], iter);
+        run_system(sys_data->on_update_funcs.funcs[i], view_mm, iter);
     }
 
 
     for (int i = 0; i < sys_data->post_update_funcs.count; ++i)
     {
-        run_system(sys_data->post_update_funcs.funcs[i], iter);
+        run_system(sys_data->post_update_funcs.funcs[i], view_mm, iter);
+
     }
 }
 
