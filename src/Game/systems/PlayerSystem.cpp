@@ -9,9 +9,9 @@ static float lerp(float current, float target, float step)
 }
 
 
-void PlayerSystem::update(Iter *iter)
+void PlayerSystem::update(Iter *it)
 {
-    Group *group = Ecs::get_group<Player>(iter->registry);
+    Group *group = Ecs::get_group<Player>(it->registry);
 
     if (group->size < 1)
     {
@@ -21,9 +21,9 @@ void PlayerSystem::update(Iter *iter)
     Entity player = group->entity_list[0]; 
 
 
-    Transform *transform        = Ecs::get_component<Transform>(iter->registry, player);
-    Velocity *vel               = Ecs::get_component<Velocity>(iter->registry, player);
-    AnglularVelocity *angle_vel = Ecs::get_component<AnglularVelocity>(iter->registry, player);
+    Transform *transform        = Ecs::get_component<Transform>(it->registry, player);
+    Velocity *vel               = Ecs::get_component<Velocity>(it->registry, player);
+    AnglularVelocity *angle_vel = Ecs::get_component<AnglularVelocity>(it->registry, player);
 
     float vel_x_target;
     float vel_y_target;
@@ -71,10 +71,10 @@ void PlayerSystem::update(Iter *iter)
         angle_vel_target = 0.0f;
     }
 
-    vel->v.x = lerp(vel->v.x, vel_x_target, iter->Ts * 6);
-    vel->v.y = lerp(vel->v.y, vel_y_target, iter->Ts * 6);
+    vel->v.x = lerp(vel->v.x, vel_x_target, it->Ts * 6);
+    vel->v.y = lerp(vel->v.y, vel_y_target, it->Ts * 6);
 
-   angle_vel->angleV = lerp(angle_vel->angleV, angle_vel_target, iter->Ts * 4);
+   angle_vel->angleV = lerp(angle_vel->angleV, angle_vel_target, it->Ts * 4);
 }
 
 
