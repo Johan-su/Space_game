@@ -3,6 +3,10 @@
 #include "ecs_constants.hpp"
 
 
+
+/**
+ * non-owning view, only provides copies of components
+ */
 template<typename T>
 struct View
 {
@@ -12,6 +16,9 @@ struct View
 };
 
 
+/**
+ * non-owning group, only provies copies of components
+ */
 struct Group
 {
     Usize size;
@@ -26,8 +33,9 @@ struct Group
 namespace Ecs
 {
     /**
-     * id is the order the components are declared in the group starting from 0
-     * @return pointer to compnonent array
+     * @param group the group, which the array will be retrived from.
+     * @param order_id the component's order in the group.
+     * @return pointer to component array
      */
     template<typename T>
     T *get_comp_array(Group *group, U64 order_id)
