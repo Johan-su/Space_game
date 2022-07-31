@@ -40,27 +40,29 @@ void CameraController::update(Iter *iter)
         } break;
     }
 
-
-    if (Real::IsKeyPressed(VK_LCTRL) && Real::IsMousePressed(MOUSE_BUTTON_LEFT))
+    if (Real::IsMousePressed(MOUSE_BUTTON_LEFT))
     {
-        //TODO(Johan) try to remove anchor_check.
-        if (!anchor_check)
+        if (Real::IsKeyPressed(VK_LCTRL))
         {
+            //TODO(Johan) try to remove anchor_check.
+            if (!anchor_check)
+            {
+                anchor = Real::getMousePos();
+                anchor_check = true;
+            }
+
+            vec2i mpos = Real::getMousePos();
+
+            camera_transform->pos.x -= (mpos.x - anchor.x) / camera_comp->world_scale.x;
+            camera_transform->pos.y -= (mpos.y - anchor.y) / camera_comp->world_scale.y;
+
             anchor = Real::getMousePos();
-            anchor_check = true;
+
+
         }
-
-        vec2i mpos = Real::getMousePos();
-
-        camera_transform->pos.x -= (mpos.x - anchor.x) / camera_comp->world_scale.x;
-        camera_transform->pos.y -= (mpos.y - anchor.y) / camera_comp->world_scale.y;
-
-        anchor = Real::getMousePos();
-
-
-    }
-    else
-    {
-        anchor_check = false;
+        else
+        {
+            anchor_check = false;
+        }
     }
 }

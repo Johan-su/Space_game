@@ -71,7 +71,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
     int scene_pos = -1;
 
     // get unoccupied scene position in app
-    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
+    for (int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
         if (app->scenes[i] == NULL)
         {
@@ -84,7 +84,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
     {
         scene *game_scene = Arena::top_alloc<scene>(&g_memory.scene_buffers[scene_pos]);
 
-        Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer);
+        Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer, &g_memory.event_buffer);
 
         Ecs::init_component<Transform>(&game_scene->registry);
         Ecs::init_component<CameraComponent>(&game_scene->registry);
@@ -258,7 +258,6 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(registry, camera_e);
 
 
-
         SDL_Rect srcrect = {
             .x = (int)sprite->x,
             .y = (int)sprite->y,
@@ -268,12 +267,15 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         };
 
 
-        SDL_FRect dstrect = {
-            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x),
-            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y),
+        float width  = transform->scale.x * sprite->w * camera_comp->world_scale.x;
+        float height = transform->scale.y * sprite->h * camera_comp->world_scale.y;
 
-            .w = transform->scale.x * sprite->w * camera_comp->world_scale.x,
-            .h = transform->scale.y * sprite->h * camera_comp->world_scale.y,
+        SDL_FRect dstrect = {
+            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - width / 2.0f,
+            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y) - height / 2.0f,
+
+            .w = width,
+            .h = height,
         };
 
 
@@ -281,7 +283,6 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
 
     return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
 }
-
 
 
 void Application::load_texture(U32 id, const char *path)
@@ -318,12 +319,6 @@ char *Application::cat_string(const char *str1, const char *str2) //TODO(Johan) 
     strcat(buf, str2);
 
     return buf;
-}
-
-
-void Application::clear_view_buffer()
-{
-    Arena::clear_top_arena(&g_memory.view_buffer);
 }
 
 

@@ -20,7 +20,7 @@ public:
 
 struct Transform
 {
-    Vector2 pos;
+    Vector2 pos; // center of the entity
     Vector2 rot;
     Vector2 scale;
 };

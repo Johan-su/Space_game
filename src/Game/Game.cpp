@@ -12,7 +12,6 @@
 
 
 
-
 static void init_components(scene *scene)
 {
     Ecs::init_component<AnglularVelocity>(&scene->registry);
@@ -44,10 +43,17 @@ static void collision_debug(Iter *iter)
 
 static void init_events(scene *scene)
 {
-    Ecs::init_event<void, CollisionEvent>(&scene->registry, collision_debug); // TODO(Johan) change to real function pointers
-    Ecs::init_event<void, SpawnEvent>(&scene->registry, NULL);
-    Ecs::init_event<Entity, PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
-    Ecs::init_event<Entity, PlayerSpawnEvent>(&scene->registry, EntityCreationSystem::create_player);
+    Ecs::init_event<CollisionEvent>(&scene->registry); 
+    Ecs::init_event<SpawnEvent>(&scene->registry);
+    Ecs::init_event<PlanetSpawnEvent>(&scene->registry);
+    Ecs::init_event<PlayerSpawnEvent>(&scene->registry);
+}
+
+
+static void init_event_listeners(scene *scene)
+{
+    Ecs::init_event_listener<PlayerSpawnEvent>(&scene->registry, EntityCreationSystem::create_player);
+    Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet); 
 }
 
 
@@ -55,12 +61,13 @@ static void setup_scene(scene *scene, const char *pwd)
 {
     init_components(scene);
     init_events(scene);
+    init_event_listeners(scene);
     init_systems(scene);
 
     
 
-    char *ship_path = Application::cat_string(pwd, "resources/ships/placeholder.bmp");
-    char *planet_path = Application::cat_string(pwd, "resources/planets/placeholder_planet.bmp");
+    char *ship_path = Application::cat_string(pwd, "/resources/ships/placeholder.bmp");
+    char *planet_path = Application::cat_string(pwd, "/resources/planets/placeholder_planet.bmp");
 
 
     Application::load_texture(SHIP_texture, ship_path);
@@ -80,17 +87,7 @@ static void setup_scene(scene *scene, const char *pwd)
         .ship_type = SHIP1,
     };
 
-
-    Iter iter = {
-        .registry = &scene->registry,
-        .group = NULL,
-        .event = &pse,
-        .Ts = 0.0f,
-    };
-
-    Entity player = Ecs::broadcast_event<Entity, PlayerSpawnEvent>(&scene->registry, &iter);
-
-    PlayerSystem::set_player_entity(player);
+    Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
 
     srand(0);
     
@@ -118,14 +115,7 @@ static void setup_scene(scene *scene, const char *pwd)
         };
 
 
-        Iter iter2 = {
-            .registry = &scene->registry,
-            .group    = NULL,
-            .event    = &planetSE,
-            .Ts       = 0.0f,
-        };
-
-        Ecs::broadcast_event<Entity, PlanetSpawnEvent>(&scene->registry, &iter2);
+        Ecs::push_event<PlanetSpawnEvent>(&scene->registry, &planetSE);
     }
     
     
@@ -136,8 +126,6 @@ void init(const char *pwd)
 {
     scene *main_scene = Application::create_add_scene("GamePlay_scene");
     setup_scene(main_scene, pwd);
-
-
 
     Application::run(Application::Get(), main_scene); //TODO(Johan) deprecated
 }

@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "platform/platform.hpp"
-
+#include "utils.hpp"
 
 void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
 {
@@ -37,11 +37,11 @@ void Arena::clean_arena(top_memory_arena *arena)
 
 void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignment)
 {
-    #if 0
+    #if 1
     // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
 
     void *non_aligned_data = (char *)arena->data + arena->bytes_allocated;
-    Usize alignment_shift = (Usize)non_aligned_data % alignment;
+    Usize alignment_shift = (Usize)Utils::align_pointer(non_aligned_data, alignment) - (Usize)non_aligned_data;
        
     Usize aligned_bytes = bytes + alignment_shift;
 
@@ -54,7 +54,7 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignme
 
         if (arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
         {
-            fprintf(stderr, "ERROR: allocation out of top arena reserved bounds");
+            fprintf(stderr, "ERROR: allocation out of top arena's reserved bounds");
             exit(1);
         }
         memory_map::commit((char *)arena->data + arena->max_size_commited, page_amount);

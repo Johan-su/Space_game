@@ -46,17 +46,17 @@ void GravitySystem::update(Iter *it)
 
             Velocity *vel = Ecs::get_component<Velocity>(it->registry, e2);
 
-            float center1_x = t.pos.x + t.scale.x * PLANET_WIDTH;
-            float center1_y = t.pos.y + t.scale.y * PLANET_HEIGHT;
+            float center1_x = t.pos.x;
+            float center1_y = t.pos.y;
 
-            float center2_x = t2.pos.x; // not actually center fix later
+            float center2_x = t2.pos.x;
             float center2_y = t2.pos.y;
 
             float distance2 = (center1_x - center2_x) * (center1_x - center2_x) + (center1_y - center2_y) * (center1_y - center2_y);
             float angle = atan2f((center1_y - center2_y), (center1_x - center2_x));
 
            
-            float accl = G * mass.mass / distance2; 
+            float accl = G * mass.mass / (distance2 + 0.001f); // 0.0001f to avoid div by zero 
 
             vel->v.x += cosf(angle) * accl * it->Ts;
             vel->v.y += sinf(angle) * accl * it->Ts;

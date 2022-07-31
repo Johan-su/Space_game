@@ -3,7 +3,7 @@
 using namespace Ecs;
 
 
-void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm)
+void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm, top_memory_arena *event_mm)
 {
     ECS_assert(registry != NULL, "Registry cannot be NULL");
 
@@ -12,6 +12,10 @@ void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_
 
     registry->mm = mm;
     registry->view_mm = view_mm;
+    registry->event_mm = event_mm;
+
+    Arena::clear_top_arena(event_mm);
+
 
     registry->edata   = Arena::top_alloc<Entity_data>(registry->mm);
     registry->evdata  = Arena::top_alloc<event_data>(registry->mm);
@@ -33,13 +37,14 @@ void Ecs::init_system(Registry *registry, Phase phase, SystemFunc *system_functi
 
 void Ecs::progress_systems(Registry *registry, float Ts)
 {
-    Iter iter = {
+    Iter it = {
         .registry = registry,
         .group    = NULL,
         .event    = NULL,
         .Ts       = Ts
     };
-    System_functions::progess_systems(registry->sysdata, &iter);
+    System_functions::progess_systems(registry->sysdata, registry->view_mm, &it);
+    Event_functions::run_events(registry->evdata, registry->event_mm, &it);
 }
 
 

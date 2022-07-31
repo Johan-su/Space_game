@@ -1,6 +1,6 @@
 #pragma once
 #include "ecs_constants.hpp"
-
+#include "../Memory_arena.hpp"
 
 enum Phase
 {
@@ -38,7 +38,7 @@ namespace Ecs
     {
         void init(system_data *sys_data);
         void init_system(system_data *sys_data, Phase phase, SystemFunc *system_func);
-        void progess_systems(system_data *sys_data, Iter *iter);
+        void progess_systems(system_data *sys_data, top_memory_arena *view_mm, Iter *iter);
 
 
     } // namespace System_functions
