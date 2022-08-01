@@ -69,9 +69,52 @@ void EntityCreationSystem::create_player(Iter *iter)
     Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
 
    
-    Ecs::set_component<Player>(iter->registry, e, {
-        .id = player_id_count++
+    Ecs::set_component<Player>(iter->registry, e, {});
+}
+
+
+void EntityCreationSystem::create_bullet(Iter *it)
+{
+
+    BulletSpawnEvent *event = (BulletSpawnEvent *)it->event;
+
+    Entity e = Ecs::create_entity(it->registry);
+
+
+
+    Ecs::set_component<Transform>(it->registry, e, {
+        .pos = event->pos,
+        .rot = event->rot,
+        .scale = {
+            .x = 1.0f,
+            .y = 0.2f
+        }
     });
+
+
+   Ecs::set_component<Velocity>(it->registry, e, {0.0f, 0.0f}); 
+   Ecs::set_component<GravityAffected>(it->registry, e, {});
+   Ecs::set_component<MassComponent>(it->registry, e, {1000.0f});
+   
+
+   Ecs::set_component<SpriteComponent>(it->registry, e, {
+        .sprite_id = SHIP1, 
+   });
+   
+   
+   Ecs::set_component<BoxCollider>(it->registry, e, {
+        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,        
+   });
+
+   
+   Ecs::set_component<HealthComponent>(it->registry, e, {
+        .health = 10.0f
+   });
+
+   
+    Ecs::set_component<DamageComponent>(it->registry, e, {
+        .damage = 5.0f
+   });
 }
 
 
