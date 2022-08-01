@@ -20,7 +20,6 @@ struct MassComponent
 
 struct Player 
 {
-    uint32_t id; //TODO(Johan) probably not needed
 };
 
 
@@ -54,8 +53,16 @@ struct GravityAffected
 };
 
 
+struct HealthComponent
+{
+    float health;
+};
 
 
+struct DamageComponent
+{
+    float damage;
+};
 
 
 // events
@@ -78,7 +85,7 @@ struct ShipSpawnEvent
     float x;
     float y;
     float width;
-    float height; 
+    float height;
     uint32_t ship_type;
 };
 
@@ -92,6 +99,16 @@ struct PlayerSpawnEvent
     float height; 
     uint32_t ship_type;
 };
+
+
+struct BulletSpawnEvent
+{
+    Vector2 pos;
+    Vector2 rot;
+    Vector2 vel;
+
+};
+
 
 struct AiSpawnEvent
 {
