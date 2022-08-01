@@ -4,50 +4,45 @@
 
 #include <assert.h>
 
-void BoxCollisionSystem::update(Iter *iter)
-{/*
-    View<Position> *pos_view = Ecs::get_view<Position, SizeComponent, Collision>(registry);
-    View<SizeComponent> *size_view    = Ecs::get_view<SizeComponent, Position, Collision>(registry);
+void BoxCollisionSystem::update(Iter *it)
+{
+    Group *group = Ecs::get_group<Transform, Velocity, BoxCollider, SpriteComponent>(it->registry); 
 
-    for(size_t i = 0; i < pos_view->size; ++i)
+    Transform *transform_list   = Ecs::get_comp_array<Transform>(group, 0);
+    Velocity *velocity_list     = Ecs::get_comp_array<Velocity>(group, 1);
+    BoxCollider *collider_list  = Ecs::get_comp_array<BoxCollider>(group, 2);
+    SpriteComponent*sprite_list = Ecs::get_comp_array<SpriteComponent>(group, 3);
+
+    for (I64 i = 0; i < group->size; ++i)
     {
-        Entity e = pos_view->entity_list[i];
-        Position pos = pos_view->comparray[i];
-        SizeComponent size = size_view->comparray[i];
+        Entity e1 = group->entity_list[i]; 
+        Transform transform_e1    = transform_list[i];
+        Velocity velocity_e1      = velocity_list[i];
+        BoxCollider collider_e1   = collider_list[i];
+        SpriteComponent sprite_e1 = sprite_list[i];
 
-        for(size_t j = 0; j < pos_view->size; ++j)
+        for (I64 j = 0; i < group->size; ++j)
         {
-            Entity e2 = pos_view->entity_list[j];
-            if (e == e2)
+            Entity e2 = group->entity_list[j]; 
+            Transform transform_e2    = transform_list[j];
+            Velocity velocity_e2      = velocity_list[j];
+            BoxCollider collider_e2   = collider_list[j];
+            SpriteComponent sprite_e2 = sprite_list[j];
+
+
+            if (e1 == e2)
             {
-                continue;
+                return;
             }
 
-            Position pos2 = pos_view->comparray[j];
-            SizeComponent size2 = size_view->comparray[j];
+
+            bool b1 = transform_e1.pos.x; //TODO(Johan) finish
 
 
-            bool b1 = pos.x < pos2.x + size2.width;
-
-            bool b2 = pos.x + size.width > pos2.x;
-
-
-            bool b3 = pos.y < pos2.y + size2.height;
-
-            bool b4 = pos.y + size.height > pos2.y;
-
-
-            if (b1 && b2 && b3 && b4)
-            {
-                CollisionEvent ce = CollisionEvent();
-
-                ce.e1 = e;
-                ce.e2 = e2;
-                Ecs::broadcast_event<void>(registry, &ce);
-            }
         }
     }
+    
 
-*/}
+}
 
 
