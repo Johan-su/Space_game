@@ -46,7 +46,7 @@ struct Velocity
 
 struct SpriteComponent
 {
-    U32 texture_id;
+    U32 sprite_id;
 };
 
 

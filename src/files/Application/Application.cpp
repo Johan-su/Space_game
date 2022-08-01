@@ -12,7 +12,7 @@
 struct Application_data
 {
     engine_data *engine;
-    size_t scene_count;
+    Usize scene_count;
     scene *scenes[MAX_SCENE_COUNT];
 
     bool active;
@@ -250,7 +250,7 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         Application_data *app = Application::Get();
 
 
-        Sprite *sprite = Texture_functions::get_sprite(app->engine->texture, sprite_comp->texture_id);
+        Sprite *sprite = Texture_functions::get_sprite(app->engine->texture, sprite_comp->sprite_id);
         SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
 
 
@@ -297,7 +297,6 @@ void Application::init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w
     Application_data *app = Application::Get();
     Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
 }
-
 
 Application_data *Application::Get()
 {

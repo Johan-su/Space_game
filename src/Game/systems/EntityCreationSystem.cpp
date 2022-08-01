@@ -146,5 +146,5 @@ void EntityCreationSystem::create_planet(Iter *iter)
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
     Ecs::set_component<GravityAttractor>(registry, e, {});
-    Ecs::set_component<SpriteComponent>(registry, e, {.texture_id = event->planet_type});
+    Ecs::set_component<SpriteComponent>(registry, e, {.sprite_id = event->planet_type});
 }
