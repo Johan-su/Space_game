@@ -34,7 +34,7 @@ namespace Ecs
 {
     /**
      * @param group the group, which the array will be retrived from.
-     * @param order_id the component's order in the group.
+     * @param order_id the component's order in the group. starts at 0
      * @return pointer to component array
      */
     template<typename T>
