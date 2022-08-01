@@ -50,8 +50,25 @@ struct SpriteComponent
 };
 
 
+
 // colliders
 
-struct BoxCollider {};
-struct CircleCollider {};
+
+enum ColliderType
+{
+    CollideWithOthers   = (1 << 0),
+    OthersCollideWithMe = (1 << 1),
+};
+
+
+struct BoxCollider 
+{
+    U64 type;
+};
+
+
+struct CircleCollider 
+{
+    U64 type;
+};
 
