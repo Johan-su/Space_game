@@ -7,27 +7,14 @@ define init, clean in your application
 */
 
 
-void init(const char *pwd);
+void init();
 void clean();
 
 int main(int argc, char *argv[])
 {   
-    const char *exe = *argv++;
-    (void)exe;
-    const char *pwd;
-    if (argc > 1)
-    {
-        pwd = *argv++;
-    }
-    else
-    {
-        pwd = "./";
-    }
+    Application_data *app = Application::create_application();
 
-
-    Application_data *app = Application::create_application(pwd);
-
-    init(pwd);
+    init();
     clean();
 
     Application::destroy_application(app);

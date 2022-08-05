@@ -57,7 +57,7 @@ static void init_event_listeners(scene *scene)
 }
 
 
-static void setup_scene(scene *scene, const char *pwd)
+static void setup_scene(scene *scene)
 {
     init_components(scene);
     init_events(scene);
@@ -66,8 +66,8 @@ static void setup_scene(scene *scene, const char *pwd)
 
     
 
-    char *ship_path = Application::cat_string(pwd, "/resources/ships/placeholder.bmp");
-    char *planet_path = Application::cat_string(pwd, "/resources/planets/placeholder_planet.bmp");
+    const char *ship_path = "./resources/ships/placeholder.bmp";
+    const char *planet_path = "./resources/planets/placeholder_planet.bmp";
 
 
     Application::load_texture(SHIP_texture, ship_path);
@@ -122,10 +122,10 @@ static void setup_scene(scene *scene, const char *pwd)
 }
 
 
-void init(const char *pwd)
+void init()
 {
     scene *main_scene = Application::create_add_scene("GamePlay_scene");
-    setup_scene(main_scene, pwd);
+    setup_scene(main_scene);
 
     Application::run(Application::Get(), main_scene); //TODO(Johan) deprecated
 }

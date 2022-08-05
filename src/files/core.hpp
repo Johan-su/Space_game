@@ -44,7 +44,7 @@ namespace Internal
     void init_global_memory();
 
 
-    engine_data *create_engine(top_memory_arena *arena, const char *pwd);
+    engine_data *create_engine(top_memory_arena *arena);
     void clean_engine(engine_data *engine);
 
     void clean(engine_data *engine);

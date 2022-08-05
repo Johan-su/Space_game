@@ -101,18 +101,13 @@ static void sdl_clean(engine_data *engine)
 }
 
 
-engine_data *Internal::create_engine(top_memory_arena *arena, const char *pwd)
+engine_data *Internal::create_engine(top_memory_arena *arena)
 {
     engine_data *engine = Arena::top_alloc<engine_data>(arena);
 
     engine->config = Arena::top_alloc<config_data>(arena);
 
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
-
-    char *config_path = (char *)Arena::top_alloc_bytes(&g_memory.scratch_buffer, 500, 1);
-
-    strcpy(config_path, pwd);
-    strcat(config_path, "/config.ini");
+    const char *config_path = "./config.ini";
 
     Config::init(engine->config, config_path);
     Internal::init_input();

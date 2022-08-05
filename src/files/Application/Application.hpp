@@ -19,7 +19,7 @@ namespace Application
     extern Application_data *n_app_instance;
 
 
-    Application_data *create_application(const char *pwd);
+    Application_data *create_application();
     void destroy_application(Application_data *app);
 
     scene *create_add_scene( const char *scene_name);

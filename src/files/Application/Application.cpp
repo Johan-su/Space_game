@@ -26,7 +26,7 @@ Application_data *Application::n_app_instance = NULL;
 
 
 
-Application_data *Application::create_application(const char *pwd)
+Application_data *Application::create_application()
 {
     if (n_app_instance != NULL)
     {
@@ -42,7 +42,7 @@ Application_data *Application::create_application(const char *pwd)
     n_app_instance = Arena::top_alloc<Application_data>(&g_memory.app_buffer);
     memset(n_app_instance, 0, sizeof(*n_app_instance));
 
-    n_app_instance->engine = Internal::create_engine(&g_memory.app_buffer, pwd);
+    n_app_instance->engine = Internal::create_engine(&g_memory.app_buffer);
 
     n_app_instance->active = false;
 
