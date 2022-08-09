@@ -41,7 +41,6 @@ void PlayerSystem::update(Iter *it)
 
     Transform *transform        = Ecs::get_component<Transform>(it->registry, player);
     Velocity *vel               = Ecs::get_component<Velocity>(it->registry, player);
-    AnglularVelocity *angle_vel = Ecs::get_component<AnglularVelocity>(it->registry, player);
 
     float vel_x_target;
     float vel_y_target;
