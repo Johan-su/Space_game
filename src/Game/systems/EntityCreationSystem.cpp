@@ -22,10 +22,8 @@ void EntityCreationSystem::create_player(Iter *iter)
    // Ecs::set_component(iter->curr_registry, e, collision);
     Ecs::set_component<GravityAffected>(iter->registry, e, {});
     Ecs::set_component<MassComponent>(iter->registry, e, {1000.0f});
-    Ecs::set_component<AnglularVelocity>(iter->registry, e, {0.0f});
     Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
 
-   
     Ecs::set_component<Player>(iter->registry, e, {});
 }
 
@@ -144,12 +142,10 @@ void EntityCreationSystem::create_planet(Iter *iter)
         .scale = {event->scale, event->scale},
     });
 
-    Ecs::set_component<Velocity>(registry, e, {
-        .v = event->vel,
-    });
 
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
     Ecs::set_component<GravityAttractor>(registry, e, {});
     Ecs::set_component<SpriteComponent>(registry, e, {.sprite_id = event->planet_type});
+    Ecs::set_component<Planet>(registry, e, {});
 }

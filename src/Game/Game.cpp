@@ -9,29 +9,34 @@
 #include "systems/CameraController.hpp"
 #include "systems/GravitySystem.hpp"
 #include "systems/CollisionSystem.hpp"
-
+#include "systems/SpawnerSystem.hpp"
+#include "systems/AIControllerSystem.hpp"
 
 
 static void init_components(scene *scene)
 {
-    Ecs::init_component<AnglularVelocity>(&scene->registry);
+    //Ecs::init_component<AnglularVelocity>(&scene->registry);
     Ecs::init_component<Player>(&scene->registry);
     Ecs::init_component<MassComponent>(&scene->registry);
     Ecs::init_component<GravityAttractor>(&scene->registry);
     Ecs::init_component<GravityAffected>(&scene->registry);
     Ecs::init_component<HealthComponent>(&scene->registry);
     Ecs::init_component<DamageComponent>(&scene->registry);
+    Ecs::init_component<Planet>(&scene->registry);
+    Ecs::init_component<EnemyAI>(&scene->registry);
 }
 
 
 static void init_systems(scene *scene)
 {
+    Ecs::init_system(&scene->registry, Phase::OnUpdate, AIControllerSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, CameraController::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, PlayerSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, MovementSystem::update);
-    Ecs::init_system(&scene->registry, Phase::OnUpdate, AngleSystem::update);
+    //Ecs::init_system(&scene->registry, Phase::OnUpdate, AngleSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, GravitySystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, CollisionSystem::update);
+    Ecs::init_system(&scene->registry, Phase::OnUpdate, SpawnerSystem::update);
     Ecs::init_system(&scene->registry, Phase::PostUpdate, RenderSystem::render);
 }
 
@@ -104,7 +109,6 @@ static void setup_scene(scene *scene)
     PlanetSpawnEvent planetSE = {
         .pos          = {5000.0f, 5000.0f},
         .rot          = {0.0f, 0.0f},
-        .vel          = {0.0f, 0.0f},
         .scale        = 80.0f,
         .mass         = 100000.0f,
         .planet_type  = PLANET1,
