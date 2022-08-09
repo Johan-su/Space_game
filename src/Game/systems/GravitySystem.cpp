@@ -3,14 +3,10 @@
 #include "../Components_Events.hpp"
 
 #include <math.h>
-
-static const float G = 6.6743E-11f;
-
-// hardcoded from planet texture
-static const Usize PLANET_WIDTH  = 132;
-static const Usize PLANET_HEIGHT = 132;
+const float G = 6.6743E-11f;
 
 
+// TODO(Johan) make faster 
 void GravitySystem::update(Iter *it)
 {
 
@@ -26,7 +22,7 @@ void GravitySystem::update(Iter *it)
 
 
 
-    for (Usize i = 0; i < group->size; ++i)
+    for (I64 i = 0; i < group->size; ++i)
     {
         Entity e1 = group->entity_list[i];
 
@@ -34,7 +30,7 @@ void GravitySystem::update(Iter *it)
         Transform t = t_list[i];
         MassComponent mass = m_list[i];
 
-        for (Usize j = 0; j < group_affected->size; ++j)
+        for (I64 j = 0; j < group_affected->size; ++j)
         {
             Entity e2 = group_affected->entity_list[j];
             if (e1 == e2)
@@ -52,11 +48,14 @@ void GravitySystem::update(Iter *it)
             float center2_x = t2.pos.x;
             float center2_y = t2.pos.y;
 
-            float distance2 = (center1_x - center2_x) * (center1_x - center2_x) + (center1_y - center2_y) * (center1_y - center2_y);
-            float angle = atan2f((center1_y - center2_y), (center1_x - center2_x));
+            float center_dx = center1_x - center2_x;
+            float center_dy = center1_y - center2_y;
+
+            float distance2 = (center_dx) * (center_dx) + (center_dy) * (center_dy);
+            float angle = atan2f((center_dy), (center_dx));
 
            
-            float accl = G * mass.mass / (distance2 + 0.001f); // 0.0001f to avoid div by zero 
+            float accl = G * mass.mass / (distance2 + __FLT_MIN__); // FLT_MIN to avoid div by zero 
 
             vel->v.x += cosf(angle) * accl * it->Ts;
             vel->v.y += sinf(angle) * accl * it->Ts;

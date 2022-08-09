@@ -6,9 +6,8 @@
 namespace EntityCreationSystem
 {
     
-    void create_ship(Iter *iter);
-    void create_player(Iter *iter);
+    void create_player(Iter *it);
     void create_bullet (Iter *it);
-    void create_ai(Iter *iter);
-    void create_planet(Iter *iter);
+    void create_ai(Iter *it);
+    void create_planet(Iter *it);
 } // namespace EntityCreationSystem

@@ -1,40 +1,6 @@
 #include "EntityCreationSystem.hpp"
 
 
-void EntityCreationSystem::create_ship(Iter *it)
-{
-    ShipSpawnEvent *event = (ShipSpawnEvent *)it->event; 
-    Entity e = Ecs::create_entity(it->registry);
-
-    
-    Ecs::set_component<Transform>(it->registry, e, {
-        .pos = {
-            .x = event->x,
-            .y = event->y
-        },
-        .rot = {
-            .x = 0.0f,
-            .y = 0.0f
-        },
-        .scale = {
-            .x = 1.0f,
-            .y = 1.0f
-        }
-    });
-
-
-    Ecs::set_component<Velocity>(it->registry, e, {0.0f, 0.0f});
-   // Ecs::set_component(iter->curr_registry, e, collision);
-    Ecs::set_component<GravityAffected>(it->registry, e, {});
-    Ecs::set_component<MassComponent>(it->registry, e, {1000.0f});
-    Ecs::set_component<AnglularVelocity>(it->registry, e, {0.0f});
-    Ecs::set_component<SpriteComponent>(it->registry, e, {event->ship_type});
-
-}
-
-
-
-
 
 
 static U32 player_id_count = 0;
@@ -46,18 +12,9 @@ void EntityCreationSystem::create_player(Iter *iter)
 
     
     Ecs::set_component<Transform>(iter->registry, e, {
-        .pos = {
-            .x = event->x,
-            .y = event->y
-        },
-        .rot = {
-            .x = 0.0f,
-            .y = 0.0f
-        },
-        .scale = {
-            .x = 1.0f,
-            .y = 1.0f
-        }
+        .pos = event->pos,
+        .rot = {0.0f, 0.0f},
+        .scale = {event->scale, event->scale},
     });
 
 
@@ -92,7 +49,7 @@ void EntityCreationSystem::create_bullet(Iter *it)
     });
 
 
-   Ecs::set_component<Velocity>(it->registry, e, {0.0f, 0.0f}); 
+   Ecs::set_component<Velocity>(it->registry, e, {event->vel}); 
    Ecs::set_component<GravityAffected>(it->registry, e, {});
    Ecs::set_component<MassComponent>(it->registry, e, {1000.0f});
    
@@ -118,40 +75,54 @@ void EntityCreationSystem::create_bullet(Iter *it)
 }
 
 
-void EntityCreationSystem::create_ai(Iter *iter) //TODO(Johan) maybe separate to different functions
-{/*
-    ShipSpawnEvent sse = {event->x, event->y, event->width, event->height, event->ship_type};
+void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to different functions
+{
+    AiSpawnEvent *event = (AiSpawnEvent *)it->event;
+    Entity e = Ecs::create_entity(it->registry);
 
-    auto nai = NeutralAI(); // TODO(Johan) make better
-    auto aai = AllyAI();
-    auto eai = EnemyAI();
-    auto hai = HostileAI();
+    Ecs::set_component<Transform>(it->registry, e, {
+        .pos = event->pos,
+        .rot = {0.0f, 0.0f},
+        .scale = {event->scale, event->scale},
+    });
 
-    Entity e = create_ship(registry, &sse);
+
+    Ecs::set_component<SpriteComponent>(it->registry, e, {
+        .sprite_id = event->ship_type,
+    });
+
+
     switch (event->ai_type)
     {
-        case 0:
-            Ecs::set_component(registry, e, nai);
-            break;
+        case AIType::Neutral:
+        {
+            Ecs::set_component<NeutralAI>(it->registry, e, {});
+        } break;
 
-        case 1:
-            Ecs::set_component(registry, e, aai);
-            break;
-        case 2:
-            Ecs::set_component(registry, e, eai);
-            break;
 
-        case 3:
-            Ecs::set_component(registry, e, hai);
-            break;
-        
-        default:
-            ECS_assert(false, "Illegal Ai type");
-            break;
+        case AIType::Ally:
+        {
+            Ecs::set_component<AllyAI>(it->registry, e, {});
+        } break;
+
+
+        case AIType::Enemy:
+        {
+            Ecs::set_component<EnemyAI>(it->registry, e, {});
+        } break;        
+
+
+        case AIType::Hostile:
+        {
+            Ecs::set_component<HostileAI>(it->registry, e, {});
+        } break;    
     }
 
-    return e;
-*/}
+    Ecs::set_component<HealthComponent>(it->registry, e, {
+        .health = event->health,
+        .health_regen = event->health_regen,
+    });
+}
 
 
 
@@ -168,22 +139,13 @@ void EntityCreationSystem::create_planet(Iter *iter)
 
 
     Ecs::set_component<Transform>(registry, e, {
-        .pos = {
-            .x = event->x,
-            .y = event->y,
-        },
-        .rot = {
-            .x = event->rot_x,
-            .y = event->rot_y,
-        },
-        .scale = {
-            .x = event->radius,
-            .y = event->radius,
-        },
+        .pos = event->pos,
+        .rot = event->rot,
+        .scale = {event->scale, event->scale},
     });
 
     Ecs::set_component<Velocity>(registry, e, {
-        .v = {event->vel_x, event->vel_y}
+        .v = event->vel,
     });
 
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});

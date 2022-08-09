@@ -3,7 +3,7 @@
 
 #include "../Game.hpp"
 
-namespace BoxCollisionSystem
+namespace CollisionSystem
 {
     void update(Iter *iter);
     

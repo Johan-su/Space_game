@@ -19,6 +19,8 @@ static void init_components(scene *scene)
     Ecs::init_component<MassComponent>(&scene->registry);
     Ecs::init_component<GravityAttractor>(&scene->registry);
     Ecs::init_component<GravityAffected>(&scene->registry);
+    Ecs::init_component<HealthComponent>(&scene->registry);
+    Ecs::init_component<DamageComponent>(&scene->registry);
 }
 
 
@@ -29,8 +31,18 @@ static void init_systems(scene *scene)
     Ecs::init_system(&scene->registry, Phase::OnUpdate, MovementSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, AngleSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, GravitySystem::update);
-    Ecs::init_system(&scene->registry, Phase::OnUpdate, BoxCollisionSystem::update);
+    Ecs::init_system(&scene->registry, Phase::OnUpdate, CollisionSystem::update);
     Ecs::init_system(&scene->registry, Phase::PostUpdate, RenderSystem::render);
+}
+
+
+static void init_events(scene *scene)
+{
+    Ecs::init_event<CollisionEvent>(&scene->registry); 
+    Ecs::init_event<AiSpawnEvent>(&scene->registry);
+    Ecs::init_event<PlanetSpawnEvent>(&scene->registry);
+    Ecs::init_event<PlayerSpawnEvent>(&scene->registry);
+    Ecs::init_event<BulletSpawnEvent>(&scene->registry);
 }
 
 
@@ -41,19 +53,13 @@ static void collision_debug(Iter *iter)
 }
 
 
-static void init_events(scene *scene)
-{
-    Ecs::init_event<CollisionEvent>(&scene->registry); 
-    Ecs::init_event<SpawnEvent>(&scene->registry);
-    Ecs::init_event<PlanetSpawnEvent>(&scene->registry);
-    Ecs::init_event<PlayerSpawnEvent>(&scene->registry);
-}
-
-
 static void init_event_listeners(scene *scene)
 {
     Ecs::init_event_listener<PlayerSpawnEvent>(&scene->registry, EntityCreationSystem::create_player);
-    Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet); 
+    Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
+    Ecs::init_event_listener<BulletSpawnEvent>(&scene->registry, EntityCreationSystem::create_bullet); 
+    Ecs::init_event_listener<AiSpawnEvent>(&scene->registry, EntityCreationSystem::create_ai);
+    Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
 }
 
 
@@ -76,49 +82,38 @@ static void setup_scene(scene *scene)
     Application::init_sprite(SHIP1, SHIP_texture, 0, 0, 114, 200);
     Application::init_sprite(PLANET1, PLANET_texture, 0, 0, 132, 132);
 
+    {
+        Entity active_camera = Application::get_first_active_camera(&scene->registry);
 
-    // Real::set_camera_center(&scene->camera, 0.0f, 0.0f);
+        Transform *camera_transform = Ecs::get_component<Transform>(&scene->registry, active_camera);
+        CameraComponent *camera_component = Ecs::get_component<CameraComponent>(&scene->registry, active_camera);
+
+        Real::set_camera_center(camera_transform, camera_component, 1000.0f, 1000.0f);
+    }
+
 
     PlayerSpawnEvent pse = {
-        .x         = 0.0f,
-        .y         = 0.0f,
-        .width     = 114.0f,
-        .height    = 200.0f,
+        .pos = {1000.0f, 1000.0f},
+        .scale = 1.0f,
         .ship_type = SHIP1,
     };
 
     Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
 
-    srand(0);
     
-    for (int i = 0; i < 500; ++i)
-    {
-
-        float x = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5f));
-        float y = 100000.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5f));
-
-        float radius = 25.0f * ( 2 * ((float)(rand()) / RAND_MAX - 0.5));
-        float mass = 1E20 * ((float)(rand()) / RAND_MAX);
-
-
-
-        PlanetSpawnEvent planetSE = {
-            .x           = x,
-            .y           = y,
-            .rot_x       = 0.0f,
-            .rot_y       = 0.0f,
-            .vel_x       = 0.0f,
-            .vel_y       = 0.0f,
-            .radius      = radius,
-            .mass        = mass,
-            .planet_type = PLANET1,
-        };
+    PlanetSpawnEvent planetSE = {
+        .pos          = {5000.0f, 5000.0f},
+        .rot          = {0.0f, 0.0f},
+        .vel          = {0.0f, 0.0f},
+        .scale        = 80.0f,
+        .mass         = 100000.0f,
+        .planet_type  = PLANET1,
+        .health       = 1000000.0f,
+        .health_regen = 0.0f,
+    };
 
 
-        Ecs::push_event<PlanetSpawnEvent>(&scene->registry, &planetSE);
-    }
-    
-    
+    Ecs::push_event<PlanetSpawnEvent>(&scene->registry, &planetSE);
 }
 
 

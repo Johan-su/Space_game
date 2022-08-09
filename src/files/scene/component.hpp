@@ -3,7 +3,17 @@
 
 #include "../int.hpp"
 
-class Vector2
+
+class Vector2i
+{
+public:
+    I32 x;
+    I32 y;
+};
+
+
+
+class Vector2f
 {
 public:
     float x;
@@ -20,15 +30,15 @@ public:
 
 struct Transform
 {
-    Vector2 pos; // center of the entity
-    Vector2 rot;
-    Vector2 scale;
+    Vector2f pos; // center of the entity
+    Vector2f rot;
+    Vector2f scale;
 };
 
 
 struct CameraComponent
 {
-    Vector2 world_scale;
+    Vector2f world_scale;
 
     U16 screen_width;
     U16 screen_height;
@@ -40,7 +50,7 @@ struct CameraComponent
 
 struct Velocity
 {
-    Vector2 v;
+    Vector2f v;
 };
 
 

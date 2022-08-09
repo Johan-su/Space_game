@@ -38,10 +38,11 @@ void Ecs::init_system(Registry *registry, Phase phase, SystemFunc *system_functi
 void Ecs::progress_systems(Registry *registry, float Ts)
 {
     Iter it = {
-        .registry = registry,
-        .group    = NULL,
-        .event    = NULL,
-        .Ts       = Ts
+        .registry   = registry,
+        .group      = NULL,
+        .view_arena = registry->view_mm,
+        .event      = NULL,
+        .Ts         = Ts
     };
     System_functions::progess_systems(registry->sysdata, registry->view_mm, &it);
     Event_functions::run_events(registry->evdata, registry->event_mm, &it);

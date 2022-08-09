@@ -18,44 +18,10 @@ struct MassComponent
 };
 
 
-struct Player 
-{
-};
-
-
-struct NeutralAI
-{
-};
-
-
-struct AllyAI
-{
-};
-
-
-struct EnemyAI
-{
-};
-
-
-struct HostileAI
-{
-};
-
-
-struct GravityAttractor
-{
-};
-
-
-struct GravityAffected
-{
-};
-
-
 struct HealthComponent
 {
     float health;
+    float health_regen;
 };
 
 
@@ -63,6 +29,31 @@ struct DamageComponent
 {
     float damage;
 };
+
+
+enum EnemyAiState
+{
+    TargetPlanet,
+    TargetAlly,
+    TargetPlayer,
+};
+
+
+struct EnemyAI
+{
+    EnemyAiState ai_state;
+};
+
+
+// tags
+struct Player {};
+struct NeutralAI {};
+struct AllyAI {};
+struct HostileAI {};
+struct GravityAttractor {};
+struct GravityAffected {};
+
+
 
 
 // events
@@ -73,67 +64,55 @@ struct CollisionEvent
 };
 
 
-struct SpawnEvent
-{
-    float x;
-    float y;
-};
-
-
-struct ShipSpawnEvent
-{
-    float x;
-    float y;
-    float width;
-    float height;
-    uint32_t ship_type;
-};
-
-
-
 struct PlayerSpawnEvent
 {
-    float x;
-    float y;
-    float width;
-    float height; 
+    Vector2f pos;
+    float scale;
     uint32_t ship_type;
 };
 
 
 struct BulletSpawnEvent
 {
-    Vector2 pos;
-    Vector2 rot;
-    Vector2 vel;
+    Vector2f pos;
+    Vector2f rot;
+    Vector2f vel;
+    float damage;
+    uint32_t bullet_type;
+};
 
+
+enum AIType
+{
+    Neutral,
+    Ally,
+    Enemy,
+    Hostile,
 };
 
 
 struct AiSpawnEvent
 {
-    float x;
-    float y;
-    float width;
-    float height; 
+    Vector2f pos;
+    float scale;
     uint32_t ship_type;
-    uint8_t ai_type;
+    AIType ai_type;
+    float health;
+    float health_regen;
 };
 
 
 struct PlanetSpawnEvent
 {
-    float x;
-    float y;
+    Vector2f pos;
+    Vector2f rot;
+    Vector2f vel;
 
-    float rot_x;
-    float rot_y;
-
-    float vel_x;
-    float vel_y;
-
-    float radius;
+    float scale;
     float mass;
 
     uint8_t planet_type;
+
+    float health;
+    float health_regen;
 };
