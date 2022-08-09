@@ -52,7 +52,7 @@ struct AllyAI {};
 struct HostileAI {};
 struct GravityAttractor {};
 struct GravityAffected {};
-
+struct Planet {};
 
 
 
@@ -106,7 +106,6 @@ struct PlanetSpawnEvent
 {
     Vector2f pos;
     Vector2f rot;
-    Vector2f vel;
 
     float scale;
     float mass;
