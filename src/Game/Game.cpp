@@ -11,7 +11,7 @@
 #include "systems/CollisionSystem.hpp"
 #include "systems/SpawnerSystem.hpp"
 #include "systems/AIControllerSystem.hpp"
-
+#include "systems/HealthSystem.hpp"
 
 static void init_components(scene *scene)
 {
@@ -37,6 +37,7 @@ static void init_systems(scene *scene)
     Ecs::init_system(&scene->registry, Phase::OnUpdate, GravitySystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, CollisionSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, SpawnerSystem::update);
+    Ecs::init_system(&scene->registry, Phase::OnUpdate, HealthSystem::update);
     Ecs::init_system(&scene->registry, Phase::PostUpdate, RenderSystem::render);
 }
 
