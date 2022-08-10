@@ -19,6 +19,9 @@ public:
     float x;
     float y;
 
+    Vector2f operator*(float scalar) { return Vector2f{this->x * scalar, this->y * scalar}; }
+
+
     float magnitude();
     void normalize();
 };
@@ -74,11 +77,14 @@ enum ColliderType
 struct BoxCollider 
 {
     U64 type;
+    float width;
+    float height;
 };
 
 
 struct CircleCollider 
 {
     U64 type;
+    float radius;
 };
 

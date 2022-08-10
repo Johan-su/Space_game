@@ -10,6 +10,10 @@ static float rand_float()
 }
 
 
+
+
+static float min_radius = 80.0f;
+
 static U8 wave = 0;
 
 static float timer = 0.0f;
@@ -31,13 +35,31 @@ void SpawnerSystem::update(Iter *it)
     Transform *t_list = Ecs::get_comp_array<Transform>(group, 0);
 
 
-
+    printf("DEBUG: Timer = %.2f\n", timer);
     switch (wave)
     {
         case 0:
         {
-            if (timer > 10000 )
+            if (timer > 5 )
             {
+
+                for (int i = 0; i < 100; ++i)
+                {
+                    float angle = 2 * 3.1415926f * rand_float();
+                    float random_spawn_radius = t_list[0].scale.x * (min_radius + rand_float() * 10000.0f);
+    
+                    AiSpawnEvent ase = {
+                        .pos = {cosf(angle) * random_spawn_radius, sinf(angle) * random_spawn_radius},
+                        .scale = 1.0f,
+                        .ship_type = SHIP1,
+                        .ai_type = AIType::Enemy,
+                        .health = 500.0f,
+                        .health_regen = 0.1f,
+                    };
+    
+    
+                    Ecs::push_event(it->registry, &ase);
+                }
                 wave += 1;
                 timer = 0.0f;
             }
@@ -46,24 +68,7 @@ void SpawnerSystem::update(Iter *it)
 
         case 1:
         {
-            float min_radius = 80.0f;
-            for (int i = 0; i < 10; ++i)
-            {
-                float angle = 2 * 3.1415926f * rand_float();
-                float random_spawn_radius = t_list[0].scale.x * (min_radius + rand_float() * 10000.0f);
 
-                AiSpawnEvent ase = {
-                    .pos = {cosf(angle) * random_spawn_radius, sinf(angle) * random_spawn_radius},
-                    .scale = 1.0f,
-                    .ship_type = SHIP1,
-                    .ai_type = AIType::Enemy,
-                    .health = 500.0f,
-                    .health_regen = 0.1f,
-                };
-
-
-                Ecs::push_event(it->registry, &ase);
-            }
 
 
         } break;
