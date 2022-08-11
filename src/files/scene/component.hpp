@@ -1,7 +1,9 @@
 #pragma once
 
-
+#include "../ecs/Entity.hpp"
 #include "../int.hpp"
+
+struct Sprite;
 
 
 class Vector2i
@@ -59,7 +61,7 @@ struct Velocity
 
 struct SpriteComponent
 {
-    U32 sprite_id;
+    Sprite *sprite;
 };
 
 
@@ -69,16 +71,16 @@ struct SpriteComponent
 
 enum ColliderType
 {
-    CollideWithOthers   = (1 << 0),
-    OthersCollideWithMe = (1 << 1),
+    CollideWithOthers    = (1 << 0),
+    OthersCollideWithMe  = (1 << 1),
+    DealsDamageOnCollide = (1 << 2),
 };
 
 
 struct BoxCollider 
 {
     U64 type;
-    float width;
-    float height;
+    Vector2f size; // gets scaled by transform.scale
 };
 
 
@@ -88,3 +90,15 @@ struct CircleCollider
     float radius;
 };
 
+
+
+
+// events
+
+struct CollisionEvent
+{
+    U64 e1_type;
+    U64 e2_type;
+    Entity e1;
+    Entity e2;
+};
