@@ -12,6 +12,7 @@
 #include "systems/SpawnerSystem.hpp"
 #include "systems/AIControllerSystem.hpp"
 #include "systems/HealthSystem.hpp"
+#include "systems/FiringSystem.hpp"
 
 static void init_components(scene *scene)
 {
@@ -24,6 +25,7 @@ static void init_components(scene *scene)
     Ecs::init_component<DamageComponent>(&scene->registry);
     Ecs::init_component<Planet>(&scene->registry);
     Ecs::init_component<EnemyAI>(&scene->registry);
+    Ecs::init_component<FiringComponent>(&scene->registry);
 }
 
 
@@ -38,6 +40,10 @@ static void init_systems(scene *scene)
     Ecs::init_system(&scene->registry, Phase::OnUpdate, CollisionSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, SpawnerSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, HealthSystem::update);
+    Ecs::init_system(&scene->registry, Phase::OnUpdate, FiringSystem::update);
+
+
+
     Ecs::init_system(&scene->registry, Phase::PostUpdate, RenderSystem::render);
 }
 
@@ -55,7 +61,7 @@ static void init_events(scene *scene)
 static void collision_debug(Iter *iter)
 {
     CollisionEvent *event = (CollisionEvent *)iter->event;
-    printf("collision between [%llu, %llu]", event->e1, event->e2);
+    printf("collision between [%llu, %llu]\n", event->e1, event->e2);
 }
 
 
@@ -65,7 +71,7 @@ static void init_event_listeners(scene *scene)
     Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
     Ecs::init_event_listener<BulletSpawnEvent>(&scene->registry, EntityCreationSystem::create_bullet); 
     Ecs::init_event_listener<AiSpawnEvent>(&scene->registry, EntityCreationSystem::create_ai);
-    Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
+    // Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
 }
 
 
