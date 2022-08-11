@@ -45,6 +45,14 @@ struct EnemyAI
 };
 
 
+struct FiringComponent
+{
+    float timer;
+    float max_time;
+    bool firing;
+};
+
+
 // tags
 struct Player {};
 struct NeutralAI {};
@@ -57,11 +65,7 @@ struct Planet {};
 
 
 // events
-struct CollisionEvent
-{
-    Entity e1;
-    Entity e2;
-};
+
 
 
 struct PlayerSpawnEvent
