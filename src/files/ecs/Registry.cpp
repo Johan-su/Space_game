@@ -44,8 +44,8 @@ void Ecs::progress_systems(Registry *registry, float Ts)
         .event      = NULL,
         .Ts         = Ts
     };
-    System_functions::progess_systems(registry->sysdata, registry->view_mm, &it);
     Event_functions::run_events(registry->evdata, registry->event_mm, &it);
+    System_functions::progess_systems(registry->sysdata, registry->view_mm, &it);
 }
 
 
