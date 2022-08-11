@@ -249,7 +249,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
                 float e2_top_side_y = t_e2->pos.y - (size2.y / 2) * t_e2->scale.y;
 
                 bool b3 = e1_top_side_y < e2_bot_side_y;
-                bool b4 = e1_bot_side_y > e2_top_side_y ;
+                bool b4 = e1_bot_side_y > e2_top_side_y;
 
 
 
