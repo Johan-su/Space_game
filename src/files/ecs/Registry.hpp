@@ -98,7 +98,7 @@ namespace Ecs
 
 
     template<typename... T>
-    Group *get_group(Registry *registry)
+    const Group *get_group(Registry *registry)
     {
         return Component_functions::get_group<T...>(registry->mm, registry->view_mm, registry->cdata);
     }

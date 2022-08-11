@@ -38,10 +38,10 @@ namespace Ecs
      * @return pointer to component array
      */
     template<typename T>
-    T *get_comp_array(Group *group, U64 order_id)
+    const T *get_comp_array(const Group *group, U64 order_id)
     {
         ECS_assert(group->comp_sizes[order_id] == sizeof(T) && group->comp_alignments[order_id] == alignof(T), "Component size/alignment mismatch, id order is probably incorrect");
-        return (T *)(group->comp_arrays[order_id]);
+        return (const T *)(group->comp_arrays[order_id]);
     }
 
 } // namespace Ecs
