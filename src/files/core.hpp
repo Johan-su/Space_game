@@ -18,7 +18,7 @@ struct global_memory
 
     top_memory_arena view_buffer; // gets cleared after a game system function
 
-    top_memory_arena event_buffer;
+    top_memory_arena event_buffer; // gets cleared after all events have been processed
 
 
 
