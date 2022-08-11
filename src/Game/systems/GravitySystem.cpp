@@ -10,15 +10,15 @@ const float G = 6.6743E-11f;
 void GravitySystem::update(Iter *it)
 {
 
-    Group *group = Ecs::get_group<Transform, MassComponent, GravityAttractor>(it->registry);
+    const Group *group = Ecs::get_group<Transform, MassComponent, GravityAttractor>(it->registry);
 
-    Transform *t_list     = Ecs::get_comp_array<Transform>(group, 0);
-    MassComponent *m_list = Ecs::get_comp_array<MassComponent>(group, 1);
+    const Transform *t_list     = Ecs::get_comp_array<Transform>(group, 0);
+    const MassComponent *m_list = Ecs::get_comp_array<MassComponent>(group, 1);
 
 
-    Group *group_affected = Ecs::get_group<Transform, MassComponent, Velocity, GravityAffected>(it->registry);
+    const Group *group_affected = Ecs::get_group<Transform, MassComponent, Velocity, GravityAffected>(it->registry);
 
-    Transform *t_list_a     = Ecs::get_comp_array<Transform>(group_affected, 0);
+    const Transform *t_list_a     = Ecs::get_comp_array<Transform>(group_affected, 0);
 
 
 

@@ -4,10 +4,10 @@
 
 void RenderSystem::render(Iter *it)
 {
-    Group *group = Ecs::get_group<Transform, SpriteComponent>(it->registry);
+    const Group *group = Ecs::get_group<Transform, SpriteComponent>(it->registry);
 
-    Transform *transform_list    = Ecs::get_comp_array<Transform>(group, 0);
-    SpriteComponent *sprite_list = Ecs::get_comp_array<SpriteComponent>(group, 1);
+    const Transform *transform_list    = Ecs::get_comp_array<Transform>(group, 0);
+    const SpriteComponent *sprite_list = Ecs::get_comp_array<SpriteComponent>(group, 1);
 
     for (Usize i = 0; i < group->size; ++i)
     {

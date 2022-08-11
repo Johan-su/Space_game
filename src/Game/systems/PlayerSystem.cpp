@@ -27,7 +27,7 @@ static timer_t shoot_timer = {
 
 void PlayerSystem::update(Iter *it)
 {
-    Group *group = Ecs::get_group<Player>(it->registry);
+    const Group *group = Ecs::get_group<Player>(it->registry);
     if (group->size < 1)
     {
         return;
