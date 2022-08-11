@@ -124,7 +124,7 @@ static void spill_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *are
             .entity_count = 0,
         };
 
-
+#ifdef _DEBUG
         for (int i = 0; i < SUBTREE_AMOUNT; ++i)
         {
             for (int j = 0; j < MAX_ENTITIES_IN_TREE; ++j)
@@ -133,6 +133,7 @@ static void spill_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *are
             }
         }
         // --
+#endif
 
 
     for (int i = 0; i < tree->entity_count; ++i)
@@ -172,11 +173,12 @@ static void init_root(QuadTree *root)
         .sub_trees = {},
         .entity_count = 0,
     };
-
+#ifdef _DEBUG
     for (int i = 0; i < MAX_ENTITIES_IN_TREE; ++i)
     {
         root->entity_list[i] = ENTITY_NULL;
     }
+#endif
 }
 
 
@@ -266,10 +268,15 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
         }
     }
 }
+#define PROFILE_FUNCTIONS
+#include "../../files/Time.hpp"
+
+
 
 
 void CollisionSystem::update(Iter *it)
 {
+    BEGIN_PROFILE_BLOCK;
     const Group *box_group = Ecs::get_group<Transform, Velocity, BoxCollider, SpriteComponent>(it->registry); 
     /*const Transform *box_transform_list    = Ecs::get_comp_array<Transform>(box_group, 0);
     const Velocity *box_velocity_list      = Ecs::get_comp_array<Velocity>(box_group, 1);
@@ -302,9 +309,7 @@ void CollisionSystem::update(Iter *it)
 
     check_collisions_in_tree(root, it->registry);
 
-
-
-
+    END_PROFILE_BLOCK;
 }
 
 
