@@ -3,8 +3,6 @@
 
 
 
-static U32 player_id_count = 0;
-
 void EntityCreationSystem::create_player(Iter *iter)
 {
     PlayerSpawnEvent *event = (PlayerSpawnEvent *)iter->event; 
@@ -22,7 +20,19 @@ void EntityCreationSystem::create_player(Iter *iter)
    // Ecs::set_component(iter->curr_registry, e, collision);
     Ecs::set_component<GravityAffected>(iter->registry, e, {});
     Ecs::set_component<MassComponent>(iter->registry, e, {1000.0f});
-    Ecs::set_component<SpriteComponent>(iter->registry, e, {event->ship_type});
+
+    Sprite *sprite = Application::get_sprite(event->ship_type);
+    Ecs::set_component<SpriteComponent>(iter->registry, e, {
+        .sprite = sprite,
+    });
+
+    Ecs::set_component<BoxCollider>(iter->registry, e ,{
+        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .size = {
+            .x = (float)Application::get_sprite_width(sprite), 
+            .y = (float)Application::get_sprite_height(sprite),
+        },
+    });
 
     Ecs::set_component<Player>(iter->registry, e, {});
 }
@@ -30,7 +40,6 @@ void EntityCreationSystem::create_player(Iter *iter)
 
 void EntityCreationSystem::create_bullet(Iter *it)
 {
-
     BulletSpawnEvent *event = (BulletSpawnEvent *)it->event;
 
     Entity e = Ecs::create_entity(it->registry);
@@ -51,26 +60,31 @@ void EntityCreationSystem::create_bullet(Iter *it)
    Ecs::set_component<GravityAffected>(it->registry, e, {});
    Ecs::set_component<MassComponent>(it->registry, e, {1000.0f});
    
-
+    Sprite *sprite = Application::get_sprite(SHIP1);
    Ecs::set_component<SpriteComponent>(it->registry, e, {
-        .sprite_id = SHIP1, 
+        .sprite = sprite, 
    });
    
    
    Ecs::set_component<BoxCollider>(it->registry, e, {
-        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,        
+        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .size = {
+            .x = (float)Application::get_sprite_width(sprite),
+            .y = (float)Application::get_sprite_height(sprite),
+        },     
    });
 
    
    Ecs::set_component<HealthComponent>(it->registry, e, {
         .health = 10.0f,
-        .health_regen = -0.5f,
+        .health_regen = 1.0f,
    });
 
    
     Ecs::set_component<DamageComponent>(it->registry, e, {
         .damage = 5.0f
    });
+
 }
 
 
@@ -85,9 +99,18 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
         .scale = {event->scale, event->scale},
     });
 
-
+    Sprite *sprite = Application::get_sprite(event->ship_type);
     Ecs::set_component<SpriteComponent>(it->registry, e, {
-        .sprite_id = event->ship_type,
+        .sprite = sprite,
+    });
+
+
+    Ecs::set_component<BoxCollider>(it->registry, e, {
+        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .size = {
+            .x = (float)Application::get_sprite_width(sprite), 
+            .y = (float)Application::get_sprite_height(sprite),
+        },
     });
 
 
@@ -121,6 +144,12 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
         .health = event->health,
         .health_regen = event->health_regen,
     });
+
+    Ecs::set_component<FiringComponent>(it->registry, e, {
+        .timer = 0.0f,
+        .max_time = 0.2f,
+        .firing = false,
+    });
 }
 
 
@@ -129,10 +158,10 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
 
 
 
-void EntityCreationSystem::create_planet(Iter *iter)
+void EntityCreationSystem::create_planet(Iter *it)
 {
-    PlanetSpawnEvent *event = (PlanetSpawnEvent *)iter->event;
-    Ecs::Registry *registry = iter->registry;
+    PlanetSpawnEvent *event = (PlanetSpawnEvent *)it->event;
+    Ecs::Registry *registry = it->registry;
     
     Entity e = Ecs::create_entity(registry);
 
@@ -143,10 +172,23 @@ void EntityCreationSystem::create_planet(Iter *iter)
         .scale = {event->scale, event->scale},
     });
 
+    Ecs::set_component<Velocity>(registry, e, {.v = {0.0f, 0.0f},
+    });
 
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
     Ecs::set_component<GravityAttractor>(registry, e, {});
-    Ecs::set_component<SpriteComponent>(registry, e, {.sprite_id = event->planet_type});
+
+    Sprite *sprite = Application::get_sprite(event->planet_type);
+    Ecs::set_component<SpriteComponent>(registry, e, {
+        .sprite = sprite,
+    });
+
+
+   Ecs::set_component<CircleCollider>(it->registry, e, {
+        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .radius = (float)Application::get_sprite_width(sprite) / 2.0f,
+   });
+
     Ecs::set_component<Planet>(registry, e, {});
 }
