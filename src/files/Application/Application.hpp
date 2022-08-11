@@ -31,12 +31,17 @@ namespace Application
     //void set_scene(Application_data *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
 
 
-    int RenderCopyExF(Ecs::Registry *registry, Transform *transform, SpriteComponent *sprite_comp);
+    int RenderCopyExF(Ecs::Registry *registry, const Transform *transform, const SpriteComponent *sprite_comp);
 
 
 
     void load_texture(U32 id, const char *path);
     void init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h);
+
+    U32 get_sprite_width(Sprite *sprite);
+    U32 get_sprite_height(Sprite *sprite);
+
+    Sprite *get_sprite(U32 id);
 
     Application_data *Get();
     void quit_app(Application_data *app);

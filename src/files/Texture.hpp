@@ -45,4 +45,8 @@ namespace Texture_functions
     Sprite *get_sprite(textures_data *td, U32 id);
 
 
+    U32 get_sprite_width(Sprite *sprite);
+    U32 get_sprite_height(Sprite *sprite);
+
+
 }

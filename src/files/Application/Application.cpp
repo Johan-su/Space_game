@@ -240,7 +240,7 @@ static inline float RadToDeg(float angle)
 }
 
 
-int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, SpriteComponent *sprite_comp)
+int Application::RenderCopyExF(Ecs::Registry *registry, const Transform *transform, const SpriteComponent *sprite_comp)
 {
         Entity camera_e = get_first_active_camera(registry); //TODO(Johan): probably move this call outside render
         if (camera_e == ENTITY_NULL)
@@ -250,7 +250,7 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         Application_data *app = Application::Get();
 
 
-        Sprite *sprite = Texture_functions::get_sprite(app->engine->texture, sprite_comp->sprite_id);
+        Sprite *sprite = sprite_comp->sprite;
         SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
 
 
@@ -271,8 +271,8 @@ int Application::RenderCopyExF(Ecs::Registry *registry, Transform *transform, Sp
         float height = transform->scale.y * sprite->h * camera_comp->world_scale.y;
 
         SDL_FRect dstrect = {
-            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - width / 2.0f,
-            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y) - height / 2.0f,
+            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - (width / 2.0f),
+            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y) - (height / 2.0f),
 
             .w = width,
             .h = height,
@@ -297,6 +297,25 @@ void Application::init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w
     Application_data *app = Application::Get();
     Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
 }
+
+U32 Application::get_sprite_width(Sprite *sprite)
+{
+    return Texture_functions::get_sprite_width(sprite);
+}
+
+
+U32 Application::get_sprite_height(Sprite *sprite)
+{
+    return Texture_functions::get_sprite_height(sprite);
+}
+
+
+Sprite *Application::get_sprite(U32 id)
+{
+    return Texture_functions::get_sprite(Application::Get()->engine->texture, id);
+}
+
+
 
 Application_data *Application::Get()
 {

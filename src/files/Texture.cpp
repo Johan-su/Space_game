@@ -91,3 +91,14 @@ Sprite *Texture_functions::get_sprite(textures_data *td, U32 id)
 
 
 
+U32 Texture_functions::get_sprite_width(Sprite *sprite)
+{
+    return sprite->w;
+}
+
+
+U32 Texture_functions::get_sprite_height(Sprite *sprite)
+{
+    return sprite->h;
+}
+
