@@ -12,7 +12,6 @@ static float rand_float()
 
 
 
-static float min_radius = 80.0f;
 
 static U8 wave = 0;
 
@@ -30,12 +29,22 @@ void SpawnerSystem::update(Iter *it)
         return;
     }
 
-    Group *group = Ecs::get_group<Transform, Planet>(it->registry);
+    const Group *group = Ecs::get_group<Transform, SpriteComponent, Planet>(it->registry);
 
-    Transform *t_list = Ecs::get_comp_array<Transform>(group, 0);
+    if (group->size < 1)
+    {
+        return;
+    }
+
+    const Transform *t_list = Ecs::get_comp_array<Transform>(group, 0);
+    const SpriteComponent *sc_list = Ecs::get_comp_array<SpriteComponent>(group, 1);
+
+    const Transform planet_transform = t_list[0];
 
 
-    printf("DEBUG: Timer = %.2f\n", timer);
+    float min_radius = ((float)Application::get_sprite_width(sc_list[0].sprite) / 2.0f) * t_list[0].scale.x;
+
+    //printf("DEBUG: Timer = %.2f\n", timer);
     switch (wave)
     {
         case 0:
@@ -46,10 +55,13 @@ void SpawnerSystem::update(Iter *it)
                 for (int i = 0; i < 100; ++i)
                 {
                     float angle = 2 * 3.1415926f * rand_float();
-                    float random_spawn_radius = t_list[0].scale.x * (min_radius + rand_float() * 10000.0f);
+                    float random_spawn_radius = (min_radius + 8000.0f) + rand_float() * 20000.0f;
     
                     AiSpawnEvent ase = {
-                        .pos = {cosf(angle) * random_spawn_radius, sinf(angle) * random_spawn_radius},
+                        .pos = {
+                            cosf(angle) * random_spawn_radius + planet_transform.pos.x, 
+                            sinf(angle) * random_spawn_radius + planet_transform.pos.y,
+                        },
                         .scale = 1.0f,
                         .ship_type = SHIP1,
                         .ai_type = AIType::Enemy,
