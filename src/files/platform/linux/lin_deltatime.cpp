@@ -1,4 +1,3 @@
-#include <chrono>
 #ifdef __linux__
 
 #include "lin_deltatime.hpp"
