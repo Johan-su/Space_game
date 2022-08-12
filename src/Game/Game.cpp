@@ -13,6 +13,7 @@
 #include "systems/AIControllerSystem.hpp"
 #include "systems/HealthSystem.hpp"
 #include "systems/FiringSystem.hpp"
+#include "systems/DamageSystem.hpp"
 
 static void init_components(scene *scene)
 {
@@ -39,11 +40,11 @@ static void init_systems(scene *scene)
     Ecs::init_system(&scene->registry, Phase::OnUpdate, GravitySystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, CollisionSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, SpawnerSystem::update);
-    Ecs::init_system(&scene->registry, Phase::OnUpdate, HealthSystem::update);
     Ecs::init_system(&scene->registry, Phase::OnUpdate, FiringSystem::update);
 
 
 
+    Ecs::init_system(&scene->registry, Phase::PostUpdate, HealthSystem::update);
     Ecs::init_system(&scene->registry, Phase::PostUpdate, RenderSystem::render);
 }
 
@@ -54,6 +55,7 @@ static void init_events(scene *scene)
     Ecs::init_event<PlanetSpawnEvent>(&scene->registry);
     Ecs::init_event<PlayerSpawnEvent>(&scene->registry);
     Ecs::init_event<BulletSpawnEvent>(&scene->registry);
+    Ecs::init_event<KillEvent>(&scene->registry);
 }
 
 
@@ -98,10 +100,11 @@ static void init_event_listeners(scene *scene)
     Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
     Ecs::init_event_listener<BulletSpawnEvent>(&scene->registry, EntityCreationSystem::create_bullet); 
     Ecs::init_event_listener<AiSpawnEvent>(&scene->registry, EntityCreationSystem::create_ai);
-    // Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug);
+    //Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug);
+    Ecs::init_event_listener<CollisionEvent>(&scene->registry, DamageSystem::onCollision);
     Ecs::init_event_listener<CameraSpawnEvent>(&scene->registry, set_active_camera);
+    Ecs::init_event_listener<KillEvent>(&scene->registry, HealthSystem::on_kill);
 }
-
 
 
 static void setup_scene(scene *scene)
