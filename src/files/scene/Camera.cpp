@@ -38,13 +38,13 @@ float Real::screen_to_world_y(Transform *camera_transform, CameraComponent *came
 }
 
 
-I32 Real::world_to_screen_x(Transform *camera_transform, CameraComponent *camera, float x)
+I32 Real::world_to_screen_x(const Transform *camera_transform, const CameraComponent *camera, float x)
 {
     return (I32)((x - camera_transform->pos.x) * camera->world_scale.x);
 }
 
 
-I32 Real::world_to_screen_y(Transform *camera_transform, CameraComponent *camera, float y)
+I32 Real::world_to_screen_y(const Transform *camera_transform, const CameraComponent *camera, float y)
 {
     return (I32)((y - camera_transform->pos.y) * camera->world_scale.y);
 }

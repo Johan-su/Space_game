@@ -14,8 +14,8 @@ namespace Real
     float screen_to_world_y(Transform *camera_transform, CameraComponent *camera, I32 y);
 
 
-    I32 world_to_screen_x(Transform *camera_transform, CameraComponent *camera, float x);
-    I32 world_to_screen_y(Transform *camera_transform, CameraComponent *camera, float y);
+    I32 world_to_screen_x(const Transform *camera_transform, const CameraComponent *camera, float x);
+    I32 world_to_screen_y(const Transform *camera_transform, const CameraComponent *camera, float y);
 
     void set_camera_center(Transform *camera_transform, CameraComponent *camera, float x, float y);
 
