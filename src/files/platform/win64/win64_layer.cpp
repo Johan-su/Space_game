@@ -1,10 +1,50 @@
 #ifdef _WIN64
+#define _CRT_SECURE_NO_WARNINGS
+#include "win64_layer.hpp"
+#include <Windows.h>
+#include <sys/timeb.h>
 
-#include "win_memory_map.hpp"
-#include "win_init.hpp"
 #include <stdio.h>
 
-#include <Windows.h>
+SYSTEM_INFO g_info;
+
+void Windows::init()
+{
+
+    GetSystemInfo(&g_info);
+}
+
+
+
+
+
+static FILETIME time;
+
+uint64_t Windows::get_micro_time()
+{
+    GetSystemTimePreciseAsFileTime(&time);
+
+    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10;    
+}
+
+uint64_t Windows::get_mili_time()
+{
+    GetSystemTimePreciseAsFileTime(&time);
+
+    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10000;
+}
+
+
+uint64_t Windows::get_sec_time()
+{
+    GetSystemTimePreciseAsFileTime(&time);
+
+    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10000000; 
+}
+
+
+
+
 
 
 void *Windows::reserve(void *address, size_t page_amount)
@@ -54,6 +94,9 @@ size_t Windows::get_page_size()
 {
     return g_info.dwPageSize;
 }
+
+
+
 
 
 #endif

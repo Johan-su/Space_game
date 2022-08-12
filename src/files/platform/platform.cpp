@@ -6,13 +6,11 @@
 
 #ifdef _WIN64
 
-#include "win64/win_deltatime.hpp"
-#include "win64/win_memory_map.hpp"
-#include "win64/win_init.hpp"
+#include "win64/win64_layer.hpp"
 
 
 #include <stdio.h>
-#include <Windows.h>
+
 
 
 void Platform::init()
