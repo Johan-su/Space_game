@@ -3,7 +3,7 @@
 #include <math.h>
 
 
-struct timer_t
+struct Timer
 {
     float max_val;
     float time;
@@ -19,7 +19,7 @@ static float lerp(float current, float target, float step)
 
 
 
-static timer_t shoot_timer = {
+static Timer shoot_timer = {
     .max_val = 0.4f,
     .time = 0.0f,
 };
