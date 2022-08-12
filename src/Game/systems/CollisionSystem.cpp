@@ -31,13 +31,15 @@ struct QuadTree
     CircleCollider *cc_list;
 };
 
+
+
 static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e);
 
 
 static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
 
-    Vector2f size = {0.0f, 0.0f};
+    Vector2f size;
 
     if (bc_e != NULL)
     {
@@ -147,10 +149,17 @@ static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e
     {
         tree->entity_list[tree->entity_count] = e;
         tree->t_list[tree->entity_count] = *t_e;
+
+
         if (bc_e != NULL)
             tree->bc_list[tree->entity_count] = *bc_e;
+        else
+            tree->bc_list[tree->entity_count] = {.type = ColliderType::Nothing};
         if (cc_e != NULL)        
             tree->cc_list[tree->entity_count] = *cc_e;
+        else
+            tree->cc_list[tree->entity_count] = {.type = ColliderType::Nothing};
+
         tree->entity_count += 1;
     }
     else if (tree->sub_trees[0] == NULL)
@@ -270,9 +279,10 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 
                 if (b1 && b2 && b3 && b4)
                 {
+
                     CollisionEvent ce = {
-                        .e1_type = ColliderType::Nothing,
-                        .e2_type = ColliderType::Nothing,
+                        .e1_type = bc_e1->type != ColliderType::Nothing ? bc_e1->type : cc_e1->type, 
+                        .e2_type = bc_e2->type != ColliderType::Nothing ? bc_e2->type : cc_e2->type,
                         .e1 = *e1,
                         .e2 = *e2,
                     };
