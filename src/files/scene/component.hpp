@@ -21,7 +21,13 @@ public:
     float x;
     float y;
 
+    
+
+    Vector2f operator+(Vector2f vec2) { return Vector2f{this->x + vec2.x, this->y + vec2.y}; }
+    Vector2f operator-(Vector2f vec2) { return Vector2f{this->x - vec2.x, this->y - vec2.y}; }
+    Vector2f operator-(float scalar) { return Vector2f{this->x - scalar, this->y - scalar}; }
     Vector2f operator*(float scalar) { return Vector2f{this->x * scalar, this->y * scalar}; }
+    void operator*=(float scalar) { *this = *this * scalar;}
 
 
     float magnitude();
@@ -72,9 +78,10 @@ struct SpriteComponent
 enum ColliderType
 {
     Nothing              = 0,
-    CollideWithOthers    = (1 << 0),
-    OthersCollideWithMe  = (1 << 1),
+    DynamicCollider      = (1 << 0), // can not have both dynamic and static
+    StaticCollider       = (1 << 1),
     DealsDamageOnCollide = (1 << 2),
+    TakesDamageOnCollide = (1 << 3),
 };
 
 
