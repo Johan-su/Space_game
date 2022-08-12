@@ -23,23 +23,6 @@ namespace Hashmap // TODO(johan) implement good and real hash map
         memset(map->keys, 0xFF, sizeof(map->keys));
     }
 
-    template<typename T>
-    void set(hash_map<T> *map, size_t key, T value)
-    {
-        T *value_pointer = get_pointer(map, key);
-
-        if (value_pointer == NULL) // check if map does not include key
-        {
-            map->values[map->count] = value;
-            map->keys[map->count] = key;
-            ++map->count;
-        }
-        else
-        {
-            *value_pointer = value;
-        }
-    }
-
 
     template<typename T>
     T *get_pointer(hash_map<T> *map, size_t key)
@@ -64,6 +47,25 @@ namespace Hashmap // TODO(johan) implement good and real hash map
         }
 
     }
+
+
+    template<typename T>
+    void set(hash_map<T> *map, size_t key, T value)
+    {
+        T *value_pointer = get_pointer(map, key);
+
+        if (value_pointer == NULL) // check if map does not include key
+        {
+            map->values[map->count] = value;
+            map->keys[map->count] = key;
+            ++map->count;
+        }
+        else
+        {
+            *value_pointer = value;
+        }
+    }
+
 
     template<typename T>
     T get_value(hash_map<T> *map, size_t key) // Super sketchy function
