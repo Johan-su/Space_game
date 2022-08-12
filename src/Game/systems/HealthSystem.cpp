@@ -4,6 +4,13 @@
 #include "../Components_Events.hpp"
 
 
+void HealthSystem::on_kill(Iter *it)
+{
+    KillEvent *event = (KillEvent *)it->event;
+
+    Ecs::destroy_entity(it->registry, event->e);
+}
+
 
 void HealthSystem::update(Iter *it)
 {
@@ -20,7 +27,10 @@ void HealthSystem::update(Iter *it)
 
         if (hc.health < 0.0f)
         {
-            Ecs::destroy_entity(it->registry, e);
+            KillEvent ke = {
+                .e = e,
+            };
+            Ecs::push_event<KillEvent>(it->registry, &ke);
         }
         else
         {

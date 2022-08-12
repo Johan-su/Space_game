@@ -114,8 +114,14 @@ struct PlanetSpawnEvent
     float scale;
     float mass;
 
-    uint8_t planet_type;
+    U8 planet_type;
 
     float health;
     float health_regen;
+};
+
+
+struct KillEvent
+{
+    Entity e;
 };
