@@ -20,7 +20,7 @@ static float lerp(float current, float target, float step)
 
 
 static timer_t shoot_timer = {
-    .max_val = 0.1f,
+    .max_val = 0.4f,
     .time = 0.0f,
 };
 
@@ -111,7 +111,7 @@ void PlayerSystem::update(Iter *it)
             shoot_timer.time -= shoot_timer.max_val;
             float speed = 4000.0f;
             BulletSpawnEvent event = {
-                .pos = {transform->pos},
+                .pos = {transform->pos + transform->rot * 200.0f},
                 .rot = {transform->rot},
                 .vel = {
                     .x = transform->rot.x * speed,

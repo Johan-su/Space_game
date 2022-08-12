@@ -25,7 +25,7 @@ void FiringSystem::update(Iter *it)
             if (fc.timer >= fc.max_time)
             {
                 BulletSpawnEvent bse = {
-                    .pos = t.pos,
+                    .pos = t.pos + t.rot * 200.0f,
                     .rot = t.rot,
                     .vel = t.rot * speed,
                     .damage = 5.0f,
