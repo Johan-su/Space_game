@@ -27,7 +27,7 @@ void EntityCreationSystem::create_player(Iter *iter)
     });
 
     Ecs::set_component<BoxCollider>(iter->registry, e ,{
-        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .type = ColliderType::DynamicCollider|ColliderType::StaticCollider,
         .size = {
             .x = (float)Application::get_sprite_width(sprite), 
             .y = (float)Application::get_sprite_height(sprite),
@@ -67,7 +67,7 @@ void EntityCreationSystem::create_bullet(Iter *it)
    
    
    Ecs::set_component<BoxCollider>(it->registry, e, {
-        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .type = ColliderType::DynamicCollider|ColliderType::DealsDamageOnCollide|ColliderType::TakesDamageOnCollide,
         .size = {
             .x = (float)Application::get_sprite_width(sprite),
             .y = (float)Application::get_sprite_height(sprite),
@@ -77,7 +77,7 @@ void EntityCreationSystem::create_bullet(Iter *it)
    
    Ecs::set_component<HealthComponent>(it->registry, e, {
         .health = 10.0f,
-        .health_regen = -2.0f,
+        .health_regen = 0.0f,
    });
 
    
@@ -99,6 +99,10 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
         .scale = {event->scale, event->scale},
     });
 
+    Ecs::set_component<Velocity>(it->registry, e, {
+        .v = {0.0f, 0.0f},
+    });
+
     Sprite *sprite = Application::get_sprite(event->ship_type);
     Ecs::set_component<SpriteComponent>(it->registry, e, {
         .sprite = sprite,
@@ -106,7 +110,7 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
 
 
     Ecs::set_component<BoxCollider>(it->registry, e, {
-        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .type = ColliderType::DynamicCollider|ColliderType::TakesDamageOnCollide,
         .size = {
             .x = (float)Application::get_sprite_width(sprite), 
             .y = (float)Application::get_sprite_height(sprite),
@@ -147,7 +151,7 @@ void EntityCreationSystem::create_ai(Iter *it) //TODO(Johan) maybe separate to d
 
     Ecs::set_component<FiringComponent>(it->registry, e, {
         .timer = 0.0f,
-        .max_time = 0.2f,
+        .max_time = 0.4f,
         .firing = false,
     });
 }
@@ -184,9 +188,15 @@ void EntityCreationSystem::create_planet(Iter *it)
 
 
    Ecs::set_component<CircleCollider>(it->registry, e, {
-        .type = ColliderType::CollideWithOthers|ColliderType::OthersCollideWithMe,
+        .type = ColliderType::StaticCollider|ColliderType::TakesDamageOnCollide,
         .radius = (float)Application::get_sprite_width(sprite) / 2.0f,
    });
+
+
+    Ecs::set_component<HealthComponent>(registry, e, {
+        .health = event->health,
+        .health_regen = event->health_regen,
+    });
 
     Ecs::set_component<Planet>(registry, e, {});
 }
