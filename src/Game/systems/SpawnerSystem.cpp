@@ -52,7 +52,7 @@ void SpawnerSystem::update(Iter *it)
             if (timer > 5 )
             {
 
-                for (int i = 0; i < 800; ++i)
+                for (int i = 0; i < 100; ++i)
                 {
                     float angle = 2 * 3.1415926f * rand_float();
                     float random_spawn_radius = (min_radius + 8000.0f) + rand_float() * 20000.0f;
