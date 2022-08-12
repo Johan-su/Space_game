@@ -50,7 +50,6 @@ static void init_systems(scene *scene)
 
 static void init_events(scene *scene)
 {
-    Ecs::init_event<CollisionEvent>(&scene->registry); 
     Ecs::init_event<AiSpawnEvent>(&scene->registry);
     Ecs::init_event<PlanetSpawnEvent>(&scene->registry);
     Ecs::init_event<PlayerSpawnEvent>(&scene->registry);
@@ -76,14 +75,33 @@ static void collision_debug(Iter *it)
 }
 
 
+Entity game_active_camera = ENTITY_NULL;
+static void set_active_camera(Iter *it)
+{
+    CameraSpawnEvent *event = (CameraSpawnEvent *)it->event;
+    if (event->active == false)
+    {
+        return;
+    }
+
+    ::game_active_camera = Application::get_first_active_camera(it->registry);
+
+    Transform *camera_transform = Ecs::get_component<Transform>(it->registry, game_active_camera);
+    CameraComponent *camera_component = Ecs::get_component<CameraComponent>(it->registry, game_active_camera);
+    Real::set_camera_center(camera_transform, camera_component, 7000.0f, 0.0f);
+}
+
+
 static void init_event_listeners(scene *scene)
 {
     Ecs::init_event_listener<PlayerSpawnEvent>(&scene->registry, EntityCreationSystem::create_player);
     Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
     Ecs::init_event_listener<BulletSpawnEvent>(&scene->registry, EntityCreationSystem::create_bullet); 
     Ecs::init_event_listener<AiSpawnEvent>(&scene->registry, EntityCreationSystem::create_ai);
-    //Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
+    // Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug);
+    Ecs::init_event_listener<CameraSpawnEvent>(&scene->registry, set_active_camera);
 }
+
 
 
 static void setup_scene(scene *scene)
@@ -105,14 +123,6 @@ static void setup_scene(scene *scene)
     Application::init_sprite(SHIP1, SHIP_texture, 0, 0, 114, 200);
     Application::init_sprite(PLANET1, PLANET_texture, 0, 0, 132, 132);
 
-    {
-        Entity active_camera = Application::get_first_active_camera(&scene->registry);
-
-        Transform *camera_transform = Ecs::get_component<Transform>(&scene->registry, active_camera);
-        CameraComponent *camera_component = Ecs::get_component<CameraComponent>(&scene->registry, active_camera);
-
-        Real::set_camera_center(camera_transform, camera_component, 7000.0f, 0.0f);
-    }
 
 
     PlayerSpawnEvent pse = {

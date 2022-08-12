@@ -2,6 +2,11 @@
 
 #include "../files/Real.hpp"
 
+
+extern Entity game_active_camera;
+
+
+
 enum Texture_id_map
 {
     SHIP_texture,

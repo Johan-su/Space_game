@@ -65,6 +65,51 @@ void Application::destroy_application(Application_data *app)
 }
 
 
+static void init_components(Ecs::Registry *reg)
+{
+    Ecs::init_component<Transform>(reg);
+    Ecs::init_component<CameraComponent>(reg);
+    Ecs::init_component<Velocity>(reg);
+    Ecs::init_component<SpriteComponent>(reg);
+    Ecs::init_component<BoxCollider>(reg);
+    Ecs::init_component<CircleCollider>(reg);
+}
+
+static void init_events(Ecs::Registry *reg)
+{
+    Ecs::init_event<CollisionEvent>(reg);
+    Ecs::init_event<CameraSpawnEvent>(reg);
+}
+
+
+static void camera_spawn(Iter *it)
+{
+    CameraSpawnEvent *event = (CameraSpawnEvent *)it->event;
+
+    Entity e = Ecs::create_entity(it->registry);
+
+    Ecs::set_component<Transform>(it->registry, e, {
+        .pos = event->pos,
+        .rot = event->rot,
+        .scale = {1.0f, 1.0f},
+    });
+
+    Ecs::set_component<CameraComponent>(it->registry, e, {
+        .world_scale = event->world_scale,
+        .screen_width = event->screen_width,
+        .screen_height = event->screen_height,
+        .active = event->active,
+    });
+}
+
+
+
+static void init_event_listeners(Ecs::Registry *reg)
+{
+    Ecs::init_event_listener<CameraSpawnEvent>(reg, camera_spawn);
+}
+
+
 scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
 {
     Application_data *app = Application::Get();
@@ -86,23 +131,21 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
 
         Ecs::init(&game_scene->registry, &g_memory.scene_buffers[scene_pos], &g_memory.view_buffer, &g_memory.event_buffer);
 
-        Ecs::init_component<Transform>(&game_scene->registry);
-        Ecs::init_component<CameraComponent>(&game_scene->registry);
-        Ecs::init_component<Velocity>(&game_scene->registry);
-        Ecs::init_component<SpriteComponent>(&game_scene->registry);
-        Ecs::init_component<BoxCollider>(&game_scene->registry);
-        Ecs::init_component<CircleCollider>(&game_scene->registry);
+        init_components(&game_scene->registry);
+        init_events(&game_scene->registry);
+        init_event_listeners(&game_scene->registry);
 
         {
-            Transform camera_transform = {};
-            CameraComponent camera_comp = {};
+            CameraSpawnEvent cse = {
+                .pos = {0.0f, 0.0f},
+                .rot = {0.0f, 0.0f},
+                .world_scale = {1.0f, 1.0f},
+                .screen_width = app->engine->config->screen_width,
+                .screen_height = app->engine->config->screen_height,
+                .active = true,
+            };
 
-            Real::init_camera(&camera_transform, &camera_comp, true, app->engine->config->screen_width, app->engine->config->screen_height);
-
-            Entity main_camera = Ecs::create_entity(&game_scene->registry);
-            Ecs::set_component<Transform>(&game_scene->registry, main_camera, camera_transform);
-            Ecs::set_component<CameraComponent>(&game_scene->registry, main_camera, camera_comp);
-
+            Ecs::push_event(&game_scene->registry, &cse);
         }
 
         
@@ -240,22 +283,17 @@ static inline float RadToDeg(float angle)
 }
 
 
-int Application::RenderCopyExF(Ecs::Registry *registry, const Transform *transform, const SpriteComponent *sprite_comp)
+int Application::RenderCopyExF(Ecs::Registry *registry, 
+    const Transform *transform, 
+    const SpriteComponent *sprite_comp,
+    const Transform *camera_transform,
+    const CameraComponent *camera_comp)
 {
-        Entity camera_e = get_first_active_camera(registry); //TODO(Johan): probably move this call outside render
-        if (camera_e == ENTITY_NULL)
-        {
-            return 0;
-        }
-        Application_data *app = Application::Get();
 
+        Application_data *app = Application::Get();
 
         Sprite *sprite = sprite_comp->sprite;
         SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
-
-
-        Transform *camera_transform  = Ecs::get_component<Transform>(registry, camera_e);
-        CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(registry, camera_e);
 
 
         SDL_Rect srcrect = {
