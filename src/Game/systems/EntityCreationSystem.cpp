@@ -77,7 +77,7 @@ void EntityCreationSystem::create_bullet(Iter *it)
    
    Ecs::set_component<HealthComponent>(it->registry, e, {
         .health = 10.0f,
-        .health_regen = -1.0f,
+        .health_regen = -2.0f,
    });
 
    
@@ -172,8 +172,6 @@ void EntityCreationSystem::create_planet(Iter *it)
         .scale = {event->scale, event->scale},
     });
 
-    Ecs::set_component<Velocity>(registry, e, {.v = {0.0f, 0.0f},
-    });
 
     Ecs::set_component<MassComponent>(registry, e, {.mass = event->mass});
 
