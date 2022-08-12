@@ -71,6 +71,7 @@ struct SpriteComponent
 
 enum ColliderType
 {
+    Nothing              = 0,
     CollideWithOthers    = (1 << 0),
     OthersCollideWithMe  = (1 << 1),
     DealsDamageOnCollide = (1 << 2),
@@ -101,4 +102,20 @@ struct CollisionEvent
     U64 e2_type;
     Entity e1;
     Entity e2;
+};
+
+
+
+
+struct CameraSpawnEvent
+{
+    Vector2f pos;
+    Vector2f rot;
+
+    Vector2f world_scale;
+
+    U16 screen_width;
+    U16 screen_height;
+
+    bool active;
 };
