@@ -20,7 +20,7 @@ typedef unsigned long long Usize;
 #endif
 
 #ifdef __linux__
-#include <stdio.h>
+#include <stdint.h>
 
 typedef int8_t  I8;
 typedef int16_t I16;
