@@ -7,7 +7,7 @@
 
 
 
-const Usize MAX_ENTITIES_IN_TREE = 256;
+const Usize MAX_ENTITIES_IN_TREE = 64;
 const Usize SUBTREE_AMOUNT = 4;
 
 enum BoxOrCircle
@@ -27,26 +27,26 @@ struct QuadTree
     Usize entity_count;
     Entity entity_list[MAX_ENTITIES_IN_TREE];
     BoxOrCircle boc_list[MAX_ENTITIES_IN_TREE];
+    Transform t_list[MAX_ENTITIES_IN_TREE];
+    BoxCollider bc_list[MAX_ENTITIES_IN_TREE];
+    CircleCollider cc_list[MAX_ENTITIES_IN_TREE];
 };
 
-static void add_entity_to_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *arena, Entity e, BoxOrCircle boc_e);
+static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, BoxOrCircle boc_e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e);
 
 
-void static add_entity_to_intersecting_trees(QuadTree *parent_tree, Ecs::Registry *reg, top_memory_arena *arena, Entity e, BoxOrCircle boc_e)
+static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_arena *arena, Entity e, BoxOrCircle boc_e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
-    Transform *t_e = Ecs::get_component<Transform>(reg, e);
 
     Vector2f size = {0.0f, 0.0f};
 
     if (boc_e == BoxOrCircle::Box)
     {
-        BoxCollider *bc_e = Ecs::get_component<BoxCollider>(reg, e);
         size = bc_e->size;
 
     }
     else if (boc_e == BoxOrCircle::Circle)
     {
-        CircleCollider *cc_e = Ecs::get_component<CircleCollider>(reg, e);
         size = {cc_e->radius * 2, cc_e->radius * 2};
     }
 
@@ -65,19 +65,19 @@ void static add_entity_to_intersecting_trees(QuadTree *parent_tree, Ecs::Registr
 
 
     if (intersects_subtree_0)
-        add_entity_to_tree(parent_tree->sub_trees[0], reg, arena, e, boc_e);
+        add_entity_to_tree(parent_tree->sub_trees[0], arena, e, boc_e, t_e, bc_e, cc_e);
     if (intersects_subtree_1)
-        add_entity_to_tree(parent_tree->sub_trees[1], reg, arena, e, boc_e);
+        add_entity_to_tree(parent_tree->sub_trees[1], arena, e, boc_e, t_e, bc_e, cc_e);
     if (intersects_subtree_2)
-        add_entity_to_tree(parent_tree->sub_trees[2], reg, arena, e, boc_e);
+        add_entity_to_tree(parent_tree->sub_trees[2], arena, e, boc_e, t_e, bc_e, cc_e);
     if (intersects_subtree_3)
-        add_entity_to_tree(parent_tree->sub_trees[3], reg, arena, e, boc_e);       
+        add_entity_to_tree(parent_tree->sub_trees[3], arena, e, boc_e, t_e, bc_e, cc_e);       
 }
 
 
 
 
-static void spill_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *arena)
+static void spill_tree(QuadTree *tree, top_memory_arena *arena)
 {
     // init sub_trees
     for (int i = 0; i < SUBTREE_AMOUNT; ++i)
@@ -138,29 +138,34 @@ static void spill_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *are
 
     for (int i = 0; i < tree->entity_count; ++i)
     {
-        add_entity_to_intersecting_trees(tree, reg, arena, tree->entity_list[i], tree->boc_list[i]);
+        add_entity_to_intersecting_trees(tree, arena, tree->entity_list[i], tree->boc_list[i], &tree->t_list[i], &tree->bc_list[i], &tree->cc_list[i]);
     }
 }
 
 
 
 
-static void add_entity_to_tree(QuadTree *tree, Ecs::Registry *reg, top_memory_arena *arena, Entity e, BoxOrCircle boc_e)
+static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, BoxOrCircle boc_e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
     if (tree->entity_count < MAX_ENTITIES_IN_TREE)
     {
         tree->entity_list[tree->entity_count] = e;
         tree->boc_list[tree->entity_count] = boc_e;
+        tree->t_list[tree->entity_count] = *t_e;
+        if (bc_e != NULL)
+            tree->bc_list[tree->entity_count] = *bc_e;
+        if (cc_e != NULL)        
+            tree->cc_list[tree->entity_count] = *cc_e;
         tree->entity_count += 1;
     }
     else if (tree->sub_trees[0] == NULL)
     {
-        spill_tree(tree, reg, arena);
-        add_entity_to_intersecting_trees(tree, reg, arena, e, boc_e);
+        spill_tree(tree, arena);
+        add_entity_to_intersecting_trees(tree, arena, e, boc_e, t_e, bc_e, cc_e);
     }
     else
     {
-        add_entity_to_intersecting_trees(tree, reg, arena, e, boc_e);
+        add_entity_to_intersecting_trees(tree, arena, e, boc_e, t_e, bc_e, cc_e);
     }
 }
 
@@ -277,18 +282,16 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 void CollisionSystem::update(Iter *it)
 {
     BEGIN_PROFILE_BLOCK;
-    const Group *box_group = Ecs::get_group<Transform, Velocity, BoxCollider, SpriteComponent>(it->registry); 
-    /*const Transform *box_transform_list    = Ecs::get_comp_array<Transform>(box_group, 0);
-    const Velocity *box_velocity_list      = Ecs::get_comp_array<Velocity>(box_group, 1);
+    const Group *box_group = Ecs::get_group<Transform, Velocity, BoxCollider>(it->registry); 
+    const Transform *box_transform_list    = Ecs::get_comp_array<Transform>(box_group, 0);
+   // const Velocity *box_velocity_list      = Ecs::get_comp_array<Velocity>(box_group, 1);
     const BoxCollider *box_collider_list   = Ecs::get_comp_array<BoxCollider>(box_group, 2);
-    const SpriteComponent *box_sprite_list = Ecs::get_comp_array<SpriteComponent>(box_group, 3); */
 
 
-    const Group *circle_group = Ecs::get_group<Transform, Velocity, CircleCollider, SpriteComponent>(it->registry); 
-    /*const Transform *circle_transform_list     = Ecs::get_comp_array<Transform>(circle_group, 0);
-    const Velocity *circle_velocity_list       = Ecs::get_comp_array<Velocity>(circle_group, 1);
+    const Group *circle_group = Ecs::get_group<Transform, Velocity, CircleCollider>(it->registry); 
+    const Transform *circle_transform_list     = Ecs::get_comp_array<Transform>(circle_group, 0);
+    //const Velocity *circle_velocity_list       = Ecs::get_comp_array<Velocity>(circle_group, 1);
     const CircleCollider *circle_collider_list = Ecs::get_comp_array<CircleCollider>(circle_group, 2);
-    const SpriteComponent *circle_sprite_list  = Ecs::get_comp_array<SpriteComponent>(circle_group, 3);*/
 
 
 
@@ -298,13 +301,13 @@ void CollisionSystem::update(Iter *it)
 
     for (Usize i = 0; i < box_group->size; ++i)
     {
-        add_entity_to_tree(root, it->registry, it->view_arena, box_group->entity_list[i], BoxOrCircle::Box);
+        add_entity_to_tree(root, it->view_arena, box_group->entity_list[i], BoxOrCircle::Box, &box_transform_list[i], &box_collider_list[i], NULL);
     }
 
 
     for (Usize i = 0; i < circle_group->size; ++i)
     {
-        add_entity_to_tree(root, it->registry, it->view_arena, circle_group->entity_list[i], BoxOrCircle::Circle);
+        add_entity_to_tree(root, it->view_arena, circle_group->entity_list[i], BoxOrCircle::Circle, &circle_transform_list[i], NULL, &circle_collider_list[i]);
     }
 
     check_collisions_in_tree(root, it->registry);

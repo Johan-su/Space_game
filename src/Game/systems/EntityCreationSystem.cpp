@@ -77,7 +77,7 @@ void EntityCreationSystem::create_bullet(Iter *it)
    
    Ecs::set_component<HealthComponent>(it->registry, e, {
         .health = 10.0f,
-        .health_regen = 1.0f,
+        .health_regen = -1.0f,
    });
 
    

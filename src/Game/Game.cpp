@@ -58,10 +58,21 @@ static void init_events(scene *scene)
 }
 
 
-static void collision_debug(Iter *iter)
+static void collision_debug(Iter *it)
 {
-    CollisionEvent *event = (CollisionEvent *)iter->event;
-    printf("collision between [%llu, %llu]\n", event->e1, event->e2);
+    CollisionEvent *event = (CollisionEvent *)it->event;
+    //printf("collision between [%llu, %llu]\n", event->e1, event->e2);
+
+    if (event->e1 != 1 && event->e1 != 2)
+    {
+        printf("DEBUG: destroyed entity %llu\n", event->e1);
+        Ecs::destroy_entity(it->registry, event->e1);
+    }
+    if (event->e2 != 1 && event->e2 != 2)
+    {
+        printf("DEBUG: destroyed entity %llu\n", event->e2);
+        Ecs::destroy_entity(it->registry, event->e2);
+    }
 }
 
 
@@ -71,7 +82,7 @@ static void init_event_listeners(scene *scene)
     Ecs::init_event_listener<PlanetSpawnEvent>(&scene->registry, EntityCreationSystem::create_planet);
     Ecs::init_event_listener<BulletSpawnEvent>(&scene->registry, EntityCreationSystem::create_bullet); 
     Ecs::init_event_listener<AiSpawnEvent>(&scene->registry, EntityCreationSystem::create_ai);
-    // Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
+    //Ecs::init_event_listener<CollisionEvent>(&scene->registry, collision_debug); 
 }
 
 
@@ -100,12 +111,12 @@ static void setup_scene(scene *scene)
         Transform *camera_transform = Ecs::get_component<Transform>(&scene->registry, active_camera);
         CameraComponent *camera_component = Ecs::get_component<CameraComponent>(&scene->registry, active_camera);
 
-        Real::set_camera_center(camera_transform, camera_component, 1000.0f, 1000.0f);
+        Real::set_camera_center(camera_transform, camera_component, 7000.0f, 0.0f);
     }
 
 
     PlayerSpawnEvent pse = {
-        .pos = {1000.0f, 1000.0f},
+        .pos = {7000.0f, 0.0f},
         .scale = 1.0f,
         .ship_type = SHIP1,
     };
@@ -114,7 +125,7 @@ static void setup_scene(scene *scene)
 
     
     PlanetSpawnEvent planetSE = {
-        .pos          = {5000.0f, 5000.0f},
+        .pos          = {0.0f, 0.0f},
         .rot          = {0.0f, 0.0f},
         .scale        = 80.0f,
         .mass         = 100000.0f,
