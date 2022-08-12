@@ -5,6 +5,8 @@
 #include "ecs_assert.hpp"
 #include "View_Groups.hpp"
 
+#include "string.h"
+
 namespace Ecs
 {
     template<typename T>
@@ -162,7 +164,7 @@ namespace Ecs
             U32 page_id = e / PAGE_SIZE;
 
             Component_pool<T> *pool = get_component_pool<T>(cdata);
-            Component_page<T> *page = get_page<T>(mm, pool, page_id);
+            Component_page<T> *page = get_page<T>(pool, page_id);
             ECS_assert(pool->size > 0, "pool size cannot be 0");
 
             Entity laste = pool->entity_list[pool->size - 1];

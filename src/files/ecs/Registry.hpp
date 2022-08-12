@@ -87,7 +87,7 @@ namespace Ecs
     template<typename T>
     void destroy_component(Registry *registry, Entity e) //TODO(Johan) add all necessary deletions
     {
-        Component_functions::destroy_component<T>(rdata->cdata, e);
+        Component_functions::destroy_component<T>(registry->cdata, e);
     }
 
     template<typename T1, typename... Ts>
