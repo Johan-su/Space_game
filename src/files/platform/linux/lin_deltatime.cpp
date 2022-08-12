@@ -1,40 +1,39 @@
 #ifdef __linux__
 
 #include "lin_deltatime.hpp"
-#include "cstdint"
 #include "chrono"
+#include "sys/time.h"
+
+using namespace std::chrono;
 
 uint64_t Linux::get_micro_time() 
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    using time_stamp = time_point<system_clock, microseconds>;
 
-    long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
-            elapsed).count();
+    time_stamp ts = time_point_cast<microseconds>(system_clock::now());
+    auto microseconds = ts.time_since_epoch().count();
 
     return microseconds;
 }
 
 uint64_t Linux::get_mili_time() 
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    using time_stamp = time_point<system_clock, milliseconds>;
 
-    long long microseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
-            elapsed).count();
+    time_stamp ts = time_point_cast<milliseconds>(system_clock::now());
+    auto milliseconds = ts.time_since_epoch().count();
 
-    return microseconds;
+    return milliseconds;
 }
 
 uint64_t Linux::get_sec_time() 
 {
-    auto start = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    using time_stamp = time_point<system_clock, seconds>;
 
-    long long microseconds = std::chrono::duration_cast<std::chrono::seconds>(
-            elapsed).count();
+    time_stamp ts = time_point_cast<seconds>(system_clock::now());
+    auto seconds = ts.time_since_epoch().count();
 
-    return microseconds;
+    return seconds;
 }
 
 #endif
