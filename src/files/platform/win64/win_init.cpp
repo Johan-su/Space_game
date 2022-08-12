@@ -1,8 +1,8 @@
+#ifdef _WIN64
 #include "win_init.hpp"
 
 
 
-#ifdef _WIN64
 
 
 SYSTEM_INFO g_info;
