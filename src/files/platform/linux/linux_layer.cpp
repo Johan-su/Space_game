@@ -82,7 +82,7 @@ void *Linux::commit(void *address, size_t size)
         exit(1);
     }
 
-    return V_address;
+    return address;
 }
 
 
