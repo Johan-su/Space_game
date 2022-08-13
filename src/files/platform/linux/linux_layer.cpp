@@ -79,7 +79,7 @@ void *Linux::commit(void *address, size_t size)
     void  *V_address = mmap(address, size * get_page_size(), PROT_WRITE|PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
     if (V_address == MAP_FAILED)
     {
-        fprintf(stderr, "ERROR: failed reserving memory with %lu\n", errno);
+        fprintf(stderr, "ERROR: failed commiting memory with %lu\n", errno);
         exit(1);
     }
 
