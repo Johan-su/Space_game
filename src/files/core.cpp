@@ -66,7 +66,7 @@ static void sdl_init(engine_data *engine)
 
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
-        fprintf(stderr, "ERROR: SDL_INITALIZATION FAILED, %s", SDL_GetError());
+        fprintf(stderr, "ERROR: SDL_INITALIZATION FAILED, %s\n", SDL_GetError());
         exit(1);
     }
 
@@ -74,14 +74,14 @@ static void sdl_init(engine_data *engine)
     engine->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, engine->config->screen_width, engine->config->screen_height, flags);
     if (!engine->window)
     {
-        fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s", SDL_GetError());
+        fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s\n", SDL_GetError());
         exit(1);
     }
 
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_ACCELERATED);
     if (!engine->renderer)
     {
-        fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s", SDL_GetError());
+        fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s\n", SDL_GetError());
         exit(1);
     }
 
