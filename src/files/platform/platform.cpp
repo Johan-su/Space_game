@@ -1,17 +1,13 @@
 #include "platform.hpp"
 
 
+#include <stdio.h>
 
 
 
 #ifdef _WIN64
 
 #include "win64/win64_layer.hpp"
-
-
-#include <stdio.h>
-
-
 
 void Platform::init()
 {
@@ -85,6 +81,7 @@ void memory_map::free(void *address, Usize page_amount)
 
 #ifdef __linux__
 
+#include "linux/linux_layer.hpp"
 
 void Platform::init()
 {
