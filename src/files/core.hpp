@@ -1,6 +1,5 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
-#include "Texture.hpp"
+#include "asset/Texture.hpp"
 #include "Config.hpp"
 
 #include "ecs/ecs.hpp"
@@ -13,6 +12,8 @@
 struct global_memory
 {
     top_memory_arena app_buffer; // only gets cleared at app destruction
+
+    top_memory_arena asset_buffer; // only gets cleared at app destruction
 
     top_memory_arena scratch_buffer; // temporary memory
 
@@ -33,7 +34,6 @@ struct engine_data
     SDL_Window *window;
     
     config_data *config;
-    textures_data *texture;
 };
 
 
@@ -42,12 +42,10 @@ extern global_memory g_memory;
 namespace Internal
 {
     void init_global_memory();
-
+    void clean_global_memory();
 
     engine_data *create_engine(top_memory_arena *arena);
     void clean_engine(engine_data *engine);
-
-    void clean(engine_data *engine);
 }
 
 
