@@ -72,7 +72,7 @@ struct PlayerSpawnEvent
 {
     Vector2f pos;
     float scale;
-    uint32_t ship_type;
+    Sprite *ship_sprite;
 };
 
 
@@ -82,7 +82,7 @@ struct BulletSpawnEvent
     Vector2f rot;
     Vector2f vel;
     float damage;
-    uint32_t bullet_type;
+    Sprite *bullet_sprite;
 };
 
 
@@ -99,7 +99,7 @@ struct AiSpawnEvent
 {
     Vector2f pos;
     float scale;
-    uint32_t ship_type;
+    Sprite *ship_sprite;
     AIType ai_type;
     float health;
     float health_regen;
@@ -114,7 +114,7 @@ struct PlanetSpawnEvent
     float scale;
     float mass;
 
-    U8 planet_type;
+    Sprite *planet_sprite;
 
     float health;
     float health_regen;
