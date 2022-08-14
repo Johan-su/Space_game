@@ -119,32 +119,32 @@ static void setup_scene(scene *scene)
     const char *ship_path = "./resources/ships/placeholder.bmp";
     const char *planet_path = "./resources/planets/placeholder_planet.bmp";
 
+    Real::load_texture(ship_path, "placeholder_ship_texture");
+    Real::load_texture(planet_path, "placeholder_planet_texture");
 
-    Application::load_texture(SHIP_texture, ship_path);
-    Application::load_texture(PLANET_texture, planet_path);
+    Real::init_sprite("ship1_sprite", 0, 0, 114, 200, Real::get_texture("placeholder_ship_texture"));
+    Real::init_sprite("planet1_sprite", 0, 0, 132, 132, Real::get_texture("placeholder_planet_texture"));
     
-    Application::init_sprite(SHIP1, SHIP_texture, 0, 0, 114, 200);
-    Application::init_sprite(PLANET1, PLANET_texture, 0, 0, 132, 132);
 
 
 
     PlayerSpawnEvent pse = {
         .pos = {7000.0f, 0.0f},
         .scale = 1.0f,
-        .ship_type = SHIP1,
+        .ship_sprite = Real::get_sprite("ship1_sprite"),
     };
 
     Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
 
     
     PlanetSpawnEvent planetSE = {
-        .pos          = {0.0f, 0.0f},
-        .rot          = {0.0f, 0.0f},
-        .scale        = 80.0f,
-        .mass         = 100000.0f,
-        .planet_type  = PLANET1,
-        .health       = 1000000.0f,
-        .health_regen = 0.0f,
+        .pos           = {0.0f, 0.0f},
+        .rot           = {0.0f, 0.0f},
+        .scale         = 80.0f,
+        .mass          = 100000.0f,
+        .planet_sprite = Real::get_sprite("planet1_sprite"),
+        .health        = 1000000.0f,
+        .health_regen  = 0.0f,
     };
 
 
@@ -163,5 +163,4 @@ void init()
 
 void clean()
 {
-
 }
