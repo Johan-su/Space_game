@@ -1,10 +1,10 @@
 #ifdef _WIN64
-#define _CRT_SECURE_NO_WARNINGS
 #include "win64_layer.hpp"
 #include <Windows.h>
 #include <sys/timeb.h>
 
 #include <stdio.h>
+#include <string.h>
 
 SYSTEM_INFO g_info;
 
@@ -94,6 +94,38 @@ size_t Windows::get_page_size()
 {
     return g_info.dwPageSize;
 }
+
+
+void Windows::get_abs_path(const char *src_path, char *buf, uint32_t buf_len)
+{
+
+    // normal buf_len wont include space for filename so we subtract the filename length to require more memory
+    DWORD shortened_buf_len = buf_len;
+
+    uint32_t filename_pos = strlen(src_path);
+    {
+        while (filename_pos > 0)
+        {
+            if (*(src_path + filename_pos) == '/')
+            {
+                break;
+            }
+            filename_pos -= 1;
+        }
+        shortened_buf_len -= (strlen(src_path) - filename_pos);
+    }
+
+   DWORD path_length = GetFullPathNameA(src_path, shortened_buf_len, buf, NULL);
+
+   if (path_length > shortened_buf_len)
+   {
+        fprintf(stderr, "ERROR: getting full path name failed with %lu\n", GetLastError());
+        exit(1);
+   }
+}
+
+
+
 
 
 

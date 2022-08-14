@@ -15,6 +15,11 @@ namespace Platform
      */ 
     Usize bytes_to_page_amount(Usize bytes);
     Usize page_amount_to_bytes(Usize page_amount);
+
+
+
+    void get_abs_path(const char *src_path, char *buf, U32 buf_len);
+
 } // namespace Platform
 
 

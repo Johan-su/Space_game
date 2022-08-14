@@ -33,6 +33,12 @@ Usize Platform::page_amount_to_bytes(Usize page_amount)
 }
 
 
+void Platform::get_abs_path(const char *src_path, char *buf, U32 buf_len)
+{
+    return Windows::get_abs_path(src_path, buf, buf_len);
+}
+
+
 U64 deltaTime::get_micro_time()
 {
     return Windows::get_micro_time();

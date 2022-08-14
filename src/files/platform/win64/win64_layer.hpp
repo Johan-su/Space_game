@@ -19,7 +19,7 @@ namespace Windows
     void free(void *address, size_t page_amount);
     size_t get_page_size();
 
-
+    void get_abs_path(const char *src_path, char *buf, uint32_t buf_len);
 
 } // namespace Windows
 
