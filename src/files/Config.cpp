@@ -56,7 +56,7 @@ static void substring(char *buf1, char *buf2, const char *str , const char divid
 }
 
 
-void Config::init(config_data *settings, const char *config_path)
+void Internal::init_config(config_data *settings, const char *config_path)
 {
     char var_name[128];
     char var_value[128];

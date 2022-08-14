@@ -1,5 +1,4 @@
 #pragma once
-#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdint.h>
 
@@ -13,7 +12,7 @@ struct config_data
 };
 
 
-namespace Config
+namespace Internal
 {
-    void init(config_data *settings, const char *path);
+    void init_config(config_data *settings, const char *path);
 }

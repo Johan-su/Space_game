@@ -108,6 +108,7 @@ engine_data *Internal::create_engine(top_memory_arena *arena)
     engine->config = Arena::top_alloc<config_data>(arena);
 
     const char *config_path = "./config.ini";
+    Internal::init_config(engine->config, config_path);
 
     Config::init(engine->config, config_path);
     Internal::init_input();
