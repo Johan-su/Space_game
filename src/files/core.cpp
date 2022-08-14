@@ -6,6 +6,8 @@
 #include "input/Input.hpp"
 
 #include "Memory_arena.hpp"
+#include "asset/asset.hpp"
+
 
 #include "ecs/ecs.hpp"
 #include "int.hpp"
@@ -39,7 +41,10 @@ void Internal::init_global_memory()
     void *app_buffer_start = reserve_memory_begin;
     Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
-    void *scratch_buffer_start = (char *)app_buffer_start + 2 * MiB;
+    void *asset_buffer_start = (char *)app_buffer_start + 2 * MiB;
+    Arena::init_top_arena(&g_memory.asset_buffer, asset_buffer_start, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(2 * MiB));
+
+    void *scratch_buffer_start = (char *)asset_buffer_start + 2 *MiB;
     Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *event_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
@@ -58,6 +63,22 @@ void Internal::init_global_memory()
         }
     }
 }
+
+void Internal::clean_global_memory()
+{
+    Arena::clean_arena(&g_memory.app_buffer);
+    Arena::clean_arena(&g_memory.asset_buffer);
+    Arena::clean_arena(&g_memory.scratch_buffer);
+    Arena::clean_arena(&g_memory.view_buffer);
+    Arena::clean_arena(&g_memory.event_buffer);
+
+    for (top_memory_arena *ar = g_memory.scene_buffers; ar != (g_memory.scene_buffers + MAX_SCENE_COUNT); ++ar)
+    {
+        Arena::clean_arena(ar);
+    }
+}
+
+
 
 
 static void sdl_init(engine_data *engine)
@@ -109,26 +130,22 @@ engine_data *Internal::create_engine(top_memory_arena *arena)
 
     const char *config_path = "./config.ini";
     Internal::init_config(engine->config, config_path);
-
-    Config::init(engine->config, config_path);
-    Internal::init_input();
-
-
     sdl_init(engine);
 
-    engine->texture = Arena::top_alloc<textures_data>(arena);
-    Texture_functions::init(engine->texture);
+    Internal::init_input();
+    Internal::init_asset(engine);
 
     return engine;
 }
 
 
-void Internal::clean_engine(engine_data *engine) // exists because SDL uses its own allocators
+void Internal::clean_engine(engine_data *engine) 
 {
     engine->config = NULL;
 
+    // exists because SDL uses its own allocators
+    Internal::clean_asset();
     sdl_clean(engine);
 
-    Texture_functions::clean(engine->texture);
-    engine->texture = NULL;
+    Internal::clean_global_memory();    
 }
