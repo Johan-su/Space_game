@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.16.3)
 
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" ) ## add -v for verbose output
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D _CRT_SECURE_NO_WARNINGS" ) ## add -v for verbose output
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D _CRT_SECURE_NO_WARNINGS")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D _DEBUG ")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D _DEBUG ")
