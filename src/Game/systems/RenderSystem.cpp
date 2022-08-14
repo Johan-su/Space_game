@@ -9,7 +9,7 @@
 
 void RenderSystem::render(Iter *it)
 {
-    BEGIN_PROFILE_BLOCK;
+    BEGIN_PROFILE_BLOCK();
 
     if (game_active_camera == ENTITY_NULL)
     {
@@ -29,7 +29,7 @@ void RenderSystem::render(Iter *it)
 
         Application::RenderCopyExF(it->registry, &transform_list[i], &sprite_list[i], camera_t, camera_cc);
     }
-    END_PROFILE_BLOCK;
+    END_PROFILE_BLOCK();
 }
 
 
