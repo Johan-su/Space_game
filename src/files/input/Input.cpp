@@ -12,8 +12,8 @@ struct input_data
     MOUSE_SCROLL scroll;
     vec2i mouse_pos;
 
-    hash_map<bool> key_map;
-    hash_map<bool> mouse_map;
+    HashMap<bool> key_map;
+    HashMap<bool> mouse_map;
 };
 
 
@@ -22,8 +22,8 @@ static input_data input;
 
 void Internal::init_input()
 {
-    Hashmap::init(&input.key_map);
-    Hashmap::init(&input.mouse_map);
+    HashMapN::init(&input.key_map);
+    HashMapN::init(&input.mouse_map);
     input.scroll = MOUSE_SCROLL_NONE;
 }
 
@@ -31,7 +31,7 @@ void Internal::init_input()
 void Internal::handle_input()
 {
 
-    if (Hashmap::get_value(&input.key_map, SDLK_ESCAPE))
+    if (HashMapN::get_value(&input.key_map, SDLK_ESCAPE))
     {
         // TODO(Johan): probably change to something better
         Application::quit_app(Application::Get());
@@ -74,14 +74,14 @@ void Internal::handle_input()
 
             case SDL_MOUSEBUTTONDOWN:
             {
-                Hashmap::set(&input.mouse_map, event.button.button, true);
+                HashMapN::set(&input.mouse_map, event.button.button, true);
                 //printf("down %u\n", event.button.button);
             } break;
 
 
             case SDL_MOUSEBUTTONUP:
             {
-                Hashmap::set(&input.mouse_map, event.button.button, false);
+                HashMapN::set(&input.mouse_map, event.button.button, false);
                 //printf("up %u\n", event.button.button);
             } break;
 
@@ -112,13 +112,13 @@ void Internal::handle_input()
 
             case SDL_KEYDOWN:
             {
-                Hashmap::set(&input.key_map, event.key.keysym.sym, true);
+                HashMapN::set(&input.key_map, event.key.keysym.sym, true);
             } break;
 
 
             case SDL_KEYUP:
             {
-                Hashmap::set(&input.key_map, event.key.keysym.sym, false);
+                HashMapN::set(&input.key_map, event.key.keysym.sym, false);
             } break;
         }
     }
@@ -127,12 +127,12 @@ void Internal::handle_input()
 
 bool Real::IsKeyPressed(int keyCode)
 {
-    return Hashmap::get_value(&input.key_map, keyCode);
+    return HashMapN::get_value(&input.key_map, keyCode);
 }
 
 bool Real::IsMousePressed(int mouseCode)
 {
-    return Hashmap::get_value(&input.mouse_map, mouseCode);
+    return HashMapN::get_value(&input.mouse_map, mouseCode);
 }
 
 

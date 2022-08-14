@@ -3,21 +3,21 @@
 #include <string.h>
 
 template<typename T>
-struct hash_map
+struct HashMap
 {
-    //size_t hash[8192];
+    //uint64_t hash[8192];
 
-    size_t size;
-    size_t count;
+    uint64_t size;
+    uint64_t count;
     
-    size_t keys[8192];
+    uint64_t keys[8192];
     T values[8192];
 };
 
-namespace Hashmap // TODO(johan) implement good and real hash map
+namespace HashMapN // TODO(johan) implement good and real hash map
 {
     template<typename T>
-    void init(hash_map<T> *map)
+    void init(HashMap<T> *map)
     {
         memset(map, 0, sizeof(*map));
         memset(map->keys, 0xFF, sizeof(map->keys));
@@ -25,10 +25,10 @@ namespace Hashmap // TODO(johan) implement good and real hash map
 
 
     template<typename T>
-    T *get_pointer(hash_map<T> *map, size_t key)
+    T *get_pointer(HashMap<T> *map, uint64_t key)
     {
-        size_t pos = SIZE_MAX;
-        for(size_t i = 0; i < map->count; ++i)
+        uint64_t pos = UINT64_MAX;
+        for(uint64_t i = 0; i < map->count; ++i)
         {
             if (map->keys[i] == key)
             {
@@ -50,7 +50,7 @@ namespace Hashmap // TODO(johan) implement good and real hash map
 
 
     template<typename T>
-    void set(hash_map<T> *map, size_t key, T value)
+    void set(HashMap<T> *map, uint64_t key, T value)
     {
         T *value_pointer = get_pointer(map, key);
 
@@ -68,7 +68,7 @@ namespace Hashmap // TODO(johan) implement good and real hash map
 
 
     template<typename T>
-    T get_value(hash_map<T> *map, size_t key) // Super sketchy function
+    T get_value(HashMap<T> *map, uint64_t key) // Super sketchy function
     {
         T *value_pointer = get_pointer(map, key);
 
@@ -77,7 +77,22 @@ namespace Hashmap // TODO(johan) implement good and real hash map
             return *value_pointer;
         }
 
-        return T();
+        return T{};
+    }
+
+
+    inline uint64_t hash_string(const char *str) //TODO(Johan): do real hashing
+    {
+        uint64_t str_len = strlen(str);
+
+        uint64_t hash = 0;
+
+        for (int i = 0; i < str_len; ++i)
+        {
+            hash += str[i];
+        }
+
+        return hash;
     }
 
 }
