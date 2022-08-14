@@ -1,38 +1,16 @@
 #pragma once
 
 #include "../ecs/Entity.hpp"
+#include "../math/math_types.hpp"
 #include "../int.hpp"
+
+
+
 
 struct Sprite;
 
 
-class Vector2i
-{
-public:
-    I32 x;
-    I32 y;
-};
 
-
-
-class Vector2f
-{
-public:
-    float x;
-    float y;
-
-    
-
-    Vector2f operator+(Vector2f vec2) { return Vector2f{this->x + vec2.x, this->y + vec2.y}; }
-    Vector2f operator-(Vector2f vec2) { return Vector2f{this->x - vec2.x, this->y - vec2.y}; }
-    Vector2f operator-(float scalar) { return Vector2f{this->x - scalar, this->y - scalar}; }
-    Vector2f operator*(float scalar) { return Vector2f{this->x * scalar, this->y * scalar}; }
-    void operator*=(float scalar) { *this = *this * scalar;}
-
-
-    float magnitude();
-    void normalize();
-};
 
 
 
