@@ -29,7 +29,7 @@ void FiringSystem::update(Iter *it)
                     .rot = t.rot,
                     .vel = t.rot * speed,
                     .damage = 5.0f,
-                    .bullet_type = SHIP1,
+                    .bullet_sprite = Real::get_sprite("ship1_sprite"),
                 };
 
                 Ecs::push_event<BulletSpawnEvent>(it->registry, &bse);

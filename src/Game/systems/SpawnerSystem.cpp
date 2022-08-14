@@ -42,7 +42,7 @@ void SpawnerSystem::update(Iter *it)
     const Transform planet_transform = t_list[0];
 
 
-    float min_radius = ((float)Application::get_sprite_width(sc_list[0].sprite) / 2.0f) * t_list[0].scale.x;
+    float min_radius = ((float)sc_list[0].sprite->width / 2.0f) * t_list[0].scale.x;
 
     //printf("DEBUG: Timer = %.2f\n", timer);
     switch (wave)
@@ -63,7 +63,7 @@ void SpawnerSystem::update(Iter *it)
                             sinf(angle) * random_spawn_radius + planet_transform.pos.y,
                         },
                         .scale = 1.0f,
-                        .ship_type = SHIP1,
+                        .ship_sprite = Real::get_sprite("ship1_sprite"),
                         .ai_type = AIType::Enemy,
                         .health = 500.0f,
                         .health_regen = 0.1f,
