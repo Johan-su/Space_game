@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "Application.hpp"
 #include "../platform/platform.hpp"
 #include "../input/Input.hpp"
@@ -7,7 +6,7 @@
 #include "../Memory_arena.hpp"
 #include "../scene/component.hpp"
 #include "../scene/Camera.hpp"
-
+#include "../asset/asset.hpp"
 
 struct Application_data
 {
@@ -53,14 +52,7 @@ Application_data *Application::create_application()
 
 void Application::destroy_application(Application_data *app)
 {
-    for(int i = 0; i < MAX_SCENE_COUNT; ++i)
-    {
-        Arena::clean_arena(&g_memory.scene_buffers[i]);
-    }
     Internal::clean_engine(app->engine);
-
-    Arena::clean_arena(&g_memory.app_buffer);
-
     n_app_instance = NULL;
 }
 
@@ -293,20 +285,20 @@ int Application::RenderCopyExF(Ecs::Registry *registry,
         Application_data *app = Application::Get();
 
         Sprite *sprite = sprite_comp->sprite;
-        SDL_Texture *texture = Texture_functions::get_texture(app->engine->texture, sprite->texture_index);
+        SDL_Texture *texture = sprite->texture->internal_tex;
 
 
         SDL_Rect srcrect = {
             .x = (int)sprite->x,
             .y = (int)sprite->y,
 
-            .w = (int)sprite->w,
-            .h = (int)sprite->h,
+            .w = (int)sprite->width,
+            .h = (int)sprite->height,
         };
 
 
-        float width  = transform->scale.x * sprite->w * camera_comp->world_scale.x;
-        float height = transform->scale.y * sprite->h * camera_comp->world_scale.y;
+        float width  = transform->scale.x * sprite->width * camera_comp->world_scale.x;
+        float height = transform->scale.y * sprite->height * camera_comp->world_scale.y;
 
         SDL_FRect dstrect = {
             .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - (width / 2.0f),
@@ -321,38 +313,6 @@ int Application::RenderCopyExF(Ecs::Registry *registry,
 
     return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
 }
-
-
-void Application::load_texture(U32 id, const char *path)
-{
-    Application_data *app = Application::Get();
-    Texture_functions::load_texture(app->engine->renderer, app->engine->texture, id, path);
-}
-
-
-void Application::init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h)
-{
-    Application_data *app = Application::Get();
-    Texture_functions::init_sprite(app->engine->texture, sprite_id, texture_id, x, y, w, h);
-}
-
-U32 Application::get_sprite_width(Sprite *sprite)
-{
-    return Texture_functions::get_sprite_width(sprite);
-}
-
-
-U32 Application::get_sprite_height(Sprite *sprite)
-{
-    return Texture_functions::get_sprite_height(sprite);
-}
-
-
-Sprite *Application::get_sprite(U32 id)
-{
-    return Texture_functions::get_sprite(Application::Get()->engine->texture, id);
-}
-
 
 
 Application_data *Application::Get()

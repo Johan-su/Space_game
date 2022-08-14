@@ -2,7 +2,7 @@
 #include "../input/KeyCodes.hpp"
 #include "../scene/scene.hpp"
 #include "../scene/component.hpp"
-
+#include "../asset/mesh.hpp"
 // TODO(Johan) make better
 
 
@@ -39,13 +39,6 @@ namespace Application
 
 
 
-    void load_texture(U32 id, const char *path);
-    void init_sprite(U32 sprite_id, U32 texture_id, U32 x, U32 y, U32 w, U32 h);
-
-    U32 get_sprite_width(Sprite *sprite);
-    U32 get_sprite_height(Sprite *sprite);
-
-    Sprite *get_sprite(U32 id);
 
     Application_data *Get();
     void quit_app(Application_data *app);
