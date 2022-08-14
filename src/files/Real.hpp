@@ -7,8 +7,11 @@
 #include "scene/Camera.hpp"
 #include "scene/component.hpp"
 #include "input/Input.hpp"
+#include "asset/asset.hpp"
+
 
 #else
+
 #error Compiles only on 64 bit Windows or Linux
 
 #endif
