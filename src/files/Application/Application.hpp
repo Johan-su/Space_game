@@ -31,8 +31,7 @@ namespace Application
     //void set_scene(Application_data *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
 
 
-    int RenderCopyExF(Ecs::Registry *registry, 
-        const Transform *transform, 
+    int RenderCopyExF(const Transform *transform, 
         const SpriteComponent *sprite_comp,
         const Transform *camera_transform,
         const CameraComponent *camera_comp);

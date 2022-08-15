@@ -140,7 +140,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
         }
 
         
-        game_scene->name = "scene_name";
+        game_scene->name = scene_name;
         app->scenes[scene_pos] = game_scene;
         ++app->scene_count;
     }
@@ -221,6 +221,9 @@ void Application::run(Application_data *app, scene *scene)
     Transform *camera_tr = Ecs::get_component<Transform>(&scene->registry, camera);
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
+    Real::load_mesh("./resources/meshes/square.mesh", "square_mesh");
+
+
     while (app->active)
     {
         curr = deltaTime::get_micro_time();
@@ -251,11 +254,17 @@ void Application::run(Application_data *app, scene *scene)
         // begin render
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
-    
-        Ecs::progress_systems(&scene->registry, ts);
 
-        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 0);
+        SDL_SetRenderDrawColor(app->engine->renderer, 0, 255, 0, 255);
+
+        Renderer::draw(nullptr, Real::get_mesh("square_mesh"));
+
+        //Ecs::progress_systems(&scene->registry, ts);
+
+        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 255);
         vec2i mpos = Real::getMousePos();
+
+        printf("mouse_pos [%d, %d]\n", mpos.x, mpos.y);
 
         SDL_Rect rect = {
             .x = mpos.x - 5,
@@ -289,8 +298,7 @@ static inline float RadToDeg(float angle)
 }
 
 
-int Application::RenderCopyExF(Ecs::Registry *registry, 
-    const Transform *transform, 
+int Application::RenderCopyExF(const Transform *transform, 
     const SpriteComponent *sprite_comp,
     const Transform *camera_transform,
     const CameraComponent *camera_comp)
@@ -323,7 +331,7 @@ int Application::RenderCopyExF(Ecs::Registry *registry,
         };
 
 
-        double angle = RadToDeg(atan2(transform->rot.y, transform->rot.x)) + 90.0f;
+        double angle = RadToDeg(atan2f(transform->rot.y, transform->rot.x)) + 90.0f;
 
     return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, nullptr, SDL_FLIP_NONE);
 }
