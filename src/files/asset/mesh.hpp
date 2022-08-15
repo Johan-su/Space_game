@@ -2,29 +2,35 @@
 
 #include "../int.hpp"
 
+#include "../math/math_types.hpp"
+
 #define MAX_TRIANGLES 128
 #define MAX_VERTICIES MAX_TRIANGLES * 3
-#define MAX_INDICIES MAX_TRIANGLES
+#define MAX_INDICIES MAX_TRIANGLES * 3
 
 
 #define VERTEX_NULL -2.0f
 #define INDEX_NULL -1
 
 
+struct Vertex
+{
+    Vector3f pos;
+    Vector2f tex_coords;
+};
+
 struct VertexBuffer
 {
-    float x[MAX_VERTICIES];
-    float y[MAX_VERTICIES];
-    float z[MAX_VERTICIES];
+    Usize vertex_count;
+    Vertex verticies[MAX_VERTICIES];
 };
 
 
 
 struct IndexBuffer
 {
-    I32 v1[MAX_INDICIES]; 
-    I32 v2[MAX_INDICIES]; 
-    I32 v3[MAX_INDICIES]; 
+    Usize index_count;
+    I32 indicies[MAX_INDICIES];
 };
 
 

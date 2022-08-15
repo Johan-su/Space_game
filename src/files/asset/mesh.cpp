@@ -21,7 +21,7 @@ static bool is_whitespace(const char val)
 }
 
 
-static void move_past_whitespace(const char *src)
+static void move_past_whitespace(const char *&src)
 {
     while (is_whitespace(*src))
     {
@@ -45,7 +45,7 @@ static bool is_word(const char *src, const char *word)
 }
 
 
-static void is_word_and_move_or_error(const char *src, const char *word, const char *error_msg)
+static void is_word_and_move_or_error(const char *&src, const char *word, const char *error_msg)
 {
     if (!is_word(src, word))
     {
@@ -57,7 +57,7 @@ static void is_word_and_move_or_error(const char *src, const char *word, const c
 
 
 
-static I32 parse_I32(const char *src)
+static I32 parse_I32(const char *&src)
 {
     char I32_buffer[256];
 
@@ -66,31 +66,27 @@ static I32 parse_I32(const char *src)
 
     // parse float
     U32 count = 0;
-    while (!is_whitespace(*src) && !is_word(src, ","))
+    while (!is_whitespace(*src) && !is_word(src, ",") && !is_word(src, "}"))
     {
         I32_buffer[count] = *src;
         count += 1;
+        src += 1;
     }
     I32_buffer[count] = '\0';
 
-    // move past float
-    src += 1;
-
     // if not at comma, move to comma
-    if (!is_word(src, ","))
-    {
-        move_past_whitespace(src);
-    }
+    move_past_whitespace(src);
 
     // move past comma
-    src += 1;
+    if (!is_word(src, "}"))
+        src += 1;
 
     return atoi(I32_buffer);
 }
 
 
 
-static float parse_float(const char *src)
+static float parse_float(const char *&src)
 {
     char float_buffer[256];
 
@@ -99,26 +95,22 @@ static float parse_float(const char *src)
 
     // parse float
     U32 count = 0;
-    while (!is_whitespace(*src) && !is_word(src, ","))
+    while (!is_whitespace(*src) && !is_word(src, ",") && !is_word(src, "}"))
     {
         float_buffer[count] = *src;
         count += 1;
+        src += 1;
     }
     float_buffer[count] = '\0';
 
-    // move past float
-    src += 1;
-
     // if not at comma, move to comma
-    if (!is_word(src, ","))
-    {
-        move_past_whitespace(src);
-    }
+    move_past_whitespace(src);
 
     // move past comma
-    src += 1;
+    if (!is_word(src, "}"))
+        src += 1;
 
-    return atof(float_buffer);
+    return (float)atof(float_buffer);
 }
 
 
@@ -156,19 +148,26 @@ static I32 clamp(I32 min, I32 val, I32 max)
 
 void MeshN::init(Mesh *mesh, const char *mesh_src)
 {
+    mesh->index_buffer.index_count = 0;
     for (Usize i = 0; i < MAX_VERTICIES; ++i)
     {
-        mesh->vertex_buffer.x[i] = VERTEX_NULL;
-        mesh->vertex_buffer.y[i] = VERTEX_NULL;
-        mesh->vertex_buffer.z[i] = VERTEX_NULL;
+        mesh->vertex_buffer.verticies[i] = {
+            .pos = {
+                .x = VERTEX_NULL,
+                .y = VERTEX_NULL,
+                .z = VERTEX_NULL,
+            },
+            .tex_coords = {
+                .u = VERTEX_NULL,
+                .v = VERTEX_NULL,
+            },
+        };
     }
 
 
     for (Usize i = 0; i < MAX_INDICIES; ++i)
     {
-        mesh->index_buffer.v1[i] = INDEX_NULL;
-        mesh->index_buffer.v2[i] = INDEX_NULL;
-        mesh->index_buffer.v3[i] = INDEX_NULL;
+        mesh->index_buffer.indicies[i] = INDEX_NULL;
     }
 
     Usize vertex_count = 0;
@@ -187,9 +186,13 @@ void MeshN::init(Mesh *mesh, const char *mesh_src)
 
     for (/**/;!is_word(mesh_src, "}"); ++vertex_count)
     {
-        mesh->vertex_buffer.x[vertex_count] = clamp(-1.0f, parse_float(mesh_src), 1.0f);
-        mesh->vertex_buffer.y[vertex_count] = clamp(-1.0f, parse_float(mesh_src), 1.0f);
+        mesh->vertex_buffer.verticies[vertex_count].pos.x = clamp(-1.0f, parse_float(mesh_src), 1.0f);
+        mesh->vertex_buffer.verticies[vertex_count].pos.y = clamp(-1.0f, parse_float(mesh_src), 1.0f);
+        mesh->vertex_buffer.verticies[vertex_count].pos.z = clamp(-1.0f, parse_float(mesh_src), 1.0f);
+        mesh->vertex_buffer.verticies[vertex_count].tex_coords.u = clamp(0.0f, parse_float(mesh_src), 1.0f);
+        mesh->vertex_buffer.verticies[vertex_count].tex_coords.v = clamp(0.0f, parse_float(mesh_src), 1.0f);
     }
+    mesh->vertex_buffer.vertex_count = vertex_count;
     mesh_src += 1;
 
     move_past_whitespace(mesh_src);
@@ -215,10 +218,9 @@ void MeshN::init(Mesh *mesh, const char *mesh_src)
 
     for (/**/; !is_word(mesh_src, "}"); ++index_count)
     {
-        mesh->index_buffer.v1[index_count] = clamp(0, parse_I32(mesh_src), _I32_MAX);
-        mesh->index_buffer.v2[index_count] = clamp(0, parse_I32(mesh_src), _I32_MAX);
-        mesh->index_buffer.v3[index_count] = clamp(0, parse_I32(mesh_src), _I32_MAX);
+        mesh->index_buffer.indicies[index_count] = clamp(0, parse_I32(mesh_src), _I32_MAX);
     }
+    mesh->index_buffer.index_count = index_count;
     mesh_src += 1;
 
 
