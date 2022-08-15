@@ -15,20 +15,36 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}           -Wall -Wpedantic -g -Wno-c++20-designator -Wno-language-extension-token")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}       -Wall -Wpedantic -g -Wno-c++20-designator -Wno-language-extension-token")
 
+    
+    
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+    
+    #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
+    #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address")
+    
+    
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+
+
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     # using Intel C++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # using Visual Studio C++
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /std:c++20 /Z7 /EHsc /W4 /analyze")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /std:c++20 /Z7 /EHsc /W4 /analyze")
+    
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20  /Z7 /EHsc /W4 " ) ## add -v for verbose output
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /std:c++20  /Z7 /EHsc /W4 ") 
 
-    #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7 /EHsc /W4 /analyze /fsanitize=address")
-    #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Z7 /EHsc /W4 /analyze /fsanitize=address")
+    #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ")
+    #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ")
+
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MTd /analyze /fsanitize=address")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd /analyze /fsanitize=address")
 endif()
 
 
