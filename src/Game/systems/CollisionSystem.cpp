@@ -39,7 +39,7 @@ static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e
 static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
 
-    Vector2f size;
+    Vector2f size = {};
 
     if (bc_e != nullptr)
     {
