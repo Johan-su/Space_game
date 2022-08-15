@@ -1,7 +1,7 @@
 #include "GravitySystem.hpp"
 
 #include "../Components_Events.hpp"
-
+#include <float.h>
 #include <math.h>
 const float G = 6.6743E-11f;
 
@@ -55,7 +55,7 @@ void GravitySystem::update(Iter *it)
             float angle = atan2f((center_dy), (center_dx));
 
            
-            float accl = G * mass.mass / (distance2 + __FLT_MIN__); // FLT_MIN to avoid div by zero 
+            float accl = G * mass.mass / (distance2 + FLT_MIN); // FLT_MIN to avoid div by zero 
 
             vel->v.x += cosf(angle) * accl * it->Ts;
             vel->v.y += sinf(angle) * accl * it->Ts;
