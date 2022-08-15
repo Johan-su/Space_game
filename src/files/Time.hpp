@@ -10,7 +10,7 @@ U64 PROFILE_TIMER____ = deltaTime::get_micro_time()
 
 #define END_PROFILE_BLOCK(...) \
 PROFILE_TIMER____ = deltaTime::get_micro_time() - PROFILE_TIMER____; \
-printf("DEBUG: time_elapsed %llu\n", PROFILE_TIMER____)
+printf("DEBUG: %s %lluus\n", __PRETTY_FUNCTION__, PROFILE_TIMER____)
 
 
 
