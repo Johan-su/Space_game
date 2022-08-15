@@ -11,11 +11,13 @@
 
 #include "ecs/ecs.hpp"
 #include "int.hpp"
+#include "Renderer.hpp"
 
 #include <SDL.h>
 
 #include <stdio.h>
 #include <limits.h>
+
 
 const Usize KiB = 1024llu;
 const Usize MiB = 1024llu * KiB;
@@ -132,6 +134,8 @@ engine_data *Internal::create_engine(top_memory_arena *arena)
     Internal::init_config(engine->config, config_path);
     sdl_init(engine);
 
+    Internal::init_renderer(engine->renderer, engine->window);
+
     Internal::init_input();
     Internal::init_asset(engine);
 
@@ -145,6 +149,7 @@ void Internal::clean_engine(engine_data *engine)
 
     // exists because SDL uses its own allocators
     Internal::clean_asset();
+    Internal::clean_renderer();
     sdl_clean(engine);
 
     Internal::clean_global_memory();    
