@@ -10,17 +10,17 @@ static int set_value(config_data *settings, const char *var, uint16_t val)
 {
     if (strcmp(var, "screen_width") == 0)
     {
-        printf("NOTE: %s = %du\n", var, val);
+        printf("NOTE: %s = %u\n", var, val);
         settings->screen_width = val;
     } 
     else if (strcmp(var, "screen_height") == 0)
     {
-        printf("NOTE: %s = %du\n", var, val);
+        printf("NOTE: %s = %u\n", var, val);
         settings->screen_height = val;
     }
     else if (strcmp(var, "FPS_target") == 0)
     {
-        printf("NOTE: %s = %du\n", var, val);
+        printf("NOTE: %s = %u\n", var, val);
         settings->FPS_target = val;
     }
     else
