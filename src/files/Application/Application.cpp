@@ -206,6 +206,20 @@ void Application::run(Application_data *app, scene *scene)
     U64 prev = deltaTime::get_micro_time();
     U64 dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
+    
+
+    // temporary hack to create camera before normal systems run
+    Iter it = {
+        .registry = &scene->registry,
+    };
+
+    Ecs::Event_functions::run_events(scene->registry.evdata, scene->registry.event_mm, &it);
+
+    Entity camera = Application::get_first_active_camera(&scene->registry);
+
+
+    Transform *camera_tr = Ecs::get_component<Transform>(&scene->registry, camera);
+    CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
     while (app->active)
     {
@@ -235,7 +249,7 @@ void Application::run(Application_data *app, scene *scene)
         }
 
         // begin render
-        Renderer::begin();
+        Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
     
         Ecs::progress_systems(&scene->registry, ts);
