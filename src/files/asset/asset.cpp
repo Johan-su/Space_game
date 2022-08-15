@@ -4,16 +4,16 @@
 #include "../core.hpp"
 
 
-static HashMap<void *> path_map;
-static HashMap<void *> name_map;
+static HashMap<void *> s_path_map;
+static HashMap<void *> s_name_map;
 
-static engine_data *engine;
+static engine_data *s_engine;
 
 void Internal::init_asset(engine_data *engine) // TODO(Johan): maybe pass in arena here and not directly access the global memory
 {
-    HashMapN::init(&path_map);
-    HashMapN::init(&name_map);
-    ::engine = engine;
+    HashMapN::init(&s_path_map);
+    HashMapN::init(&s_name_map);
+    ::s_engine = engine;
 
     Internal::init_textures();
 }
@@ -61,11 +61,11 @@ void Real::load_mesh(const char *path, const char *name)
     U64 path_hash = HashMapN::hash_string(buffer);
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
+    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
     }
-    else if (HashMapN::get_pointer(&path_map, path_hash) != nullptr)
+    else if (HashMapN::get_pointer(&s_path_map, path_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to load mesh that already exists or hash collision\n");
     }
@@ -77,8 +77,8 @@ void Real::load_mesh(const char *path, const char *name)
 
         MeshN::init(mesh, mesh_source);
 
-        HashMapN::set(&path_map, path_hash, (void *)mesh);
-        HashMapN::set(&name_map, name_hash, (void *)mesh);
+        HashMapN::set(&s_path_map, path_hash, (void *)mesh);
+        HashMapN::set(&s_name_map, name_hash, (void *)mesh);
     }
 
     Arena::clear_top_arena(&g_memory.scratch_buffer);
@@ -93,11 +93,11 @@ void Real::load_texture(const char *path, const char *name)
     U64 path_hash = HashMapN::hash_string(path_buffer);
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
+    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
     }
-    else if (HashMapN::get_pointer(&path_map, path_hash) != nullptr)
+    else if (HashMapN::get_pointer(&s_path_map, path_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to load mesh that already exists or hash collision\n");
     }
@@ -105,11 +105,11 @@ void Real::load_texture(const char *path, const char *name)
     {
         Texture *texture = Arena::top_alloc<Texture>(&g_memory.asset_buffer);
 
-        Internal::init_texture(engine->renderer, texture, path, path_hash);
+        Internal::init_texture(s_engine->renderer, texture, path, path_hash);
 
 
-        HashMapN::set(&path_map, path_hash, (void *)texture);
-        HashMapN::set(&name_map, name_hash, (void *)texture);
+        HashMapN::set(&s_path_map, path_hash, (void *)texture);
+        HashMapN::set(&s_name_map, name_hash, (void *)texture);
     }
 
     //Arena::clear_top_arena(&g_memory.scratch_buffer);
@@ -132,7 +132,7 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
 
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
+    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which already in use", name);
         return;
@@ -150,14 +150,14 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
         .texture = texture,
     };
 
-    HashMapN::set(&name_map, name_hash, (void *)sprite);
+    HashMapN::set(&s_name_map, name_hash, (void *)sprite);
 }
 
 
 static void *get_item(const char *name)
 {
     U64 hash = HashMapN::hash_string(name);
-    void *pointer = HashMapN::get_value(&name_map, hash);
+    void *pointer = HashMapN::get_value(&s_name_map, hash);
 
     return pointer;    
 }
