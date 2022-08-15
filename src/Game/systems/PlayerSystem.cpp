@@ -117,6 +117,7 @@ void PlayerSystem::update(Iter *it)
                     .x = transform->rot.x * speed,
                     .y = transform->rot.y * speed,
                 },
+                .bullet_sprite = Real::get_sprite("ship1_sprite"),
             };
             Ecs::push_event<BulletSpawnEvent>(it->registry, &event);           
         }
