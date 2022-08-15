@@ -15,6 +15,7 @@ struct VertexBuffer
 {
     float x[MAX_VERTICIES];
     float y[MAX_VERTICIES];
+    float z[MAX_VERTICIES];
 };
 
 
