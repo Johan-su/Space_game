@@ -158,10 +158,13 @@ namespace Ecs
         template<typename T>
         void destroy_component(Component_data *cdata, Entity e)
         {
+            ECS_assert(false, "not implemented");
+            /*
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
             ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
             U32 page_id = e / PAGE_SIZE;
+            U32 page_entry = e % PAGE_SIZE;
 
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             Component_page<T> *page = get_page<T>(pool, page_id);
@@ -174,6 +177,7 @@ namespace Ecs
             
             pool->sparse_array[e] = ENTITY_NULL;
             --pool->size;
+            */
         }
         
 
