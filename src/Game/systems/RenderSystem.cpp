@@ -27,7 +27,7 @@ void RenderSystem::render(Iter *it)
     for (Usize i = 0; i < group->size; ++i)
     {
 
-        Application::RenderCopyExF(it->registry, &transform_list[i], &sprite_list[i], camera_t, camera_cc);
+        Application::RenderCopyExF(&transform_list[i], &sprite_list[i], camera_t, camera_cc);
     }
     END_PROFILE_BLOCK();
 }
