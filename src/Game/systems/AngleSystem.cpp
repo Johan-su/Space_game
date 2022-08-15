@@ -13,10 +13,10 @@ void AngleSystem::update(Iter *iter)
         AnglularVelocity ang_vel = angle_vel_view->comparray[i];
 
 
-       float angle = atan2(transform->rot.y, transform->rot.x);
+       float angle = atan2f(transform->rot.y, transform->rot.x);
 
-       transform->rot.x = cos(angle + ang_vel.angleV * iter->Ts);
-       transform->rot.y = sin(angle + ang_vel.angleV * iter->Ts);
+       transform->rot.x = cosf(angle + ang_vel.angleV * iter->Ts);
+       transform->rot.y = sinf(angle + ang_vel.angleV * iter->Ts);
 
     }
 }

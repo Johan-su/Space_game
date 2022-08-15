@@ -95,7 +95,7 @@ void PlayerSystem::update(Iter *it)
     float dx = world_mx - transform->pos.x;
     float dy = world_my - transform->pos.y;
 
-    float angle = atan2(dy, dx);
+    float angle = atan2f(dy, dx);
     transform->rot = {cosf(angle), sinf(angle)};
 
 
@@ -109,7 +109,6 @@ void PlayerSystem::update(Iter *it)
         if (shoot_timer.time >= shoot_timer.max_val)
         {
             shoot_timer.time -= shoot_timer.max_val;
-            float speed = 4000.0f;
             BulletSpawnEvent event = {
                 .pos = {transform->pos + transform->rot * 200.0f},
                 .rot = {transform->rot},
