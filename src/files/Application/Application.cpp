@@ -7,6 +7,7 @@
 #include "../scene/component.hpp"
 #include "../scene/Camera.hpp"
 #include "../asset/asset.hpp"
+#include "../Renderer.hpp"
 
 struct Application_data
 {
@@ -236,7 +237,8 @@ void Application::run(Application_data *app, scene *scene)
         }
 
         // begin render
-        SDL_RenderClear(app->engine->renderer);
+        Renderer::begin();
+        Renderer::clear();
     
         Ecs::progress_systems(&scene->registry, ts);
 
@@ -254,7 +256,7 @@ void Application::run(Application_data *app, scene *scene)
 
         SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 0);
 
-        SDL_RenderPresent(app->engine->renderer);
+        Renderer::end();
 
         // end render
 
