@@ -26,7 +26,7 @@ void Component_functions::init_component_bytes(top_memory_arena *mm, Component_d
 
         for(Usize i = 0; i < MAX_PAGE_AMOUNT; ++i)
         {
-            comp_pool->component_pages[i] = NULL;
+            comp_pool->component_pages[i] = nullptr;
         }
 
         cdata->pool_init[compid]            = true;
@@ -64,7 +64,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 
         // component is not actually U8, used to access individual bytes.
         Component_page<U8> *page = pool->component_pages[page_id];
-        if (page == NULL)
+        if (page == nullptr)
         { 
             ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page; component id: %ld, page id: %llu\n", e, i, page_id));
             continue;
@@ -106,7 +106,7 @@ void Component_functions::fill_similar_entities(Component_data *cdata, Entity *e
     {
         // not actually page of U8, used for manipulating indiviudal bytes.
         Component_page<U8> *page = min_comp_pool->component_pages[i];
-        if (page == NULL)
+        if (page == nullptr)
         {
             continue;
         }
@@ -123,7 +123,7 @@ void Component_functions::fill_similar_entities(Component_data *cdata, Entity *e
 
                 // not actually page of U8, used for manipulating indiviudal bytes.
                 Component_page<U8> *curr_page = curr_comp_pool->component_pages[i];
-                if (curr_page == NULL)
+                if (curr_page == nullptr)
                 {
                     goto continue_page_loop;
                 }

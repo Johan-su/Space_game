@@ -3,8 +3,8 @@
 #include <SDL.h>
 
 
-static SDL_Renderer *s_renderer = NULL;
-static SDL_Window *s_window = NULL;
+static SDL_Renderer *s_renderer = nullptr;
+static SDL_Window *s_window = nullptr;
 
 
 
@@ -21,8 +21,8 @@ void Internal::clean_renderer()
 }
 
 
-static Transform *camera_transform = NULL;
-static CameraComponent *camera_comp = NULL;
+static Transform *camera_transform = nullptr;
+static CameraComponent *camera_comp = nullptr;
 
 void Renderer::begin(Transform *camera_transform, CameraComponent *camera_comp)
 {
@@ -34,8 +34,8 @@ void Renderer::begin(Transform *camera_transform, CameraComponent *camera_comp)
 void Renderer::end()
 {
     SDL_RenderPresent(s_renderer);
-    ::camera_transform = NULL;
-    ::camera_comp = NULL;
+    ::camera_transform = nullptr;
+    ::camera_comp = nullptr;
 }
 
 

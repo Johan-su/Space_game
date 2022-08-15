@@ -41,12 +41,12 @@ static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_a
 
     Vector2f size;
 
-    if (bc_e != NULL)
+    if (bc_e != nullptr)
     {
         size = bc_e->size;
 
     }
-    else if (cc_e != NULL)
+    else if (cc_e != nullptr)
     {
         size = {cc_e->radius * 2, cc_e->radius * 2};
     }
@@ -151,18 +151,18 @@ static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e
         tree->t_list[tree->entity_count] = *t_e;
 
 
-        if (bc_e != NULL)
+        if (bc_e != nullptr)
             tree->bc_list[tree->entity_count] = *bc_e;
         else
             tree->bc_list[tree->entity_count] = {.type = ColliderType::Nothing};
-        if (cc_e != NULL)        
+        if (cc_e != nullptr)        
             tree->cc_list[tree->entity_count] = *cc_e;
         else
             tree->cc_list[tree->entity_count] = {.type = ColliderType::Nothing};
 
         tree->entity_count += 1;
     }
-    else if (tree->sub_trees[0] == NULL)
+    else if (tree->sub_trees[0] == nullptr)
     {
         spill_tree(tree, arena);
         add_entity_to_intersecting_trees(tree, arena, e, t_e, bc_e, cc_e);
@@ -199,7 +199,7 @@ static void init_root(QuadTree *root, top_memory_arena *arena)
 
 static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 {
-    if (tree->sub_trees[0] != NULL)
+    if (tree->sub_trees[0] != nullptr)
     {
         check_collisions_in_tree(tree->sub_trees[0], reg);
         check_collisions_in_tree(tree->sub_trees[1], reg);
@@ -293,7 +293,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
         }
     }
 }
-#define PROFILE_FUNCTIONS
+//#define PROFILE_FUNCTIONS
 #include "../../files/Time.hpp"
 
 
@@ -320,13 +320,13 @@ void CollisionSystem::update(Iter *it)
 
     for (Usize i = 0; i < box_group->size; ++i)
     {
-        add_entity_to_tree(root, it->view_arena, box_group->entity_list[i], &box_transform_list[i], &box_collider_list[i], NULL);
+        add_entity_to_tree(root, it->view_arena, box_group->entity_list[i], &box_transform_list[i], &box_collider_list[i], nullptr);
     }
 
 
     for (Usize i = 0; i < circle_group->size; ++i)
     {
-        add_entity_to_tree(root, it->view_arena, circle_group->entity_list[i], &circle_transform_list[i], NULL, &circle_collider_list[i]);
+        add_entity_to_tree(root, it->view_arena, circle_group->entity_list[i], &circle_transform_list[i], nullptr, &circle_collider_list[i]);
     }
 
     check_collisions_in_tree(root, it->registry);

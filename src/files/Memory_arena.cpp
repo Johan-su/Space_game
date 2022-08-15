@@ -28,7 +28,7 @@ void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address
 void Arena::clean_arena(top_memory_arena *arena)
 {
     memory_map::free(arena->data, arena->max_size_commited);
-    arena->data = NULL;
+    arena->data = nullptr;
     arena->bytes_allocated = 0;
     arena->max_size_commited = 0;
     arena->max_size_reserved = 0;

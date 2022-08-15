@@ -19,16 +19,14 @@ struct Application_data
 
 };
 
-Application_data *Application::n_app_instance = NULL;
-
-
+Application_data *Application::n_app_instance = nullptr;
 
 
 
 
 Application_data *Application::create_application()
 {
-    if (n_app_instance != NULL)
+    if (n_app_instance != nullptr)
     {
         fprintf(stderr, "ERROR: tried to create application while an application already exists");
         exit(1);
@@ -54,7 +52,7 @@ Application_data *Application::create_application()
 void Application::destroy_application(Application_data *app)
 {
     Internal::clean_engine(app->engine);
-    n_app_instance = NULL;
+    n_app_instance = nullptr;
 }
 
 
@@ -111,7 +109,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
     // get unoccupied scene position in app
     for (int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
-        if (app->scenes[i] == NULL)
+        if (app->scenes[i] == nullptr)
         {
             scene_pos = i;
             break;
@@ -160,7 +158,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
 scene *Application::get_scene_by_name(const char *scene_name)
 {
     Application_data *app = Application::Get();
-    scene *scene = NULL;
+    scene *scene = nullptr;
     for(int i = 0; i < MAX_SCENE_COUNT; ++i)
     {
         if (strcmp(app->scenes[i]->name, scene_name) == 0)
@@ -170,7 +168,7 @@ scene *Application::get_scene_by_name(const char *scene_name)
         }
     }
 
-    if (scene == NULL)
+    if (scene == nullptr)
     {
         fprintf(stderr, "WARNING: failed to find scene by name");
     }
@@ -191,9 +189,9 @@ static void handle_input_events()
 void Application::run(Application_data *app, scene *scene)
 {
 
-    if (scene == NULL)
+    if (scene == nullptr)
     {
-        fprintf(stderr, "ERROR: scene cannot be NULL\n");
+        fprintf(stderr, "ERROR: scene cannot be nullptr\n");
         return;
     }
 
@@ -313,7 +311,7 @@ int Application::RenderCopyExF(Ecs::Registry *registry,
 
         double angle = RadToDeg(atan2(transform->rot.y, transform->rot.x)) + 90.0f;
 
-    return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, NULL, SDL_FLIP_NONE);
+    return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, nullptr, SDL_FLIP_NONE);
 }
 
 

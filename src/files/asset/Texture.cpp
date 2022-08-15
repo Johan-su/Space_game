@@ -20,7 +20,7 @@ void Internal::clean_textures()
     for (int i = 0; i < 8192; ++i)
     {
         SDL_Texture *key = sdl_texture_map.values[i];
-        if (key != NULL)
+        if (key != nullptr)
         {
             SDL_DestroyTexture(key);
         }
@@ -49,14 +49,14 @@ void Internal::init_texture(SDL_Renderer *renderer, Texture *texture, const char
     }
 
 
-    assert(HashMapN::get_pointer(&sdl_texture_map, abs_path_hash) == NULL, "Texture cannot already loaded");
+    assert(HashMapN::get_pointer(&sdl_texture_map, abs_path_hash) == nullptr, "Texture cannot already loaded");
 
     HashMapN::set(&sdl_texture_map, abs_path_hash, sdl_texture);
 
 
     I32 width;
     I32 height;
-    SDL_QueryTexture(sdl_texture, NULL, NULL, &width, &height);
+    SDL_QueryTexture(sdl_texture, nullptr, nullptr, &width, &height);
 
     texture->width = width;
     texture->height = height;

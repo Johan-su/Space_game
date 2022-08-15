@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     clean();
 
     Application::destroy_application(app);
-    app = NULL;
+    app = nullptr;
 
     return 0;
 }

@@ -39,7 +39,7 @@ namespace HashMapN // TODO(johan) implement good and real hash map
 
         if (pos == SIZE_MAX)
         {
-            return NULL;
+            return nullptr;
         }
         else
         {
@@ -54,7 +54,7 @@ namespace HashMapN // TODO(johan) implement good and real hash map
     {
         T *value_pointer = get_pointer(map, key);
 
-        if (value_pointer == NULL) // check if map does not include key
+        if (value_pointer == nullptr) // check if map does not include key
         {
             map->values[map->count] = value;
             map->keys[map->count] = key;

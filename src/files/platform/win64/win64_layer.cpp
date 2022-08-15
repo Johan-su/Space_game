@@ -52,7 +52,7 @@ void *Windows::reserve(void *address, size_t page_amount)
     size_t page_size = g_info.dwPageSize;
 
     LPVOID V_address = VirtualAlloc(address, page_amount * page_size, MEM_RESERVE, PAGE_READWRITE);
-    if (V_address == NULL)
+    if (V_address == nullptr)
     {
         fprintf(stderr, "ERROR: failed reserving memory with %lu\n", GetLastError());
         exit(1);
@@ -67,7 +67,7 @@ void *Windows::commit(void *address, size_t page_amount)
     size_t page_size = g_info.dwPageSize;
 
     LPVOID V_address = VirtualAlloc(address, page_amount * page_size, MEM_COMMIT, PAGE_READWRITE);
-    if (V_address == NULL)
+    if (V_address == nullptr)
     {
         fprintf(stderr, "ERROR: failed commiting memory with %lu\n", GetLastError());
         exit(1);
@@ -115,7 +115,7 @@ void Windows::get_abs_path(const char *src_path, char *buf, uint32_t buf_len)
         shortened_buf_len -= (strlen(src_path) - filename_pos);
     }
 
-   DWORD path_length = GetFullPathNameA(src_path, shortened_buf_len, buf, NULL);
+   DWORD path_length = GetFullPathNameA(src_path, shortened_buf_len, buf, nullptr);
 
    if (path_length > shortened_buf_len)
    {

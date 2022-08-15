@@ -80,7 +80,7 @@ namespace Ecs
             ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
 
             Component_pool<T> *comp_pool = (Component_pool<T>*) cdata->component_pools[compid];
-            ECS_assert(comp_pool != nullptr, "Component_pool is null");
+            ECS_assert(comp_pool != nullptr, "Component_pool is nullptr");
 
             return comp_pool;
         }
@@ -113,7 +113,7 @@ namespace Ecs
         {
             ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
 
-            if (pool->component_pages[id] == NULL)
+            if (pool->component_pages[id] == nullptr)
             {
                 pool->component_pages[id] = init_page<T>(mm, pool, id);
             }
@@ -191,7 +191,7 @@ namespace Ecs
             Component_page<T> *page = get_page<T>(mm, pool, page_id);
             if (page->sparse_array[page_entry] == ENTITY_NULL)
             {
-                return NULL;
+                return nullptr;
             }
             return &page->dense_array[page->sparse_array[page_entry]];
         }

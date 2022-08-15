@@ -37,7 +37,7 @@ global_memory g_memory = {};
 void Internal::init_global_memory()
 {
     Platform::init();
-    reserve_memory_begin = memory_map::reserve(NULL, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
+    reserve_memory_begin = memory_map::reserve(nullptr, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
@@ -85,7 +85,7 @@ void Internal::clean_global_memory()
 
 static void sdl_init(engine_data *engine)
 {
-    assert(engine, "Game cannot be null");
+    assert(engine, "Game cannot be nullptr");
 
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
@@ -117,8 +117,8 @@ static void sdl_clean(engine_data *engine)
     SDL_DestroyRenderer(engine->renderer);
     SDL_DestroyWindow(engine->window);
 
-    engine->renderer = NULL;
-    engine->window = NULL;
+    engine->renderer = nullptr;
+    engine->window = nullptr;
 
     SDL_Quit();
 }
@@ -145,7 +145,7 @@ engine_data *Internal::create_engine(top_memory_arena *arena)
 
 void Internal::clean_engine(engine_data *engine) 
 {
-    engine->config = NULL;
+    engine->config = nullptr;
 
     // exists because SDL uses its own allocators
     Internal::clean_asset();

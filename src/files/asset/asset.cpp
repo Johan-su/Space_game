@@ -29,9 +29,9 @@ static const char *slurp_file(const char *path)
 {
     FILE *file = fopen(path, "r");
 
-    if (file == NULL)
+    if (file == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     fseek(file, 0, SEEK_END);
@@ -61,11 +61,11 @@ void Real::load_mesh(const char *path, const char *name)
     U64 path_hash = HashMapN::hash_string(buffer);
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != NULL)
+    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
     }
-    else if (HashMapN::get_pointer(&path_map, path_hash) != NULL)
+    else if (HashMapN::get_pointer(&path_map, path_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to load mesh that already exists or hash collision\n");
     }
@@ -93,11 +93,11 @@ void Real::load_texture(const char *path, const char *name)
     U64 path_hash = HashMapN::hash_string(path_buffer);
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != NULL)
+    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
     }
-    else if (HashMapN::get_pointer(&path_map, path_hash) != NULL)
+    else if (HashMapN::get_pointer(&path_map, path_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to load mesh that already exists or hash collision\n");
     }
@@ -132,7 +132,7 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
 
     U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&name_map, name_hash) != NULL)
+    if (HashMapN::get_pointer(&name_map, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which already in use", name);
         return;
@@ -167,7 +167,7 @@ Mesh *Real::get_mesh(const char *name)
 {
     Mesh *mesh = (Mesh *)get_item(name);
 
-    if (mesh == NULL)
+    if (mesh == nullptr)
     {
         fprintf(stderr, "WARNING: \"%s\" Mesh not found\n", name);
     }
@@ -180,7 +180,7 @@ Texture *Real::get_texture(const char *name)
 {
     Texture *texture = (Texture *)get_item(name);
 
-    if (texture == NULL)
+    if (texture == nullptr)
     {
         fprintf(stderr, "WARNING: \"%s\" Texture not found\n", name);
     }
@@ -193,7 +193,7 @@ Sprite *Real::get_sprite(const char *name)
 {
     Sprite *sprite = (Sprite *)get_item(name);
 
-    if (sprite == NULL)
+    if (sprite == nullptr)
     {
         fprintf(stderr, "WARNING: \"%s\" Sprite not found\n", name);
     }

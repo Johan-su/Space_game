@@ -5,7 +5,7 @@ using namespace Ecs;
 
 void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm, top_memory_arena *event_mm)
 {
-    ECS_assert(registry != NULL, "Registry cannot be NULL");
+    ECS_assert(registry != nullptr, "Registry cannot be nullptr");
 
 
 
@@ -39,9 +39,9 @@ void Ecs::progress_systems(Registry *registry, float Ts)
 {
     Iter it = {
         .registry   = registry,
-        .group      = NULL,
+        .group      = nullptr,
         .view_arena = registry->view_mm,
-        .event      = NULL,
+        .event      = nullptr,
         .Ts         = Ts
     };
     Event_functions::run_events(registry->evdata, registry->event_mm, &it);

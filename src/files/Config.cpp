@@ -63,7 +63,7 @@ void Internal::init_config(config_data *settings, const char *config_path)
     char line[128];
 
     FILE *fp = fopen(config_path, "r");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         fprintf(stderr, "ERROR: Failed to open file: %s\n", config_path);
         return;
