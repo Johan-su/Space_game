@@ -228,7 +228,7 @@ namespace Ecs
 
 
         template<typename T1, typename... Ts>
-        View<T1> *get_view(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
+        View<T1> *get_view(top_memory_arena *view_mm, Component_data *cdata)
         {
             const Usize typeCount = 1 + sizeof...(Ts);
 
@@ -263,7 +263,7 @@ namespace Ecs
                 U32 page_id = e / PAGE_SIZE;
                 U32 page_entry = e % PAGE_SIZE;
 
-                Component_page<T1> *page = get_page<T1>(mm, comp_pool, page_id);
+                Component_page<T1> *page = comp_pool->component_pages[page_id];
                 view->comparray[i] = page->dense_array[page->sparse_array[page_entry]];
             }
 
@@ -273,7 +273,7 @@ namespace Ecs
 
 
         template<typename... T>
-        Group *get_group(top_memory_arena *mm, top_memory_arena *view_mm, Component_data *cdata)
+        Group *get_group(top_memory_arena *view_mm, Component_data *cdata)
         {
             const Usize typeCount = sizeof...(T);
 

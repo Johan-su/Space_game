@@ -93,14 +93,14 @@ namespace Ecs
     template<typename T1, typename... Ts>
     View<T1> *get_view(Registry *registry)
     {
-        return Component_functions::get_view<T1, Ts...>(registry->mm, registry->view_mm, registry->cdata);
+        return Component_functions::get_view<T1, Ts...>(registry->view_mm, registry->cdata);
     }
 
 
     template<typename... T>
     const Group *get_group(Registry *registry)
     {
-        return Component_functions::get_group<T...>(registry->mm, registry->view_mm, registry->cdata);
+        return Component_functions::get_group<T...>(registry->view_mm, registry->cdata);
     }
 }
 
