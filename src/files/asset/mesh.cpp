@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "mesh.hpp"
 #include <string.h>
 #include <stdio.h>
@@ -132,7 +131,7 @@ static float clamp(float min, float val, float max)
 
     if (val > max)
     {
-        val = max;
+        return max;
     }
 
     return val;
@@ -148,7 +147,7 @@ static I32 clamp(I32 min, I32 val, I32 max)
 
     if (val > max)
     {
-        val = max;
+        return max;
     }
 
     return val;
@@ -157,6 +156,21 @@ static I32 clamp(I32 min, I32 val, I32 max)
 
 void MeshN::init(Mesh *mesh, const char *mesh_src)
 {
+    for (Usize i = 0; i < MAX_VERTICIES; ++i)
+    {
+        mesh->vertex_buffer.x[i] = VERTEX_NULL;
+        mesh->vertex_buffer.y[i] = VERTEX_NULL;
+        mesh->vertex_buffer.z[i] = VERTEX_NULL;
+    }
+
+
+    for (Usize i = 0; i < MAX_INDICIES; ++i)
+    {
+        mesh->index_buffer.v1[i] = INDEX_NULL;
+        mesh->index_buffer.v2[i] = INDEX_NULL;
+        mesh->index_buffer.v3[i] = INDEX_NULL;
+    }
+
     Usize vertex_count = 0;
     Usize index_count = 0;
 
