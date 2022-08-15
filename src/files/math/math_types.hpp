@@ -5,8 +5,11 @@
 class Vector2f
 {
 public:
-    float x;
-    float y;
+
+
+    union {float x, r, u;};
+    union {float y, g, v;};
+    
 
     Vector2f operator+(Vector2f v2f) { return Vector2f {this->x + v2f.x, this->y + v2f.y}; }
     Vector2f operator-(Vector2f v2f) { return Vector2f {this->x - v2f.x, this->y - v2f.y}; }
@@ -32,9 +35,9 @@ public:
 class Vector3f
 {
 public:
-    float x;
-    float y;
-    float z;
+    union {float x, r;};
+    union {float y, g;};
+    union {float z, b;};
 
     Vector3f operator+(Vector3f v3f) { return Vector3f {this->x + v3f.x, this->y + v3f.y, this->z + v3f.z}; }
     Vector3f operator-(Vector3f v3f) { return Vector3f {this->x - v3f.x, this->y - v3f.y, this->z - v3f.z}; }
@@ -60,10 +63,10 @@ public:
 class Vector4f
 {
 public:
-    float x;
-    float y;
-    float z;
-    float w;
+    union {float x, r;};
+    union {float y, g;};
+    union {float z, b;};
+    union {float w, a;};
 
     Vector4f operator+(Vector4f v4f) { return Vector4f {this->x + v4f.x, this->y + v4f.y, this->z + v4f.z, this->w + v4f.w}; }
     Vector4f operator-(Vector4f v4f) { return Vector4f {this->x - v4f.x, this->y - v4f.y, this->z - v4f.z, this->w - v4f.w}; }
@@ -83,4 +86,17 @@ public:
     float magnitude();
     void normalize();
     float dot(Vector4f v4f);
+};
+
+
+
+
+
+
+class mat2
+{
+    union {Vector2f x;};
+    union {Vector2f y;};
+
+
 };
