@@ -1,6 +1,8 @@
 #include "SpawnerSystem.hpp"
 #include "../Components_Events.hpp"
 
+#include <math.h>
+
 /**
  * @return float between 0.0f and 1.0f
  */

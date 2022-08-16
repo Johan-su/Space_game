@@ -27,6 +27,7 @@ static Timer shoot_timer = {
 
 void PlayerSystem::update(Iter *it)
 {
+    /*
     const Group *group = Ecs::get_group<Player>(it->registry);
     if (group->size < 1)
     {
@@ -52,12 +53,12 @@ void PlayerSystem::update(Iter *it)
     vel_y_target = 0.0f;
 
     Vector2f vel_direction = {0.0f, 0.0f};
-    /*
-    if (Real::IsKeyPressed(VK_LSHIFT))
-    {
-        speed = 5000.0f;
-    }
-    */
+    
+    //if (Real::IsKeyPressed(VK_LSHIFT))
+    //{
+    //    speed = 5000.0f;
+    //}
+    
     if (Real::IsKeyPressed(VK_w))
     {
         vel_direction.y += -1.0f;
@@ -121,6 +122,7 @@ void PlayerSystem::update(Iter *it)
             Ecs::push_event<BulletSpawnEvent>(it->registry, &event);           
         }
     }
+    */
 }
 
 

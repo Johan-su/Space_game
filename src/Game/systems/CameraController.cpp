@@ -9,6 +9,7 @@ static bool anchor_check = false;
 
 void CameraController::update(Iter *iter)
 {
+    /*
     if (game_active_camera == ENTITY_NULL)
     {
         return;
@@ -19,9 +20,9 @@ void CameraController::update(Iter *iter)
 
     vec2i mouse_pos = Real::getMousePos();
 
-    /*printf("Mouse pos [%.2f, %.2f]\n", 
-        Real::screen_to_world_x(camera_transform, camera_comp, mouse_pos.x), 
-        Real::screen_to_world_y(camera_transform, camera_comp, mouse_pos.y));*/
+    //printf("Mouse pos [%.2f, %.2f]\n", 
+    //    Real::screen_to_world_x(camera_transform, camera_comp, mouse_pos.x), 
+    //    Real::screen_to_world_y(camera_transform, camera_comp, mouse_pos.y));
 
     // printf("camerapos [x = %f, y = %f, scale_x = %f, scale_y = %f]\n", scene->camera.world_x, scene->camera.world_y, scene->camera.world_scale_x, scene->camera.world_scale_y);
     switch (Real::IsMouseScroll())
@@ -64,4 +65,5 @@ void CameraController::update(Iter *iter)
     {
         anchor_check = false;
     }
+    */
 }

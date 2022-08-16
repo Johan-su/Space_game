@@ -11,23 +11,16 @@ void RenderSystem::render(Iter *it)
 {
     BEGIN_PROFILE_BLOCK();
 
-    if (game_active_camera == ENTITY_NULL)
-    {
-        return;
-    }
 
-    Transform *camera_t = Ecs::get_component<Transform>(it->registry, game_active_camera);
-    CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(it->registry, game_active_camera);
-
-    const Group *group = Ecs::get_group<Transform, SpriteComponent>(it->registry);
+    const Group *group = Ecs::get_group<Transform, SpriteComponent, MeshComponent>(it->registry);
 
     const Transform *transform_list    = Ecs::get_comp_array<Transform>(group, 0);
     const SpriteComponent *sprite_list = Ecs::get_comp_array<SpriteComponent>(group, 1);
+    const MeshComponent *mesh_list     = Ecs::get_comp_array<MeshComponent>(group, 2);
 
     for (Usize i = 0; i < group->size; ++i)
     {
-
-        Application::RenderCopyExF(&transform_list[i], &sprite_list[i], camera_t, camera_cc);
+        Renderer::draw(&transform_list[i], *mesh_list[i].mesh, sprite_list[i].sprite);
     }
     END_PROFILE_BLOCK();
 }

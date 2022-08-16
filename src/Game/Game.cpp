@@ -127,7 +127,7 @@ static void setup_scene(scene *scene)
     
     Real::load_mesh("./resources/meshes/square.mesh", "square_mesh");
 
-
+    
     PlayerSpawnEvent pse = {
         .pos = {7000.0f, 0.0f},
         .scale = 1.0f,
@@ -154,10 +154,12 @@ static void setup_scene(scene *scene)
 
 void init()
 {
+    
     scene *main_scene = Application::create_add_scene("GamePlay_scene");
-    setup_scene(main_scene);
+    //setup_scene(main_scene);
 
     Application::run(Application::Get(), main_scene); //TODO(Johan) deprecated
+    
 }
 
 

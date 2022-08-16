@@ -1,7 +1,7 @@
 #pragma once
 
-struct SDL_Renderer;
-struct SDL_Window;
+#include "core/window.hpp"
+
 
 #include "asset/mesh.hpp"
 #include "scene/component.hpp"
@@ -9,7 +9,7 @@ struct SDL_Window;
 
 namespace Internal
 {
-   void init_renderer(SDL_Renderer *renderer, SDL_Window *window);
+   void init_renderer(Window *window);
    void clean_renderer();
 } // namespace Internal
 
@@ -22,6 +22,6 @@ namespace Renderer
     void end();
 
     void clear();
-    void draw(Transform *transform, Mesh *mesh);
+    void draw(const Transform *transform, Mesh mesh, const Sprite *sprite);
 
 } // namespace Renderer

@@ -1,7 +1,6 @@
 #include "asset.hpp"
 #include "../datastructures/hashmap.hpp"
 #include "../platform/platform.hpp"
-#include "../core.hpp"
 
 
 static HashMap<void *> s_path_map;
@@ -87,6 +86,8 @@ void Real::load_mesh(const char *path, const char *name)
 
 void Real::load_texture(const char *path, const char *name)
 {
+    assert(false, "not implemented");
+    /*
     char *path_buffer = Arena::top_alloc<char>(&g_memory.scratch_buffer, 1024);
     Platform::get_abs_path(path, path_buffer, 1024);
 
@@ -112,7 +113,8 @@ void Real::load_texture(const char *path, const char *name)
         HashMapN::set(&s_name_map, name_hash, (void *)texture);
     }
 
-    //Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    */
 }
 
 

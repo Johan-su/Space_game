@@ -1,6 +1,7 @@
 #include "AngleSystem.hpp"
 #include "../Components_Events.hpp"
 
+#include <math.h>
 
 void AngleSystem::update(Iter *iter)
 {

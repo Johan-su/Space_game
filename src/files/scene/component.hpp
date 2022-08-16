@@ -6,7 +6,7 @@
 
 
 
-
+struct Mesh;
 struct Sprite;
 
 
@@ -48,6 +48,11 @@ struct SpriteComponent
     Sprite *sprite;
 };
 
+
+struct MeshComponent
+{
+    Mesh *mesh;  
+};
 
 
 // colliders
