@@ -1,6 +1,6 @@
 #include "Renderer.hpp"
 
-#include <SDL.h>
+
 #include <stdio.h>
 
 static SDL_Renderer *s_renderer = nullptr;

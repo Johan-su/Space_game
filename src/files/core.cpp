@@ -13,7 +13,7 @@
 #include "int.hpp"
 #include "Renderer.hpp"
 
-#include <SDL.h>
+
 
 #include <stdio.h>
 #include <limits.h>

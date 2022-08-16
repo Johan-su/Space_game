@@ -5,7 +5,7 @@
 #include "ecs/ecs.hpp"
 #include "Memory_arena.hpp"
 
-#include <SDL.h>
+
 #include "datastructures/hashmap.hpp"
 
 #define MAX_SCENE_COUNT 32

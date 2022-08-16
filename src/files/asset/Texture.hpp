@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../int.hpp"
-#include <SDL.h>
+
 
 struct Texture
 {
