@@ -71,7 +71,7 @@ void Renderer::draw(Transform *transform, Mesh *mesh)
     for (int i = 0; i < mesh->vertex_buffer.vertex_count; i += 1)
     {
         mesh_data.vertex_buffer.verticies[i].pos += 1.5f; 
-        mesh_data.vertex_buffer.verticies[i].pos *= 500.0f; 
+        mesh_data.vertex_buffer.verticies[i].pos *= 50.0f; 
     }
     
     int er = SDL_RenderGeometryRaw(s_renderer, 
