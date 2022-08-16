@@ -125,7 +125,7 @@ static void setup_scene(scene *scene)
     Real::init_sprite("ship1_sprite", 0, 0, 114, 200, Real::get_texture("placeholder_ship_texture"));
     Real::init_sprite("planet1_sprite", 0, 0, 132, 132, Real::get_texture("placeholder_planet_texture"));
     
-
+    Real::load_mesh("./resources/meshes/square.mesh", "square_mesh");
 
 
     PlayerSpawnEvent pse = {

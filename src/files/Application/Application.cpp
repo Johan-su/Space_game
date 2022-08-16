@@ -221,7 +221,6 @@ void Application::run(Application_data *app, scene *scene)
     Transform *camera_tr = Ecs::get_component<Transform>(&scene->registry, camera);
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
-    Real::load_mesh("./resources/meshes/square.mesh", "square_mesh");
 
 
     while (app->active)
