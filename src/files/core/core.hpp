@@ -1,12 +1,14 @@
 #pragma once
-#include "asset/Texture.hpp"
-#include "Config.hpp"
+#include "../asset/Texture.hpp"
+#include "../Config.hpp"
 
-#include "ecs/ecs.hpp"
-#include "Memory_arena.hpp"
+#include "../ecs/ecs.hpp"
+#include "../Memory_arena.hpp"
+#include "window.hpp"
 
+#include "../datastructures/hashmap.hpp"
 
-#include "datastructures/hashmap.hpp"
+#include <GLFW/glfw3.h>
 
 #define MAX_SCENE_COUNT 32
 struct global_memory
@@ -30,8 +32,8 @@ struct global_memory
 
 struct engine_data
 {
-    SDL_Renderer *renderer;
-    SDL_Window *window;
+    // SDL_Renderer *renderer;
+    Window *window;
     
     config_data *config;
 };

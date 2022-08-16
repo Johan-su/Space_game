@@ -3,6 +3,7 @@
 // taken from SDL_Keycodes
 enum KeyCodes
 {
+/*
     VK_UNKNOWN = 0,
 
     VK_RETURN = '\r',
@@ -43,9 +44,8 @@ enum KeyCodes
     VK_QUESTION = '?',
     VK_AT = '@',
 
-    /*
-       Skip uppercase letters
-    */
+    // Skip uppercase letters
+
 
     VK_LEFTBRACKET = '[',
     VK_BACKSLASH = '\\',
@@ -91,15 +91,17 @@ enum KeyCodes
 
 
 
-
+*/
 };
 
 
 enum mouseCodes
 {
+/*
     MOUSE_BUTTON_LEFT   = 1,
     MOUSE_BUTTON_MIDDLE = 2,
     MOUSE_BUTTON_RIGHT  = 3,
     MOUSE_BUTTON_X1     = 4,
     MOUSE_BUTTON_X2     = 5,
+*/
 };

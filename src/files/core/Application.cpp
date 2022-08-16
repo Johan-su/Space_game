@@ -1,7 +1,7 @@
 #include "Application.hpp"
 #include "../platform/platform.hpp"
-#include "../input/Input.hpp"
-#include "../core.hpp"
+#include "Input.hpp"
+#include "core.hpp"
 #include "../assert.hpp"
 #include "../Memory_arena.hpp"
 #include "../scene/component.hpp"
@@ -254,27 +254,18 @@ void Application::run(Application_data *app, scene *scene)
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
 
-        SDL_SetRenderDrawColor(app->engine->renderer, 0, 255, 0, 255);
 
-        Renderer::draw(nullptr, Real::get_mesh("square_mesh"));
 
         //Ecs::progress_systems(&scene->registry, ts);
 
-        SDL_SetRenderDrawColor(app->engine->renderer, 255, 0, 0, 255);
         vec2i mpos = Real::getMousePos();
 
         printf("mouse_pos [%d, %d]\n", mpos.x, mpos.y);
 
-        SDL_Rect rect = {
-            .x = mpos.x - 5,
-            .y = mpos.y - 5,
-            .w = 5,
-            .h = 5
-        };
 
-        SDL_RenderFillRect(app->engine->renderer, &rect);
 
-        SDL_SetRenderDrawColor(app->engine->renderer, 0, 0, 0, 0);
+        // SDL_RenderFillRect(app->engine->renderer, &rect);
+
 
         Renderer::end();
 
@@ -288,51 +279,6 @@ void Application::run(Application_data *app, scene *scene)
         } while (dt < target_time);
 
     }
-}
-
-
-static inline float RadToDeg(float angle)
-{
-    return angle * 57.2957786667f; // 180 / pi
-}
-
-
-int Application::RenderCopyExF(const Transform *transform, 
-    const SpriteComponent *sprite_comp,
-    const Transform *camera_transform,
-    const CameraComponent *camera_comp)
-{
-
-        Application_data *app = Application::Get();
-
-        Sprite *sprite = sprite_comp->sprite;
-        SDL_Texture *texture = sprite->texture->internal_tex;
-
-
-        SDL_Rect srcrect = {
-            .x = (int)sprite->x,
-            .y = (int)sprite->y,
-
-            .w = (int)sprite->width,
-            .h = (int)sprite->height,
-        };
-
-
-        float width  = transform->scale.x * sprite->width * camera_comp->world_scale.x;
-        float height = transform->scale.y * sprite->height * camera_comp->world_scale.y;
-
-        SDL_FRect dstrect = {
-            .x = (float)Real::world_to_screen_x(camera_transform, camera_comp, transform->pos.x) - (width / 2.0f),
-            .y = (float)Real::world_to_screen_y(camera_transform, camera_comp, transform->pos.y) - (height / 2.0f),
-
-            .w = width,
-            .h = height,
-        };
-
-
-        double angle = RadToDeg(atan2f(transform->rot.y, transform->rot.x)) + 90.0f;
-
-    return SDL_RenderCopyExF(app->engine->renderer, texture, &srcrect, &dstrect, angle, nullptr, SDL_FLIP_NONE);
 }
 
 

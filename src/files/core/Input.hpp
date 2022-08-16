@@ -1,5 +1,5 @@
 #pragma once
-#include "../core.hpp"
+#include "core.hpp"
 
 
 struct vec2i
@@ -20,7 +20,7 @@ enum MOUSE_SCROLL
 
 namespace Internal
 {
-    void init_input();
+    void init_input(Window *window);
     void handle_input();
 }    
 

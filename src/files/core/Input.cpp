@@ -1,9 +1,9 @@
 #include "Input.hpp"
-#include "../Application/Application.hpp"
+#include "Application.hpp"
 
 
 
-
+#include <GLFW/glfw3.h>
 
 
 
@@ -17,19 +17,26 @@ struct input_data
 };
 
 
-static input_data input;
+static input_data s_input;
+static Window *s_window;
 
-
-void Internal::init_input()
+void Internal::init_input(Window *window)
 {
-    HashMapN::init(&input.key_map);
-    HashMapN::init(&input.mouse_map);
-    input.scroll = MOUSE_SCROLL_NONE;
+    ::s_window = window;
+    HashMapN::init(&s_input.key_map);
+    HashMapN::init(&s_input.mouse_map);
+    s_input.scroll = MOUSE_SCROLL_NONE;
 }
 
 
 void Internal::handle_input()
 {
+    glfwPollEvents();
+    if (glfwWindowShouldClose(s_window->internal_win))
+    {
+        Application::quit_app(Application::Get());
+    }
+    /*
 
     if (HashMapN::get_value(&input.key_map, SDLK_ESCAPE))
     {
@@ -51,7 +58,7 @@ void Internal::handle_input()
                 Application::quit_app(Application::Get());
             } break;
 
-            /*
+            
             case SDL_WINDOWEVENT:
             {
                 switch (event.window.event)
@@ -68,8 +75,6 @@ void Internal::handle_input()
                     } break;
                 }
             } break;
-
-            */
 
 
             case SDL_MOUSEBUTTONDOWN:
@@ -122,17 +127,18 @@ void Internal::handle_input()
             } break;
         }
     }
+    */
 }
 
 
 bool Real::IsKeyPressed(int keyCode)
 {
-    return HashMapN::get_value(&input.key_map, keyCode);
+    return HashMapN::get_value(&s_input.key_map, keyCode);
 }
 
 bool Real::IsMousePressed(int mouseCode)
 {
-    return HashMapN::get_value(&input.mouse_map, mouseCode);
+    return HashMapN::get_value(&s_input.mouse_map, mouseCode);
 }
 
 
@@ -142,7 +148,7 @@ bool Real::IsMousePressed(int mouseCode)
  */ 
 MOUSE_SCROLL Real::IsMouseScroll()
 {
-    return input.scroll;
+    return s_input.scroll;
 }
 
 
@@ -150,5 +156,5 @@ MOUSE_SCROLL Real::IsMouseScroll()
 
 vec2i Real::getMousePos()
 {
-    return input.mouse_pos;
+    return s_input.mouse_pos;
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "../input/KeyCodes.hpp"
+#include "KeyCodes.hpp"
 #include "../scene/scene.hpp"
 #include "../scene/component.hpp"
 #include "../asset/mesh.hpp"
@@ -29,14 +29,6 @@ namespace Application
     void run(Application_data *app, scene *scene);
 
     //void set_scene(Application_data *app, uint16_t scene_id, void (*update_func)(scene *), void (*fixed_update_func)(scene *), void *render_func);
-
-
-    int RenderCopyExF(const Transform *transform, 
-        const SpriteComponent *sprite_comp,
-        const Transform *camera_transform,
-        const CameraComponent *camera_comp);
-
-
 
 
     Application_data *Get();

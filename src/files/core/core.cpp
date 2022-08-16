@@ -1,17 +1,17 @@
 #include "core.hpp"
-#include "assert.hpp"
+#include "../assert.hpp"
 
 
-#include "platform/platform.hpp"
-#include "input/Input.hpp"
+#include "../platform/platform.hpp"
+#include "Input.hpp"
 
-#include "Memory_arena.hpp"
-#include "asset/asset.hpp"
+#include "../Memory_arena.hpp"
+#include "../asset/asset.hpp"
 
 
-#include "ecs/ecs.hpp"
-#include "int.hpp"
-#include "Renderer.hpp"
+#include "../ecs/ecs.hpp"
+#include "../int.hpp"
+#include "../Renderer.hpp"
 
 
 
@@ -80,47 +80,26 @@ void Internal::clean_global_memory()
     }
 }
 
-
-
-
-static void sdl_init(engine_data *engine)
+static void glfw_error_callback(int error, const char *desc)
 {
-    assert(engine, "Game cannot be nullptr");
-
-    if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS))
-    {
-        fprintf(stderr, "ERROR: SDL_INITALIZATION FAILED, %s\n", SDL_GetError());
-        exit(1);
-    }
-
-    int flags = 0;
-    engine->window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, engine->config->screen_width, engine->config->screen_height, flags);
-    if (!engine->window)
-    {
-        fprintf(stderr, "ERROR: SDL_CreateWindow FAILED, %s\n", SDL_GetError());
-        exit(1);
-    }
-
-    engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_ACCELERATED);
-    if (!engine->renderer)
-    {
-        fprintf(stderr, "ERROR: SDL_CreateRenderer FAILED, %s\n", SDL_GetError());
-        exit(1);
-    }
-
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    fprintf(stderr, "ERROR: GLFW %s", desc);
 }
 
 
-static void sdl_clean(engine_data *engine)
+static void init_glfw()
 {
-    SDL_DestroyRenderer(engine->renderer);
-    SDL_DestroyWindow(engine->window);
+    glfwSetErrorCallback(glfw_error_callback);
+    if (!glfwInit())
+    {
+        fprintf(stderr, "ERROR: failed to initalize glfw");
+        exit(1);
+    }
+}
 
-    engine->renderer = nullptr;
-    engine->window = nullptr;
 
-    SDL_Quit();
+static void clean_glfw()
+{
+    glfwTerminate();
 }
 
 
@@ -132,11 +111,11 @@ engine_data *Internal::create_engine(top_memory_arena *arena)
 
     const char *config_path = "./config.ini";
     Internal::init_config(engine->config, config_path);
-    sdl_init(engine);
+    init_glfw();
+    engine->window = Internal::create_window(engine->config->screen_width, engine->config->screen_height, "Space_game");
+    Internal::init_renderer(engine->window);
 
-    Internal::init_renderer(engine->renderer, engine->window);
-
-    Internal::init_input();
+    Internal::init_input(engine->window);
     Internal::init_asset(engine);
 
     return engine;
@@ -150,7 +129,7 @@ void Internal::clean_engine(engine_data *engine)
     // exists because SDL uses its own allocators
     Internal::clean_asset();
     Internal::clean_renderer();
-    sdl_clean(engine);
+    clean_glfw();
 
     Internal::clean_global_memory();    
 }
