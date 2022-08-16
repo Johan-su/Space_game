@@ -62,10 +62,13 @@ if(UNIX AND NOT APPLE)
 
 endif()
 
-find_package(SDL2 REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIRS})
-link_libraries(${SDL2_LIBRARIES})
+find_package(OpenGL REQUIRED)
+include_directories(./lib/khronos)
+
+
+add_subdirectory(./lib/GLFW) # https://www.glfw.org/docs/3.0/build.html
+include_directories(./lib/GLFW/include)
 
 
 
@@ -76,13 +79,9 @@ FILE(GLOB_RECURSE GAMESRCFILES ./src/Game/*.cpp )
 FILE(GLOB_RECURSE GAMEHEADFILES ./src/Game/*.hpp)
 
 
-#FILE(GLOB MAIN ./src/main/Main.cpp)
-
-#FILE(GLOB TESTSRCFILES ./test/*.cpp)
-#FILE(GLOB TESTHEADFILES ./test/*.hpp)
-
 
 add_executable(Space_game ${ENGINESRCFILES} ${ENGINEHEADFILES} ${GAMESRCFILES} ${GAMEHEADFILES})
 
+target_link_libraries(Space_game glfw ${GLFW_LIBRARIES})
+target_link_libraries(Space_game opengl32)
 
-#add_executable(Space_game_test ${TESTSRCFILES} ${TESTHEADFILES} ${SRCFILES} ${HEADFILES})
