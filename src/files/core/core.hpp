@@ -1,5 +1,4 @@
 #pragma once
-#include "../asset/Texture.hpp"
 #include "../Config.hpp"
 
 #include "../ecs/ecs.hpp"
@@ -8,7 +7,6 @@
 
 #include "../datastructures/hashmap.hpp"
 
-#include <GLFW/glfw3.h>
 
 #define MAX_SCENE_COUNT 32
 struct global_memory
