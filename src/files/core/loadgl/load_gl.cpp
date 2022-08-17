@@ -12,7 +12,7 @@ GLFUNCS
 
 /**
  * 
- * must be called after creating OpenGl context
+ * must be called after making OpenGL context
  * @return 0 if errors occured, otherwise 1
  */
 int load_gl()

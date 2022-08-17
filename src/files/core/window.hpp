@@ -1,5 +1,8 @@
 #pragma once
 
+#define OPENGL_DEBUG
+
+
 #include <GLFW/glfw3.h>
 struct Window
 {
