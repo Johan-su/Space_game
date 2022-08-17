@@ -7,7 +7,7 @@
 #include "../scene/component.hpp"
 #include "../scene/Camera.hpp"
 #include "../asset/asset.hpp"
-#include "../Renderer.hpp"
+#include "../Renderer/Renderer.hpp"
 
 struct Application_data
 {

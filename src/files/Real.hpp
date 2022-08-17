@@ -8,7 +8,7 @@
 #include "scene/component.hpp"
 #include "core/Input.hpp"
 #include "asset/asset.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 
 #else
 

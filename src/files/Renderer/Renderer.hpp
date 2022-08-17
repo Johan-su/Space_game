@@ -1,11 +1,11 @@
 #pragma once
 
-#include "core/window.hpp"
+#include "../core/window.hpp"
 
 
-#include "asset/mesh.hpp"
-#include "scene/component.hpp"
-#include "scene/Camera.hpp"
+#include "../asset/mesh.hpp"
+#include "../scene/component.hpp"
+#include "../scene/Camera.hpp"
 
 namespace Internal
 {
@@ -23,5 +23,6 @@ namespace Renderer
 
     void clear();
     void draw(const Transform *transform, Mesh mesh, const Sprite *sprite);
+    void draw();
 
 } // namespace Renderer
