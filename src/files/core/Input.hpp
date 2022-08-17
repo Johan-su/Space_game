@@ -2,7 +2,7 @@
 #include "core.hpp"
 
 
-struct vec2i
+struct MousePos
 {
     I16 x;
     I16 y;
@@ -31,5 +31,5 @@ namespace Real
     bool IsKeyPressed(int keyCode);
     bool IsMousePressed(int mouseCode);
     MOUSE_SCROLL IsMouseScroll();
-    vec2i getMousePos();
+    MousePos getMousePos();
 }

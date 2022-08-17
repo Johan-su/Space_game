@@ -27,7 +27,6 @@ static Timer shoot_timer = {
 
 void PlayerSystem::update(Iter *it)
 {
-    /*
     const Group *group = Ecs::get_group<Player>(it->registry);
     if (group->size < 1)
     {
@@ -54,27 +53,24 @@ void PlayerSystem::update(Iter *it)
 
     Vector2f vel_direction = {0.0f, 0.0f};
     
-    //if (Real::IsKeyPressed(VK_LSHIFT))
-    //{
-    //    speed = 5000.0f;
-    //}
+
     
-    if (Real::IsKeyPressed(VK_w))
+    if (Real::IsKeyPressed(VK_KEY_W))
     {
         vel_direction.y += -1.0f;
     }
 
-    if (Real::IsKeyPressed(VK_s))
+    if (Real::IsKeyPressed(VK_KEY_S))
     {
         vel_direction.y += 1.0f;
     }
 
-    if (Real::IsKeyPressed(VK_a))
+    if (Real::IsKeyPressed(VK_KEY_A))
     {
         vel_direction.x += -1.0f;
     }
 
-    if (Real::IsKeyPressed(VK_d))
+    if (Real::IsKeyPressed(VK_KEY_D))
     {
         vel_direction.x += 1.0f;
     }
@@ -84,7 +80,7 @@ void PlayerSystem::update(Iter *it)
     vel_y_target = speed * vel_direction.y;
 
 
-    vec2i mpos = Real::getMousePos();
+    MousePos mpos = Real::getMousePos();
 
 
     Transform *t_camera = Ecs::get_component<Transform>(it->registry, active_camera);
@@ -104,7 +100,7 @@ void PlayerSystem::update(Iter *it)
     vel->v.y = lerp(vel->v.y, vel_y_target, it->Ts * 6);
 
     
-    if (Real::IsMousePressed(mouseCodes::MOUSE_BUTTON_LEFT))
+    if (Real::IsMousePressed(mouseCodes::VK_MOUSE_BUTTON_LEFT))
     {
         shoot_timer.time += it->Ts;
         if (shoot_timer.time >= shoot_timer.max_val)
@@ -122,7 +118,6 @@ void PlayerSystem::update(Iter *it)
             Ecs::push_event<BulletSpawnEvent>(it->registry, &event);           
         }
     }
-    */
 }
 
 

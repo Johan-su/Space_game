@@ -4,12 +4,11 @@
 static const float MOUSE_ZOOM_SCALE_SPEED = 1.3f;
 
 
-static vec2i anchor;
+static MousePos anchor;
 static bool anchor_check = false;
 
 void CameraController::update(Iter *iter)
 {
-    /*
     if (game_active_camera == ENTITY_NULL)
     {
         return;
@@ -18,7 +17,7 @@ void CameraController::update(Iter *iter)
     CameraComponent *camera_comp = Ecs::get_component<CameraComponent>(iter->registry, game_active_camera);
     Transform *camera_transform  = Ecs::get_component<Transform>(iter->registry, game_active_camera);
 
-    vec2i mouse_pos = Real::getMousePos();
+    MousePos mouse_pos = Real::getMousePos();
 
     //printf("Mouse pos [%.2f, %.2f]\n", 
     //    Real::screen_to_world_x(camera_transform, camera_comp, mouse_pos.x), 
@@ -44,7 +43,7 @@ void CameraController::update(Iter *iter)
         } break;
     }
 
-    if (Real::IsMousePressed(MOUSE_BUTTON_MIDDLE))
+    if (Real::IsMousePressed(VK_MOUSE_BUTTON_MIDDLE))
     {
         //TODO(Johan) try to remove anchor_check.
         if (!anchor_check)
@@ -53,7 +52,7 @@ void CameraController::update(Iter *iter)
             anchor_check = true;
         }
 
-        vec2i mpos = Real::getMousePos();
+        MousePos mpos = Real::getMousePos();
         
         camera_transform->pos.x -= (mpos.x - anchor.x) / camera_comp->world_scale.x;
         camera_transform->pos.y -= (mpos.y - anchor.y) / camera_comp->world_scale.y;
@@ -65,5 +64,4 @@ void CameraController::update(Iter *iter)
     {
         anchor_check = false;
     }
-    */
 }

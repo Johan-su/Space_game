@@ -258,9 +258,9 @@ void Application::run(Application_data *app, scene *scene)
 
         //Ecs::progress_systems(&scene->registry, ts);
 
-        vec2i mpos = Real::getMousePos();
+        //vec2i mpos = Real::getMousePos();
 
-        printf("mouse_pos [%d, %d]\n", mpos.x, mpos.y);
+        //printf("mouse_pos [%d, %d]\n", mpos.x, mpos.y);
 
 
 

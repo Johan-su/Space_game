@@ -10,7 +10,7 @@
 struct input_data
 {
     MOUSE_SCROLL scroll;
-    vec2i mouse_pos;
+    MousePos mouse_pos;
 
     HashMap<bool> key_map;
     HashMap<bool> mouse_map;
@@ -20,9 +20,48 @@ struct input_data
 static input_data s_input;
 static Window *s_window;
 
+
+static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    //TODO(Johan): implement scroll
+}
+
+
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (action == GLFW_PRESS)
+        HashMapN::set(&s_input.mouse_map, button, true);
+    else if (action == GLFW_RELEASE)
+        HashMapN::set(&s_input.mouse_map, button, false);    
+}
+
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    s_input.mouse_pos = {(I16)xpos, (I16)ypos};
+}
+
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS)
+        HashMapN::set(&s_input.key_map, key, true);
+    else if (action == GLFW_RELEASE)
+        HashMapN::set(&s_input.key_map, key, false);
+}
+
+
 void Internal::init_input(Window *window)
 {
     ::s_window = window;
+    glfwSetKeyCallback(s_window->internal_win, key_callback);
+    glfwSetCursorPosCallback(s_window->internal_win, cursor_position_callback);
+    glfwSetMouseButtonCallback(s_window->internal_win, mouse_button_callback);
+    glfwSetScrollCallback(s_window->internal_win, scroll_callback);
+
+
+
+
     HashMapN::init(&s_input.key_map);
     HashMapN::init(&s_input.mouse_map);
     s_input.scroll = MOUSE_SCROLL_NONE;
@@ -36,98 +75,6 @@ void Internal::handle_input()
     {
         Application::quit_app(Application::Get());
     }
-    /*
-
-    if (HashMapN::get_value(&input.key_map, SDLK_ESCAPE))
-    {
-        // TODO(Johan): probably change to something better
-        Application::quit_app(Application::Get());
-    }
-
-    SDL_Event event;
-    // TODO(Johan) maybe find better solution to mouse scroll
-    input.scroll = MOUSE_SCROLL_NONE;
-    while (SDL_PollEvent(&event))
-    {
-        //printf("event type: %d\n", event.type);
-        switch(event.type)
-        {
-            case SDL_QUIT:
-            {
-                 // TODO(Johan): probably change to something better
-                Application::quit_app(Application::Get());
-            } break;
-
-            
-            case SDL_WINDOWEVENT:
-            {
-                switch (event.window.event)
-                {
-                    case SDL_WINDOWEVENT_ENTER:
-                    {
-                        printf("mouse enter\n");
-                    } break;
-                    
-                    
-                    case SDL_WINDOWEVENT_LEAVE:
-                    {
-                        printf("mouse leave\n");
-                    } break;
-                }
-            } break;
-
-
-            case SDL_MOUSEBUTTONDOWN:
-            {
-                HashMapN::set(&input.mouse_map, event.button.button, true);
-                //printf("down %u\n", event.button.button);
-            } break;
-
-
-            case SDL_MOUSEBUTTONUP:
-            {
-                HashMapN::set(&input.mouse_map, event.button.button, false);
-                //printf("up %u\n", event.button.button);
-            } break;
-
-
-            case SDL_MOUSEWHEEL:
-            {
-                if (event.wheel.y > 0)
-                {
-                    input.scroll = MOUSE_SCROLL_UP;
-                    //printf("Mouse scroll up\n");
-                }
-                else if (event.wheel.y < 0)
-                {
-                    input.scroll = MOUSE_SCROLL_DOWN;
-                    //printf("Mouse scroll down\n");
-                }
-            } break;
-
-
-            case SDL_MOUSEMOTION:
-            {
-                input.mouse_pos.x = event.motion.x;
-                input.mouse_pos.y = event.motion.y;
-
-               // printf("Mouse [ %d, %d ]\n", event.motion.x, event.motion.y);
-            } break;
-
-
-            case SDL_KEYDOWN:
-            {
-                HashMapN::set(&input.key_map, event.key.keysym.sym, true);
-            } break;
-
-
-            case SDL_KEYUP:
-            {
-                HashMapN::set(&input.key_map, event.key.keysym.sym, false);
-            } break;
-        }
-    }
-    */
 }
 
 
@@ -154,7 +101,7 @@ MOUSE_SCROLL Real::IsMouseScroll()
 
 
 
-vec2i Real::getMousePos()
+MousePos Real::getMousePos()
 {
     return s_input.mouse_pos;
 }
