@@ -65,7 +65,7 @@ void *memory_map::reserve(void *address, Usize page_amount)
 
 void *memory_map::commit(void *address, Usize page_amount)
 {
-    fprintf(stderr, "DEBUG: commit [%p, %llu]\n", address, page_amount);
+    //fprintf(stderr, "DEBUG: commit [%p, %llu]\n", address, page_amount);
     return Windows::commit(address, page_amount);
 }
 
