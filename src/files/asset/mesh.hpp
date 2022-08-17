@@ -19,7 +19,7 @@ struct Vertex
     Vector2f tex_coords;
 };
 
-struct VertexBuffer
+struct MeshVertexBuffer
 {
     Usize vertex_count;
     Vertex verticies[MAX_VERTICIES];
@@ -27,7 +27,7 @@ struct VertexBuffer
 
 
 
-struct IndexBuffer
+struct MeshIndexBuffer
 {
     Usize index_count;
     I32 indicies[MAX_INDICIES];
@@ -38,8 +38,8 @@ struct IndexBuffer
 
 struct Mesh
 {
-    VertexBuffer vertex_buffer;
-    IndexBuffer index_buffer;
+    MeshVertexBuffer vertex_buffer;
+    MeshIndexBuffer index_buffer;
 };
 
 
