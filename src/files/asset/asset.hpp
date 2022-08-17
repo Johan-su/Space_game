@@ -33,6 +33,8 @@ namespace Real
 
     void load_mesh(const char *path, const char *name);
     void load_texture(const char *path, const char *name);
+    void load_vertex_shader_src(const char *path, const char *name); //TODO(Johan) fix loading shaders/ loading stuff that comes from multiple files
+    void load_fragment_shader_src(const char *path, const char *name);
 
     void init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *texture);
 
