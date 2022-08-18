@@ -12,6 +12,7 @@ static HashMap<void *> s_name_map;
 
 static engine_data *s_engine;
 
+
 void Internal::init_asset(engine_data *engine) // TODO(Johan): maybe pass in arena here and not directly access the global memory
 {
     HashMapN::init(&s_path_map);
@@ -54,6 +55,7 @@ static const char *slurp_file(const char *path, top_memory_arena *arena)
     return slurped_file; 
 }
 
+
 enum class AssetType
 {
     Mesh,
@@ -61,7 +63,6 @@ enum class AssetType
     VertSrc,
     FragSrc,
 };
-
 
 
 static U64 *check_if_path_hash_exists_and_get_hash(const char *path, AssetType type)
@@ -161,6 +162,8 @@ void Real::load_mesh(const char *name, const char *path)
     HashMapN::set(&s_path_map, *path_hash, (void *)mesh);
     HashMapN::set(&s_name_map, *name_hash, (void *)mesh);
 
+    fprintf(stderr, "NOTE: loaded mesh from %s\n", path);
+
     Arena::clear_top_arena(&g_memory.scratch_buffer);
 }
 
@@ -185,6 +188,7 @@ void Real::load_vertex_shader_src(const char *name, const char *path)
 
     HashMapN::set(&s_path_map, *path_hash, (void *)src);
     HashMapN::set(&s_name_map, *name_hash, (void *)src);
+    fprintf(stderr, "NOTE: loaded vertex source from %s\n", path);
 }
 
 
@@ -201,6 +205,7 @@ void Real::load_fragment_shader_src(const char *name, const char *path)
 
     HashMapN::set(&s_path_map, *path_hash, (void *)src);
     HashMapN::set(&s_name_map, *name_hash, (void *)src);
+    fprintf(stderr, "NOTE: loaded fragment source from %s\n", path);
 }
 
 
@@ -332,7 +337,6 @@ const char *Real::get_fragment_src(const char *name)
 }
 
 
-
 Shader *Real::get_shader(const char *name)
 {
     Shader *shader = (Shader *)get_item(name);
@@ -344,7 +348,6 @@ Shader *Real::get_shader(const char *name)
 
     return shader;
 }
-
 
 
 U32 Real::get_sprite_width(Sprite *sprite)
