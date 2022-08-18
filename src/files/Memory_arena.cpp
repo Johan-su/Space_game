@@ -54,7 +54,7 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignme
 
         if (arena->bytes_allocated + page_amount * page_size > arena->max_size_reserved)
         {
-            fprintf(stderr, "ERROR: allocation out of top arena's reserved bounds");
+            fprintf(stderr, "ERROR: allocation out of top arena's reserved bounds\n");
             exit(1);
         }
         memory_map::commit((char *)arena->data + arena->max_size_commited, page_amount);
