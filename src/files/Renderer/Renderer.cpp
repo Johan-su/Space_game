@@ -82,7 +82,17 @@ void Renderer::draw(const Transform *transform, Mesh mesh, const Sprite *sprite)
 {
     assert(s_camera_transform != nullptr, "camera transform cannot be nullptr in draw, forgot begin() ?");
     assert(s_camera_comp != nullptr, "camera component cannot be nullptr in draw, forgot begin() ?");
-
-
 }
 
+
+void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color)
+{
+    Real::bind(va);
+    Real::bind(ib);
+    Real::bind(shader);
+
+    Real::set_uniform_vec4f(shader, color, "u_Color");
+
+    glDrawElements(GL_TRIANGLES, ib->count, GL_UNSIGNED_INT, nullptr);
+    
+}

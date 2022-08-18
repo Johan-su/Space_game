@@ -18,11 +18,12 @@ void Real::init_layout(VertexLayout *layout)
 
 void Real::add_type(VertexLayout *layout, U32 count, U32 type, bool normalized)
 {
-    layout->elements[layout->count] = {
+    layout->attributes[layout->count] = {
         .type = type,
         .count = count,
         .normalized = normalized,
     };
+    layout->stride += count * sizeof_gltype(type);
     layout->count += 1; 
 }
 

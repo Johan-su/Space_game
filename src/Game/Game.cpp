@@ -119,16 +119,22 @@ static void setup_scene(scene *scene)
     const char *ship_path = "./resources/ships/placeholder.bmp";
     const char *planet_path = "./resources/planets/placeholder_planet.bmp";
 
-    Real::load_texture(ship_path, "placeholder_ship_texture");
-    Real::load_texture(planet_path, "placeholder_planet_texture");
+//    Real::load_texture(ship_path, "placeholder_ship_texture");
+//    Real::load_texture(planet_path, "placeholder_planet_texture");
 
-    Real::init_sprite("ship1_sprite", 0, 0, 114, 200, Real::get_texture("placeholder_ship_texture"));
-    Real::init_sprite("planet1_sprite", 0, 0, 132, 132, Real::get_texture("placeholder_planet_texture"));
+//    Real::init_sprite("ship1_sprite", 0, 0, 114, 200, Real::get_texture("placeholder_ship_texture"));
+//    Real::init_sprite("planet1_sprite", 0, 0, 132, 132, Real::get_texture("placeholder_planet_texture"));
     
-    Real::load_mesh("./resources/meshes/square.mesh", "square_mesh");
+    Real::load_vertex_shader_src("vshader_source1", "./resources/shaders/placeholder.vert");
+    Real::load_fragment_shader_src("fshader_source1", "./resources/shaders/placeholder.frag");
+
+    Real::load_shader("shader1", Real::get_vertex_src("vshader_source1"), Real::get_fragment_src("fshader_source1"));
+
+
+    Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
 
     
-    PlayerSpawnEvent pse = {
+    /*PlayerSpawnEvent pse = {
         .pos = {7000.0f, 0.0f},
         .scale = 1.0f,
         .ship_sprite = Real::get_sprite("ship1_sprite"),
@@ -145,10 +151,10 @@ static void setup_scene(scene *scene)
         .planet_sprite = Real::get_sprite("planet1_sprite"),
         .health        = 1000000.0f,
         .health_regen  = 0.0f,
-    };
+    };*/
 
 
-    Ecs::push_event<PlanetSpawnEvent>(&scene->registry, &planetSE);
+    //Ecs::push_event<PlanetSpawnEvent>(&scene->registry, &planetSE);
 }
 
 
@@ -156,7 +162,7 @@ void init()
 {
     
     scene *main_scene = Application::create_add_scene("GamePlay_scene");
-    //setup_scene(main_scene);
+    setup_scene(main_scene);
 
     Application::run(Application::Get(), main_scene); //TODO(Johan) deprecated
     

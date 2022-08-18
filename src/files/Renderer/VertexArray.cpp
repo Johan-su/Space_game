@@ -37,8 +37,8 @@ void Real::add_buffers(VertexArray *va, VertexBuffer *vb, VertexLayout *vlayout)
     for (Usize i = 0; i < vlayout->count; ++i)
     {
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, vlayout->elements[i].count, vlayout->elements[i].type, vlayout->elements[i].normalized, vlayout->stride, (const void *)offset);
+        glVertexAttribPointer(i, vlayout->attributes[i].count, vlayout->attributes[i].type, vlayout->attributes[i].normalized, vlayout->stride, (const void *)offset);
         
-        offset += vlayout->elements[i].count * sizeof_gltype(vlayout->elements[i].type);
+        offset += vlayout->attributes[i].count * sizeof_gltype(vlayout->attributes[i].type);
     }
 }

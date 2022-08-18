@@ -16,7 +16,7 @@ struct VertexLayout
 {
     U64 stride;
     Usize count;
-    VertexElement elements[MAX_LAYOUT_ELEMENTS];
+    VertexElement attributes[MAX_LAYOUT_ELEMENTS];
 };
 
 

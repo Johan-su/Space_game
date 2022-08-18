@@ -7,6 +7,10 @@
 #include "../scene/component.hpp"
 #include "../scene/Camera.hpp"
 
+#include "VertexArray.hpp"
+#include "IndexBuffer.hpp"
+#include "Shader.hpp"
+
 namespace Internal
 {
    void init_renderer(Window *window);
@@ -23,6 +27,6 @@ namespace Renderer
 
     void clear();
     void draw(const Transform *transform, Mesh mesh, const Sprite *sprite);
-    void draw();
+    void draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color);
 
 } // namespace Renderer

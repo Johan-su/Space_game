@@ -222,6 +222,29 @@ void Application::run(Application_data *app, scene *scene)
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
 
+    Mesh *mesh = Real::get_mesh("square_mesh");
+
+    VertexBuffer vb;
+    Real::init_vbuffer(&vb, mesh->vertex_buffer.vertex_count * sizeof(Vertex), mesh->vertex_buffer.verticies);
+    
+    IndexBuffer ib;
+    Real::init_ibuffer(&ib, mesh->index_buffer.index_count, (const U32 *)mesh->index_buffer.indicies);
+
+    VertexArray va;
+    Real::init_vArray(&va);
+
+
+    VertexLayout vl;
+    Real::init_layout(&vl);
+    Real::add_float(&vl, 3);
+    Real::add_float(&vl, 2);
+
+    Real::add_buffers(&va, &vb, &vl);
+
+
+    Shader *color_shader = Real::get_shader("shader1");
+
+    Vector4f color = {0.0f, 0.5f, 0.0, 1.0f};
 
     while (app->active)
     {
@@ -254,7 +277,8 @@ void Application::run(Application_data *app, scene *scene)
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
 
-
+        
+        Renderer::draw(&va, &ib, color_shader, color);
 
         //Ecs::progress_systems(&scene->registry, ts);
 
@@ -264,11 +288,7 @@ void Application::run(Application_data *app, scene *scene)
 
 
 
-        // SDL_RenderFillRect(app->engine->renderer, &rect);
-
-
         Renderer::end();
-
         // end render
 
         // wait if frame took less than 1 / maxFps seconds
