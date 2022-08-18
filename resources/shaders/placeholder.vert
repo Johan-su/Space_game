@@ -1,10 +1,8 @@
 #version 430 core
 
-layout(location = 0) out vec4 color;
-
-uniform vec4 u_Color;
+layout(location = 0) in vec4 position;
 
 void main()
 {
-    color = u_Color;
+    gl_Position = position;
 }
