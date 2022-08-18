@@ -71,10 +71,11 @@ void Internal::init_input(Window *window)
 void Internal::handle_input()
 {
     glfwPollEvents();
-    if (glfwWindowShouldClose(s_window->internal_win))
+    if (glfwWindowShouldClose(s_window->internal_win) || HashMapN::get_value(&s_input.key_map, VK_KEY_ESCAPE))
     {
         Application::quit_app(Application::Get());
     }
+
 }
 
 
