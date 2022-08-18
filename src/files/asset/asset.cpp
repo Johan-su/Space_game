@@ -2,6 +2,8 @@
 #include "../datastructures/hashmap.hpp"
 #include "../platform/platform.hpp"
 
+#include "../Renderer/Shader.hpp"
+
 
 #include <stdlib.h>
 
@@ -32,6 +34,7 @@ static const char *slurp_file(const char *path, top_memory_arena *arena)
 
     if (file == nullptr)
     {
+        fprintf(stderr, "WARNING: failed to load file %s : %s\n", path, strerror(errno));
         return nullptr;
     }
 
@@ -60,27 +63,14 @@ enum class AssetType
 };
 
 
-struct Hash2
-{
-    U64 path_hash;
-    U64 name_hash;
-};
 
-
-static Hash2 *check_if_already_exists_and_get_hash(const char *path, const char *name, AssetType type)
+static U64 *check_if_path_hash_exists_and_get_hash(const char *path, AssetType type)
 {
     char *buffer = Arena::top_alloc<char>(&g_memory.scratch_buffer, 1024);
     Platform::get_abs_path(path, buffer, 1024);
 
     U64 path_hash = HashMapN::hash_string(buffer);
-    U64 name_hash = HashMapN::hash_string(name);
 
-    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
-    {
-        fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
-        return nullptr;
-    }
     if (HashMapN::get_pointer(&s_path_map, path_hash) != nullptr)
     {
         const char *type_s;
@@ -123,25 +113,43 @@ static Hash2 *check_if_already_exists_and_get_hash(const char *path, const char 
         return nullptr;
     }
 
-    Hash2 *hash2 = Arena::top_alloc<Hash2>(&g_memory.scratch_buffer);
+    U64 *hash = Arena::top_alloc<U64>(&g_memory.scratch_buffer);
 
-    *hash2 = {
-        .path_hash = path_hash,
-        .name_hash = name_hash,
-    };
+    *hash = path_hash;
 
-    return hash2;
+    return hash;
 }
 
 
-void Real::load_mesh(const char *path, const char *name)
+static U64 *check_if_name_hash_already_exists_and_get_hash(const char *name)
 {
+    U64 name_hash = HashMapN::hash_string(name);
 
-    Hash2 *hash = check_if_already_exists_and_get_hash(path, name, AssetType::Mesh);
-    if (hash == nullptr)
+    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
+    {
+        fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
+        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        return nullptr;
+    }
+
+    U64 *hash = Arena::top_alloc<U64>(&g_memory.scratch_buffer);
+
+    *hash = name_hash;
+
+    return hash;
+}
+
+
+void Real::load_mesh(const char *name, const char *path)
+{
+    U64 *path_hash = check_if_path_hash_exists_and_get_hash(path, AssetType::Mesh);
+    U64 *name_hash = check_if_name_hash_already_exists_and_get_hash(name);
+
+    if (path_hash == nullptr || name_hash == nullptr)
     {
         return;
     }
+
 
     Mesh *mesh = Arena::top_alloc<Mesh>(&g_memory.asset_buffer);
 
@@ -150,78 +158,67 @@ void Real::load_mesh(const char *path, const char *name)
 
     MeshN::init(mesh, mesh_source);
 
-    HashMapN::set(&s_path_map, hash->path_hash, (void *)mesh);
-    HashMapN::set(&s_name_map, hash->name_hash, (void *)mesh);
+    HashMapN::set(&s_path_map, *path_hash, (void *)mesh);
+    HashMapN::set(&s_name_map, *name_hash, (void *)mesh);
 
     Arena::clear_top_arena(&g_memory.scratch_buffer);
 }
 
 
-void Real::load_texture(const char *path, const char *name)
+void Real::load_texture(const char *name, const char *path)
 {
     assert(false, "not implemented");
-    /*
-    char *path_buffer = Arena::top_alloc<char>(&g_memory.scratch_buffer, 1024);
-    Platform::get_abs_path(path, path_buffer, 1024);
-
-    U64 path_hash = HashMapN::hash_string(path_buffer);
-    U64 name_hash = HashMapN::hash_string(name);
-
-    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
-    {
-        fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use", name);
-    }
-    else if (HashMapN::get_pointer(&s_path_map, path_hash) != nullptr)
-    {
-        fprintf(stderr, "WARNING: tried to load mesh that already exists or hash collision\n");
-    }
-    else
-    {
-        Texture *texture = Arena::top_alloc<Texture>(&g_memory.asset_buffer);
-
-        Internal::init_texture(s_engine->renderer, texture, path, path_hash);
-
-
-        HashMapN::set(&s_path_map, path_hash, (void *)texture);
-        HashMapN::set(&s_name_map, name_hash, (void *)texture);
-    }
-
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
-    */
+    return;
 }
 
 
-void Real::load_vertex_shader_src(const char *path, const char *name)
+void Real::load_vertex_shader_src(const char *name, const char *path)
 {
-    Hash2 *hash = check_if_already_exists_and_get_hash(path, name, AssetType::VertSrc);
-
-    if (hash == nullptr)
+    U64 *path_hash = check_if_path_hash_exists_and_get_hash(path, AssetType::VertSrc);
+    U64 *name_hash = check_if_name_hash_already_exists_and_get_hash(name);
+    if (path_hash == nullptr || name_hash == nullptr)
     {
         return;
     }
 
     const char *src = slurp_file(path, &g_memory.asset_buffer);
 
-    HashMapN::set(&s_path_map, hash->path_hash, (void *)src);
-    HashMapN::set(&s_name_map, hash->name_hash, (void *)src);
+    HashMapN::set(&s_path_map, *path_hash, (void *)src);
+    HashMapN::set(&s_name_map, *name_hash, (void *)src);
 }
 
 
-void Real::load_fragment_shader_src(const char *path, const char *name)
+void Real::load_fragment_shader_src(const char *name, const char *path)
 {
-    Hash2 *hash = check_if_already_exists_and_get_hash(path, name, AssetType::FragSrc);
-
-    if (hash == nullptr)
+    U64 *path_hash = check_if_path_hash_exists_and_get_hash(path, AssetType::FragSrc);
+    U64 *name_hash = check_if_name_hash_already_exists_and_get_hash(name);
+    if (path_hash == nullptr || name_hash == nullptr)
     {
         return;
     }
 
     const char *src = slurp_file(path, &g_memory.asset_buffer);
 
-    HashMapN::set(&s_path_map, hash->path_hash, (void *)src);
-    HashMapN::set(&s_name_map, hash->name_hash, (void *)src);
+    HashMapN::set(&s_path_map, *path_hash, (void *)src);
+    HashMapN::set(&s_name_map, *name_hash, (void *)src);
 }
 
+
+void Real::load_shader(const char *name, const char *vert_src, const char *frag_src)
+{
+    U64 *name_hash = check_if_name_hash_already_exists_and_get_hash(name);
+
+    if (name_hash == nullptr)
+    {
+        return;
+    }
+
+    Shader *shader = Arena::top_alloc<Shader>(&g_memory.asset_buffer);
+
+    Real::init_shader(shader, vert_src, frag_src);
+
+    HashMapN::set(&s_name_map, *name_hash, (void *)shader);
+}
 
 
 void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *texture)
@@ -238,11 +235,10 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
         return;
     }
 
-    U64 name_hash = HashMapN::hash_string(name);
+    U64 *name_hash = check_if_name_hash_already_exists_and_get_hash(name);
 
-    if (HashMapN::get_pointer(&s_name_map, name_hash) != nullptr)
+    if (name_hash == nullptr)
     {
-        fprintf(stderr, "WARNING: tried to use \"%s\" which already in use", name);
         return;
     }
 
@@ -258,7 +254,7 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
         .texture = texture,
     };
 
-    HashMapN::set(&s_name_map, name_hash, (void *)sprite);
+    HashMapN::set(&s_name_map, *name_hash, (void *)sprite);
 }
 
 
@@ -309,6 +305,45 @@ Sprite *Real::get_sprite(const char *name)
     return sprite;
 }
 
+
+const char *Real::get_vertex_src(const char *name)
+{
+    const char *vert_src = (const char *)get_item(name);
+
+    if (vert_src == nullptr)
+    {
+        fprintf(stderr, "WARNING: \"%s\" Vertex source not found\n", name);
+    }
+
+    return vert_src;    
+}
+
+
+const char *Real::get_fragment_src(const char *name)
+{
+    const char *frag_src = (const char *)get_item(name);
+
+    if (frag_src == nullptr)
+    {
+        fprintf(stderr, "WARNING: \"%s\" Fragment source not found\n", name);
+    }
+
+    return frag_src;    
+}
+
+
+
+Shader *Real::get_shader(const char *name)
+{
+    Shader *shader = (Shader *)get_item(name);
+
+    if (shader == nullptr)
+    {
+        fprintf(stderr, "WARNING: \"%s\" Shader not found\n", name);
+    }
+
+    return shader;
+}
 
 
 

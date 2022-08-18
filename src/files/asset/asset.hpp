@@ -5,6 +5,8 @@
 
 
 
+struct Shader;
+
 
 struct Sprite
 {
@@ -31,10 +33,11 @@ namespace Internal
 namespace Real
 {
 
-    void load_mesh(const char *path, const char *name);
-    void load_texture(const char *path, const char *name);
-    void load_vertex_shader_src(const char *path, const char *name); //TODO(Johan) fix loading shaders/ loading stuff that comes from multiple files
-    void load_fragment_shader_src(const char *path, const char *name);
+    void load_mesh(const char *name, const char *path);
+    void load_texture(const char *name, const char *path);
+    void load_vertex_shader_src(const char *name, const char *path);
+    void load_fragment_shader_src(const char *name, const char *path);
+    void load_shader(const char *name, const char *vert_src, const char *frag_src);
 
     void init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *texture);
 
@@ -42,6 +45,11 @@ namespace Real
     Mesh *get_mesh(const char *name);
     Texture *get_texture(const char *name);
     Sprite *get_sprite(const char *name);
+
+    const char *get_vertex_src(const char *name);
+    const char *get_fragment_src(const char *name);
+
+    Shader *get_shader(const char *name);
 
 
 
