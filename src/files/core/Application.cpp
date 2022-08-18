@@ -222,7 +222,7 @@ void Application::run(Application_data *app, scene *scene)
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
 
-    Mesh *mesh = Real::get_mesh("square_mesh");
+    Mesh *mesh = Real::get_mesh("icosagon_mesh");
 
     VertexBuffer vb;
     Real::init_vbuffer(&vb, mesh->vertex_buffer.vertex_count * sizeof(Vertex), mesh->vertex_buffer.verticies);

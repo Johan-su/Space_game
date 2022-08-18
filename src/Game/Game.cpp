@@ -132,7 +132,7 @@ static void setup_scene(scene *scene)
 
 
     Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
-
+    Real::load_mesh("icosagon_mesh", "./resources/meshes/icosagon.mesh");
     
     /*PlayerSpawnEvent pse = {
         .pos = {7000.0f, 0.0f},
