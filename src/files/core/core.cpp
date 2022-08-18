@@ -44,9 +44,9 @@ void Internal::init_global_memory()
     Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *asset_buffer_start = (char *)app_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.asset_buffer, asset_buffer_start, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(2 * MiB));
+    Arena::init_top_arena(&g_memory.asset_buffer, asset_buffer_start, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(10 * MiB));
 
-    void *scratch_buffer_start = (char *)asset_buffer_start + 2 *MiB;
+    void *scratch_buffer_start = (char *)asset_buffer_start + 10 *MiB;
     Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *event_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
