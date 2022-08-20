@@ -4,6 +4,8 @@
 #include "../math/math_types.hpp"
 #include "../int.hpp"
 
+#include "../Renderer/VertexArray.hpp"
+#include "../Renderer/IndexBuffer.hpp"
 
 
 struct Mesh;
@@ -27,10 +29,9 @@ struct Transform
 
 struct CameraComponent
 {
-    Vector2f world_scale;
-
     U16 screen_width;
     U16 screen_height;
+    float fov;
 
     bool active;
     
@@ -51,7 +52,8 @@ struct SpriteComponent
 
 struct MeshComponent
 {
-    Mesh *mesh;  
+    VertexArray va;
+    IndexBuffer ib; 
 };
 
 
@@ -102,10 +104,17 @@ struct CameraSpawnEvent
     Vector2f pos;
     Vector2f rot;
 
-    Vector2f world_scale;
+    float fov;
 
     U16 screen_width;
     U16 screen_height;
 
     bool active;
 };
+
+
+
+namespace Real
+{
+    Mat4 transform_to_mat4(const Transform *transform);
+} // namespace Real
