@@ -4,7 +4,7 @@
 #include "../core/window.hpp"
 
 #include <stdio.h>
-
+#include "../int.hpp"
 #include "../assert.hpp"
 
 
@@ -93,6 +93,40 @@ void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f c
 
     Real::set_uniform_vec4f(shader, color, "u_Color");
 
+    Mat4 transform_matrix = {
+        {1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f},
+    };
+
+    Real::set_uniform_mat4(shader, &transform_matrix, "u_MVP");
+
+
     glDrawElements(GL_TRIANGLES, ib->count, GL_UNSIGNED_INT, nullptr);
+}
+
+
+void Renderer::draw(Transform *transform, MeshComponent *mesh, Shader *shader, Vector4f color)
+{
+
+    Real::bind(&mesh->va);
+    Real::bind(&mesh->ib);
+    Real::bind(shader);
     
+    Real::set_uniform_vec4f(shader, color, "u_Color");
+
+    Mat4 transform_m = Real::transform_to_mat4(transform);
+
+    Mat4 projection = Real::orthographic(0, s_camera_comp->screen_width,
+        0, s_camera_comp->screen_height,
+        -1.0f, 1.0f);
+
+    Mat4 mvp = projection * transform_m;
+
+    
+    Real::set_uniform_mat4(shader, &mvp, "u_MVP");
+
+
+    glDrawElements(GL_TRIANGLES, mesh->ib.count, GL_UNSIGNED_INT, nullptr);
 }

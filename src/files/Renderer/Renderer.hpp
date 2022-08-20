@@ -28,5 +28,6 @@ namespace Renderer
     void clear();
     void draw(const Transform *transform, Mesh mesh, const Sprite *sprite);
     void draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color);
+    void draw(Transform *transform, MeshComponent *mesh, Shader *shader, Vector4f color);
 
 } // namespace Renderer

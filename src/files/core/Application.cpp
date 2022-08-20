@@ -9,6 +9,8 @@
 #include "../asset/asset.hpp"
 #include "../Renderer/Renderer.hpp"
 
+#include <math.h>
+
 struct Application_data
 {
     engine_data *engine;
@@ -86,9 +88,9 @@ static void camera_spawn(Iter *it)
     });
 
     Ecs::set_component<CameraComponent>(it->registry, e, {
-        .world_scale = event->world_scale,
         .screen_width = event->screen_width,
         .screen_height = event->screen_height,
+        .fov = event->fov,
         .active = event->active,
     });
 }
@@ -130,7 +132,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
             CameraSpawnEvent cse = {
                 .pos = {0.0f, 0.0f},
                 .rot = {0.0f, 0.0f},
-                .world_scale = {1.0f, 1.0f},
+                .fov = 3.1415926f / 2.0f,
                 .screen_width = app->engine->config->screen_width,
                 .screen_height = app->engine->config->screen_height,
                 .active = true,
@@ -222,29 +224,35 @@ void Application::run(Application_data *app, scene *scene)
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
 
-    Mesh *mesh = Real::get_mesh("icosagon_mesh");
+    Transform transform = {
+        .pos = {400.0f, 500.0f},
+        .rot = {1.0f, 0.0f},
+        .scale = {100.0f, 100.0f},
+    };
+
+
+    Mesh *mesh = Real::get_mesh("square_mesh");
+
+    MeshComponent meshc;
 
     VertexBuffer vb;
     Real::init_vbuffer(&vb, mesh->vertex_buffer.vertex_count * sizeof(Vertex), mesh->vertex_buffer.verticies);
-    
-    IndexBuffer ib;
-    Real::init_ibuffer(&ib, mesh->index_buffer.index_count, (const U32 *)mesh->index_buffer.indicies);
 
-    VertexArray va;
-    Real::init_vArray(&va);
+    Real::init_ibuffer(&meshc.ib, mesh->index_buffer.index_count, (const U32 *)&mesh->index_buffer.indicies[0]);
 
+    VertexLayout vlayout;
+    Real::init_layout(&vlayout);
+    Real::add_float(&vlayout, 3);
+    Real::add_float(&vlayout, 2);
 
-    VertexLayout vl;
-    Real::init_layout(&vl);
-    Real::add_float(&vl, 3);
-    Real::add_float(&vl, 2);
-
-    Real::add_buffers(&va, &vb, &vl);
-
+    Real::init_vArray(&meshc.va);
+    Real::add_buffers(&meshc.va, &vb, &vlayout);
 
     Shader *color_shader = Real::get_shader("shader1");
 
     Vector4f color = {0.0f, 0.5f, 0.0, 1.0f};
+
+    float angle = 0.0f;
 
     while (app->active)
     {
@@ -273,12 +281,22 @@ void Application::run(Application_data *app, scene *scene)
             fixed_update_count -= target_fixed_update;
         }
 
+        angle += 3.1415926f / 90.0f;
+
+        transform.rot.x = cosf(angle);
+        transform.rot.y = sinf(angle);
+
+        float r = 400.0f;
+
+        transform.pos.x = r * cosf(2 * angle) + 960.0f;
+        transform.pos.y = r * sinf(2 * angle) + 540.0f;
+
         // begin render
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
 
         
-        Renderer::draw(&va, &ib, color_shader, color);
+        Renderer::draw(&transform, &meshc, color_shader, color);
 
         //Ecs::progress_systems(&scene->registry, ts);
 
