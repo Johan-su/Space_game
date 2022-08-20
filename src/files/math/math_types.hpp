@@ -135,5 +135,12 @@ public:
 
     Vector4f operator*(Vector4f v4f) { return (x1 * v4f.x) + (x2 * v4f.y) + (x3 * v4f.z) + (x4 * v4f.w); }
 
-    Mat4 operator*(Mat4 mat4) { return Mat4 { *this * mat4.x1, *this * mat4.x2, *this * mat4.x3, *this * mat4.x4,  }; } 
+    Mat4 operator*(Mat4 mat4) { return Mat4 { *this * mat4.x1, *this * mat4.x2, *this * mat4.x3, *this * mat4.x4, }; } 
 };
+
+
+namespace Real
+{
+   Mat4 orthographic(float left, float right, float top, float bottom, float znear, float zfar); 
+} // namespace Real
+

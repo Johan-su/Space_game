@@ -102,15 +102,17 @@ float Vector4f::dot(Vector4f other_v4f)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+Mat4 Real::orthographic(float left, float right, float top, float bottom, float znear, float zfar)
+{
+    return Mat4 {
+        .x1 = {2.0f / (right - left), 0.0f, 0.0f, 0.0f},
+        .x2 = {0.0f, 2.0f / (top - bottom), 0.0f, 0.0f}, // -2.0f because opengl defines y up as positive
+        .x3 = {0.0f, 0.0f, -2.0f / (zfar - znear)},
+        .x4 = {
+            -(right + left) / (right - left), 
+            -(top + bottom) / (top - bottom), // + was (-) because opengl defines y as up
+            -(zfar + znear) / (zfar - znear), 
+            1.0f
+        },
+    };
+}
