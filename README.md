@@ -1,8 +1,9 @@
 A Space game made in C++, buildable on Windows
 
-Dependencies:
-CMake -- (Also a makefiles generator, recommend Ninja for Windows)
-SDL2
+Dependencies: \
+CMake -- (Also a makefiles generator, recommend Ninja for Windows) \
+GLFW \
+OpenGL
 
 
 
@@ -10,7 +11,7 @@ Controls:
 
 ESC to quit
 
-WASD to move
+WASD to move \
 hold left mouse button to shoot
 
 
