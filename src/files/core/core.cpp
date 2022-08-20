@@ -27,7 +27,6 @@ const Usize TiB = 1024llu * GiB;
 
 
 
-
 static void *reserve_memory_begin;
 static void *reserve_memory_end;
 
@@ -66,6 +65,7 @@ void Internal::init_global_memory()
     }
 }
 
+
 void Internal::clean_global_memory()
 {
     Arena::clean_arena(&g_memory.app_buffer);
@@ -80,9 +80,10 @@ void Internal::clean_global_memory()
     }
 }
 
+
 static void glfw_error_callback(int error, const char *desc)
 {
-    fprintf(stderr, "ERROR: GLFW %s", desc);
+    fprintf(stderr, "ERROR: GLFW : %s\n", desc);
 }
 
 
@@ -91,7 +92,7 @@ static void init_glfw()
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
     {
-        fprintf(stderr, "ERROR: failed to initalize glfw");
+        fprintf(stderr, "ERROR: failed to initalize glfw\n");
         exit(1);
     }
 }
