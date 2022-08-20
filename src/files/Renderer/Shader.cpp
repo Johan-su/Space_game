@@ -184,7 +184,7 @@ void Real::set_uniform_I32(Shader *shader, I32 value, const char *name)
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
     if (element == nullptr)
     {
-        fprintf(stderr, "WARNING: could not find uniform %s", name);
+        fprintf(stderr, "WARNING: could not find uniform %s\n", name);
         return;
     }
     
@@ -199,7 +199,7 @@ void Real::set_uniform_float(Shader *shader, float value, const char *name)
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
     if (element == nullptr)
     {
-        fprintf(stderr, "WARNING: could not find uniform %s", name);
+        fprintf(stderr, "WARNING: could not find uniform %s\n", name);
         return;
     }
 
@@ -214,7 +214,7 @@ void Real::set_uniform_vec3f(Shader *shader, Vector3f value, const char *name)
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
     if (element == nullptr)
     {
-        fprintf(stderr, "WARNING: could not find uniform %s", name);
+        fprintf(stderr, "WARNING: could not find uniform %s\n", name);
         return;
     }
 
@@ -229,10 +229,25 @@ void Real::set_uniform_vec4f(Shader *shader, Vector4f value, const char *name)
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
     if (element == nullptr)
     {
-        fprintf(stderr, "WARNING: could not find uniform %s", name);
+        fprintf(stderr, "WARNING: could not find uniform %s\n", name);
         return;
     }
 
     bind(shader);
     glUniform4f(element->location, value.x, value.y, value.z, value.w);
+}
+
+
+void Real::set_uniform_mat4(Shader *shader, Mat4 *mat, const char *name)
+{
+    U64 hash = HashMapN::hash_string(name);
+    UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
+    if (element == nullptr)
+    {
+        fprintf(stderr, "WARNING: could not find uniform %s\n", name);
+        return;
+    }
+
+    bind(shader);
+    glUniformMatrix4fv(element->location, 1, GL_FALSE, (float *)mat);
 }
