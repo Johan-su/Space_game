@@ -78,13 +78,6 @@ void Renderer::clear()
 }
 
 
-void Renderer::draw(const Transform *transform, Mesh mesh, const Sprite *sprite)
-{
-    assert(s_camera_transform != nullptr, "camera transform cannot be nullptr in draw, forgot begin() ?");
-    assert(s_camera_comp != nullptr, "camera component cannot be nullptr in draw, forgot begin() ?");
-}
-
-
 void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color)
 {
     Real::bind(va);
@@ -107,11 +100,10 @@ void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f c
 }
 
 
-void Renderer::draw(Transform *transform, MeshComponent *mesh, Shader *shader, Vector4f color)
+void Renderer::draw(Transform *transform, MeshComponent *meshc, Shader *shader, Vector4f color) //TODO(Johan): add way to draw using textures and maybe change to materials instead of using shaders + data.
 {
-
-    Real::bind(&mesh->va);
-    Real::bind(&mesh->ib);
+    Real::bind(&meshc->mesh->va);
+    Real::bind(&meshc->mesh->ib);
     Real::bind(shader);
     
     Real::set_uniform_vec4f(shader, color, "u_Color");
@@ -128,5 +120,35 @@ void Renderer::draw(Transform *transform, MeshComponent *mesh, Shader *shader, V
     Real::set_uniform_mat4(shader, &mvp, "u_MVP");
 
 
-    glDrawElements(GL_TRIANGLES, mesh->ib.count, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, meshc->mesh->ib.count, GL_UNSIGNED_INT, nullptr);
+}
+
+
+void Renderer::draw(const Transform *transform, const MeshComponent *meshc, const MaterialComponent *materialc)
+{
+    Real::bind(&meshc->mesh->va);
+    Real::bind(&meshc->mesh->ib);
+    Real::bind(materialc->material->shader);
+    Real::bind(materialc->material->texture, 0);
+    
+
+    Mat4 transform_m = Real::transform_to_mat4(transform);
+
+    Mat4 projection = Real::orthographic(0, s_camera_comp->screen_width,
+        0, s_camera_comp->screen_height,
+        -1.0f, 1.0f);
+
+    Mat4 mvp = projection * transform_m;
+
+    Real::set_uniform_mat4(materialc->material->shader, &mvp, "u_MVP");
+
+    materialc->material->uniform_set_func(materialc->material->shader);
+
+    glDrawElements(GL_TRIANGLES, meshc->mesh->ib.count, GL_UNSIGNED_INT, nullptr);    
+}
+
+
+void Renderer::set_blending()
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
