@@ -15,6 +15,7 @@
 #include "systems/FiringSystem.hpp"
 #include "systems/DamageSystem.hpp"
 
+
 static void init_components(scene *scene)
 {
     //Ecs::init_component<AnglularVelocity>(&scene->registry);
@@ -81,7 +82,7 @@ Entity game_active_camera = ENTITY_NULL;
 static void set_active_camera(Iter *it)
 {
     CameraSpawnEvent *event = (CameraSpawnEvent *)it->event;
-    if (event->active == false)
+    if (event->cc.active == false)
     {
         return;
     }
@@ -90,7 +91,7 @@ static void set_active_camera(Iter *it)
 
     Transform *camera_transform = Ecs::get_component<Transform>(it->registry, game_active_camera);
     CameraComponent *camera_component = Ecs::get_component<CameraComponent>(it->registry, game_active_camera);
-    Real::set_camera_center(camera_transform, camera_component, 7000.0f, 0.0f);
+    //Real::set_camera_center(camera_transform, camera_component, 7000.0f, 0.0f);
 }
 
 
@@ -125,28 +126,44 @@ static void setup_scene(scene *scene)
 //    Real::init_sprite("ship1_sprite", 0, 0, 114, 200, Real::get_texture("placeholder_ship_texture"));
 //    Real::init_sprite("planet1_sprite", 0, 0, 132, 132, Real::get_texture("placeholder_planet_texture"));
     
-    Real::load_vertex_shader_src("vshader_source1", "./resources/shaders/placeholder.vert");
-    Real::load_fragment_shader_src("fshader_source1", "./resources/shaders/placeholder.frag");
+    Real::load_texture("ship_texture", "./resources/ships/placeholder.bmp");
+    Real::load_texture("planet_texture", "./resources/planets/placeholder.bmp");
 
-    Real::load_shader("shader1", Real::get_vertex_src("vshader_source1"), Real::get_fragment_src("fshader_source1"));
+    Real::load_vertex_shader_src("color_vert", "./resources/shaders/color.vert");
+    Real::load_fragment_shader_src("color_frag", "./resources/shaders/color.frag");
 
+    Real::init_shader("color", Real::get_vertex_src("color_vert"), Real::get_fragment_src("color_frag"));
+
+
+    Real::load_vertex_shader_src("texture_vert", "./resources/shaders/texture.vert");
+    Real::load_fragment_shader_src("texture_frag", "./resources/shaders/texture.frag");
+
+
+    Real::init_shader("texture", Real::get_vertex_src("texture_vert"), Real::get_fragment_src("texture_frag"));
+
+    auto uniform_set_func = [](Shader *shader) {
+        Real::set_uniform_I32(shader, 0, "u_Texture");
+    };
+
+    Real::init_material("ship_material", Real::get_shader("texture"), Real::get_texture("ship_texture"), uniform_set_func);
 
     Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
     Real::load_mesh("icosagon_mesh", "./resources/meshes/icosagon.mesh");
     
-    /*PlayerSpawnEvent pse = {
-        .pos = {7000.0f, 0.0f},
-        .scale = 1.0f,
-        .ship_sprite = Real::get_sprite("ship1_sprite"),
+    PlayerSpawnEvent pse = {
+        .transform = {
+            .pos = {0.0f, 0.0f, 0.0f},
+            .rot = {1.0f, 0.0f, 0.0f},
+            .scale = {114.0f, 200.0f, 0.0f},
+        },
+        .mesh = Real::get_mesh("square_mesh"),
+        .material = Real::get_material("ship_material"),
     };
 
     Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
 
     
-    PlanetSpawnEvent planetSE = {
-        .pos           = {0.0f, 0.0f},
-        .rot           = {0.0f, 0.0f},
-        .scale         = 80.0f,
+    /*PlanetSpawnEvent planetSE = {
         .mass          = 100000.0f,
         .planet_sprite = Real::get_sprite("planet1_sprite"),
         .health        = 1000000.0f,
