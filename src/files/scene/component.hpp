@@ -4,11 +4,10 @@
 #include "../math/math_types.hpp"
 #include "../int.hpp"
 
-#include "../Renderer/VertexArray.hpp"
-#include "../Renderer/IndexBuffer.hpp"
 
 
 struct Mesh;
+struct Material;
 struct Sprite;
 
 
@@ -21,9 +20,9 @@ struct Sprite;
 
 struct Transform
 {
-    Vector2f pos; // center of the entity
-    Vector2f rot;
-    Vector2f scale;
+    Vector3f pos; // center of the entity
+    Vector3f rot;
+    Vector3f scale;
 };
 
 
@@ -32,7 +31,6 @@ struct CameraComponent
     U16 screen_width;
     U16 screen_height;
     float fov;
-
     bool active;
     
 };
@@ -40,7 +38,7 @@ struct CameraComponent
 
 struct Velocity
 {
-    Vector2f v;
+    union {Vector3f v;};
 };
 
 
@@ -52,10 +50,14 @@ struct SpriteComponent
 
 struct MeshComponent
 {
-    VertexArray va;
-    IndexBuffer ib; 
+    Mesh *mesh;
 };
 
+
+struct MaterialComponent
+{
+    Material *material;
+};
 
 // colliders
 
@@ -101,15 +103,9 @@ struct CollisionEvent
 
 struct CameraSpawnEvent
 {
-    Vector2f pos;
-    Vector2f rot;
+    Transform transform;
 
-    float fov;
-
-    U16 screen_width;
-    U16 screen_height;
-
-    bool active;
+    CameraComponent cc;
 };
 
 
