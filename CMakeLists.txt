@@ -71,6 +71,8 @@ add_subdirectory(./lib/GLFW) # https://www.glfw.org/docs/3.0/build.html
 include_directories(./lib/GLFW/include)
 
 
+include_directories(./lib/stb/)
+
 
 FILE(GLOB_RECURSE ENGINESRCFILES ./src/files/*.cpp )
 FILE(GLOB_RECURSE ENGINEHEADFILES ./src/files/*.hpp)
