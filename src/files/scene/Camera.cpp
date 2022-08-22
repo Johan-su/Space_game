@@ -16,9 +16,9 @@ void Real::init_camera(Transform *camera_transform,
 
 
     *camera = {
-        .world_scale   = {.x = 1.0f, .y = 1.0f},
         .screen_width  = screen_width,
         .screen_height = screen_height,
+        .fov = 3.1415926f / 2.0f,
         .active        = active
     };
 
@@ -28,25 +28,25 @@ void Real::init_camera(Transform *camera_transform,
 
 float Real::screen_to_world_x(Transform *camera_transform, CameraComponent *camera, I32 x)
 {
-    return camera_transform->pos.x + (x / camera->world_scale.x);
+    //return camera_transform->pos.x + (x / camera->world_scale.x);
 }
 
 
 float Real::screen_to_world_y(Transform *camera_transform, CameraComponent *camera, I32 y)
 {
-    return camera_transform->pos.y + (y / camera->world_scale.y);
+    //return camera_transform->pos.y + (y / camera->world_scale.y);
 }
 
 
 I32 Real::world_to_screen_x(const Transform *camera_transform, const CameraComponent *camera, float x)
 {
-    return (I32)((x - camera_transform->pos.x) * camera->world_scale.x);
+    //return (I32)((x - camera_transform->pos.x) * camera->world_scale.x);
 }
 
 
 I32 Real::world_to_screen_y(const Transform *camera_transform, const CameraComponent *camera, float y)
 {
-    return (I32)((y - camera_transform->pos.y) * camera->world_scale.y);
+    //return (I32)((y - camera_transform->pos.y) * camera->world_scale.y);
 }
 
 
@@ -63,7 +63,7 @@ void Real::set_camera_center(Transform *camera_transform, CameraComponent *camer
 
 
 void Real::zoom(Transform *camera_transform, CameraComponent *camera, int mx, int my, float scale)
-{
+{/*
     float world_mx = screen_to_world_x(camera_transform, camera, mx);
     float world_my = screen_to_world_y(camera_transform, camera, my);
 
@@ -75,4 +75,4 @@ void Real::zoom(Transform *camera_transform, CameraComponent *camera, int mx, in
 
     camera_transform->pos.x += world_mx - world_mx_after;
     camera_transform->pos.y += world_my - world_my_after;
-}
+*/}
