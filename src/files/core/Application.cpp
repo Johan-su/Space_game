@@ -64,9 +64,12 @@ static void init_components(Ecs::Registry *reg)
     Ecs::init_component<CameraComponent>(reg);
     Ecs::init_component<Velocity>(reg);
     Ecs::init_component<SpriteComponent>(reg);
+    Ecs::init_component<MaterialComponent>(reg);
+    Ecs::init_component<MeshComponent>(reg);
     Ecs::init_component<BoxCollider>(reg);
     Ecs::init_component<CircleCollider>(reg);
 }
+
 
 static void init_events(Ecs::Registry *reg)
 {
@@ -82,16 +85,11 @@ static void camera_spawn(Iter *it)
     Entity e = Ecs::create_entity(it->registry);
 
     Ecs::set_component<Transform>(it->registry, e, {
-        .pos = event->pos,
-        .rot = event->rot,
-        .scale = {1.0f, 1.0f},
+        event->transform,
     });
 
     Ecs::set_component<CameraComponent>(it->registry, e, {
-        .screen_width = event->screen_width,
-        .screen_height = event->screen_height,
-        .fov = event->fov,
-        .active = event->active,
+        event->cc,
     });
 }
 
@@ -130,12 +128,18 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
 
         {
             CameraSpawnEvent cse = {
-                .pos = {0.0f, 0.0f},
-                .rot = {0.0f, 0.0f},
-                .fov = 3.1415926f / 2.0f,
-                .screen_width = app->engine->config->screen_width,
-                .screen_height = app->engine->config->screen_height,
-                .active = true,
+                .transform = {
+                    .pos = {0.0f, 0.0f, 0.0f},
+                    .rot = {1.0f, 0.0f, 0.0f},
+                    .scale = {1.0f, 1.0f, 1.0f},
+                },
+                .cc = {
+                    .screen_width = app->engine->config->screen_width,
+                    .screen_height = app->engine->config->screen_height,
+                    .fov = 3.1415926f / 2.0f,
+                    .active = true,
+                },
+
             };
 
             Ecs::push_event(&game_scene->registry, &cse);
@@ -224,35 +228,19 @@ void Application::run(Application_data *app, scene *scene)
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
 
-    Transform transform = {
+    /*Transform transform = {
         .pos = {400.0f, 500.0f},
         .rot = {1.0f, 0.0f},
         .scale = {100.0f, 100.0f},
     };
 
+    MeshComponent meshc = {
+        .mesh = Real::get_mesh("square_mesh"),
+    };
 
-    Mesh *mesh = Real::get_mesh("square_mesh");
+    Material *material = Real::get_material("ship_material"); */
 
-    MeshComponent meshc;
-
-    VertexBuffer vb;
-    Real::init_vbuffer(&vb, mesh->vertex_buffer.vertex_count * sizeof(Vertex), mesh->vertex_buffer.verticies);
-
-    Real::init_ibuffer(&meshc.ib, mesh->index_buffer.index_count, (const U32 *)&mesh->index_buffer.indicies[0]);
-
-    VertexLayout vlayout;
-    Real::init_layout(&vlayout);
-    Real::add_float(&vlayout, 3);
-    Real::add_float(&vlayout, 2);
-
-    Real::init_vArray(&meshc.va);
-    Real::add_buffers(&meshc.va, &vb, &vlayout);
-
-    Shader *color_shader = Real::get_shader("shader1");
-
-    Vector4f color = {0.0f, 0.5f, 0.0, 1.0f};
-
-    float angle = 0.0f;
+    // float angle = 0.0f;
 
     while (app->active)
     {
@@ -281,24 +269,24 @@ void Application::run(Application_data *app, scene *scene)
             fixed_update_count -= target_fixed_update;
         }
 
-        angle += 3.1415926f / 90.0f;
+         /*angle += 3.1415926f / 90.0f;
 
-        transform.rot.x = cosf(angle);
-        transform.rot.y = sinf(angle);
+        transform.rot.x = cosf(5 * angle);
+        transform.rot.y = sinf(5 * angle);
 
         float r = 400.0f;
 
         transform.pos.x = r * cosf(2 * angle) + 960.0f;
-        transform.pos.y = r * sinf(2 * angle) + 540.0f;
+        transform.pos.y = r * sinf(2 * angle) + 540.0f; */
 
         // begin render
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
-
+        Renderer::set_blending();
         
-        Renderer::draw(&transform, &meshc, color_shader, color);
+        // Renderer::draw(&transform, &meshc, material);
 
-        //Ecs::progress_systems(&scene->registry, ts);
+        Ecs::progress_systems(&scene->registry, ts);
 
         //vec2i mpos = Real::getMousePos();
 
