@@ -32,11 +32,14 @@ struct Shader
     HashMap<UniformElement> uniform_map;
 };
 
+namespace ShaderN
+{
+    void init(Shader *shader, const char *vert_src, const char *frag_src);
+} // namespace ShaderN
 
 
 namespace Real
 {
-   void init_shader(Shader *shader, const char *vert_src, const char *frag_src);
 
    void bind(Shader *shader);
    void unbind(Shader *shader);

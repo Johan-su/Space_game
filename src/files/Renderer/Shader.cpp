@@ -131,7 +131,7 @@ static void parse_and_add_uniforms(Shader *shader, const char *src, ShaderType s
 
 
 
-void Real::init_shader(Shader *shader, const char *vert_src, const char *frag_src)
+void ShaderN::init(Shader *shader, const char *vert_src, const char *frag_src)
 {
     HashMapN::init(&shader->uniform_map);
 
