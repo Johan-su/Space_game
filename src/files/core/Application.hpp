@@ -2,7 +2,6 @@
 #include "KeyCodes.hpp"
 #include "../scene/scene.hpp"
 #include "../scene/component.hpp"
-#include "../asset/mesh.hpp"
 // TODO(Johan) make better
 
 
