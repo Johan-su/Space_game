@@ -25,11 +25,15 @@ void FiringSystem::update(Iter *it)
             if (fc.timer >= fc.max_time)
             {
                 BulletSpawnEvent bse = {
-                    .pos = t.pos + t.rot * 200.0f,
-                    .rot = t.rot,
+                    .transform = {
+                        .pos = t.pos + t.rot * 400.0f,
+                        .rot = t.rot,
+                        .scale = {50.0f, 50.0f, 0.0f},
+                    },
+                    .mesh = Real::get_mesh("square_mesh"),
+                    .material = Real::get_material("ship_material"),
                     .vel = t.rot * speed,
                     .damage = 5.0f,
-                    .bullet_sprite = Real::get_sprite("ship1_sprite"),
                 };
 
                 Ecs::push_event<BulletSpawnEvent>(it->registry, &bse);

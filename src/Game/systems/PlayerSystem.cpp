@@ -106,16 +106,18 @@ void PlayerSystem::update(Iter *it)
         if (shoot_timer.time >= shoot_timer.max_val)
         {
             shoot_timer.time -= shoot_timer.max_val;
-            BulletSpawnEvent event = {
-                .pos = {transform->pos + transform->rot * 200.0f},
-                .rot = {transform->rot},
-                .vel = {
-                    .x = transform->rot.x * speed,
-                    .y = transform->rot.y * speed,
+            BulletSpawnEvent bse = {
+                .transform = {
+                    .pos = transform->pos + transform->rot * 400.0f,
+                    .rot = transform->rot,
+                    .scale = {50.0f, 50.0f, 0.0f},
                 },
-                .bullet_sprite = Real::get_sprite("ship1_sprite"),
+                .mesh = Real::get_mesh("square_mesh"),
+                .material = Real::get_material("ship_material"),
+                .vel = transform->rot * speed,
+                .damage = 5.0f,
             };
-            Ecs::push_event<BulletSpawnEvent>(it->registry, &event);           
+            Ecs::push_event<BulletSpawnEvent>(it->registry, &bse);           
         }
     }
 }

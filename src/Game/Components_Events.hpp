@@ -70,19 +70,22 @@ struct Planet {};
 
 struct PlayerSpawnEvent
 {
-    Vector2f pos;
-    float scale;
-    Sprite *ship_sprite;
+    Transform transform;
+    Mesh *mesh;
+    Material *material;
+
+    Velocity vel;
 };
 
 
 struct BulletSpawnEvent
 {
-    Vector2f pos;
-    Vector2f rot;
-    Vector2f vel;
+    Transform transform;
+    Mesh *mesh;
+    Material *material;
+
+    Velocity vel;
     float damage;
-    Sprite *bullet_sprite;
 };
 
 
@@ -97,9 +100,12 @@ enum AIType
 
 struct AiSpawnEvent
 {
-    Vector2f pos;
-    float scale;
-    Sprite *ship_sprite;
+    Transform transform;
+    Mesh *mesh;
+    Material *material;
+
+    Velocity vel;
+
     AIType ai_type;
     float health;
     float health_regen;
@@ -108,13 +114,11 @@ struct AiSpawnEvent
 
 struct PlanetSpawnEvent
 {
-    Vector2f pos;
-    Vector2f rot;
+    Transform transform;
+    Mesh *mesh;
+    Material *material;
 
-    float scale;
     float mass;
-
-    Sprite *planet_sprite;
 
     float health;
     float health_regen;

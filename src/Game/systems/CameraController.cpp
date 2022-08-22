@@ -44,7 +44,7 @@ void CameraController::update(Iter *iter)
     }
 
     if (Real::IsMousePressed(VK_MOUSE_BUTTON_MIDDLE))
-    {
+    {/*
         //TODO(Johan) try to remove anchor_check.
         if (!anchor_check)
         {
@@ -59,7 +59,7 @@ void CameraController::update(Iter *iter)
         anchor = Real::getMousePos();
 
 
-    }
+    */}
     else
     {
         anchor_check = false;

@@ -60,12 +60,19 @@ void SpawnerSystem::update(Iter *it)
                     float random_spawn_radius = (min_radius + 8000.0f) + rand_float() * 20000.0f;
     
                     AiSpawnEvent ase = {
-                        .pos = {
-                            cosf(angle) * random_spawn_radius + planet_transform.pos.x, 
-                            sinf(angle) * random_spawn_radius + planet_transform.pos.y,
+                        .transform = {
+                            .pos = {
+                                cosf(angle) * random_spawn_radius + planet_transform.pos.x, 
+                                sinf(angle) * random_spawn_radius + planet_transform.pos.y,
+                                0.0f,
+                            },
+                            .rot = {1.0f, 0.0f, 0.0f},
+                            .scale = {114.0f, 200.0f, 0.0f},
                         },
-                        .scale = 1.0f,
-                        .ship_sprite = Real::get_sprite("ship1_sprite"),
+                        .mesh = Real::get_mesh("ship_mesh"),
+                        .material = Real::get_material("ship_material"),
+                        .vel = {0.0f, 0.0f, 0.0f},
+
                         .ai_type = AIType::Enemy,
                         .health = 500.0f,
                         .health_regen = 0.1f,
