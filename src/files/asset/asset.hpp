@@ -1,11 +1,10 @@
 #pragma once
-#include "mesh.hpp"
-#include "Texture.hpp"
+#include "../Renderer/Mesh.hpp"
 #include "../core/core.hpp"
 
+#include "../Renderer/Texture.hpp"
+#include "../Renderer/Material.hpp"
 
-
-struct Shader;
 
 
 struct Sprite
@@ -37,14 +36,16 @@ namespace Real
     void load_texture(const char *name, const char *path);
     void load_vertex_shader_src(const char *name, const char *path);
     void load_fragment_shader_src(const char *name, const char *path);
-    void load_shader(const char *name, const char *vert_src, const char *frag_src);
 
+    void init_shader(const char *name, const char *vert_src, const char *frag_src);
     void init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *texture);
+    void init_material(const char *name, Shader *shader, Texture *texture, shader_data_func *func);
 
 
     Mesh *get_mesh(const char *name);
     Texture *get_texture(const char *name);
     Sprite *get_sprite(const char *name);
+    Material *get_material(const char *name);
 
     const char *get_vertex_src(const char *name);
     const char *get_fragment_src(const char *name);
