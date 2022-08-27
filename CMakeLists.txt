@@ -18,8 +18,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 
     
     
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces -Wno-nested-anon-types -Wno-gnu-anonymous-struct")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces -Wno-nested-anon-types -Wno-gnu-anonymous-struct")
     
     #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address")
     #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address")
@@ -28,8 +28,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
 
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}     -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces -Wno-nested-anon-types -Wno-gnu-anonymous-struct")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -Wall -Wpedantic -g -Wno-language-extension-token -Wno-missing-braces -Wno-nested-anon-types -Wno-gnu-anonymous-struct")
 
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
