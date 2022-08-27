@@ -5,8 +5,6 @@
 class Vector2f
 {
 public:
-
-
     union {float x, r, u;};
     union {float y, g, v;};
 
@@ -65,10 +63,19 @@ public:
 class Vector4f
 {
 public:
-    union {float x, r;};
-    union {float y, g;};
-    union {float z, b;};
-    union {float w, a;};
+    union
+    {
+        float array[4];
+        struct
+        {
+            union {float x, r;};
+            union {float y, g;};
+            union {float z, b;};
+            union {float w, a;};
+        };
+    };
+
+    float &operator[](int index) { return this->array[index]; };
 
 
     Vector3f xyz() { return Vector3f {this->x, this->y, this->z}; }
@@ -92,7 +99,6 @@ public:
     void normalize();
     float dot(Vector4f v4f);
 };
-
 
 
 
@@ -123,24 +129,66 @@ public:
 };
 
 
-
 class Mat4
 {
 public:
-    union {Vector4f x1, i;};
-    union {Vector4f x2, j;};
-    union {Vector4f x3, k;};
-    union {Vector4f x4, l;};
+    union
+    {
+        Vector4f array[4];
+        struct
+        {
+            union {Vector4f x1, i;};
+            union {Vector4f x2, j;};
+            union {Vector4f x3, k;};
+            union {Vector4f x4, l;};
+        };
+    };
 
+    Vector4f &operator[](int index) { return this->array[index]; };
 
+    Mat4 operator*(float s) { return Mat4 {this->x1 * s, this->x2 * s, this->x3 * s, this->x4 * s}; };
     Vector4f operator*(Vector4f v4f) { return (x1 * v4f.x) + (x2 * v4f.y) + (x3 * v4f.z) + (x4 * v4f.w); }
 
-    Mat4 operator*(Mat4 mat4) { return Mat4 { *this * mat4.x1, *this * mat4.x2, *this * mat4.x3, *this * mat4.x4, }; } 
+    Mat4 operator*(Mat4 mat4) { return Mat4 { *this * mat4.x1, *this * mat4.x2, *this * mat4.x3, *this * mat4.x4, }; }
 };
+
+
+
+
+
+
+class Quaternion
+{
+public:
+
+    float r, i, j, k;
+
+    void normalize();
+};
+
+
+
+
+
+
+
+
+
+
 
 
 namespace Real
 {
-   Mat4 orthographic(float left, float right, float top, float bottom, float znear, float zfar); 
+    Quaternion quat_from_euler_angles(Vector3f angles);
+    Vector3f euler_angles_from_quat(Quaternion quat);
+
+
+    Mat4 transpose(Mat4 *matrix);
+
+    Mat4 gauss_eliminate(Mat4 *matrix);
+    float determinant(Mat4 *matrix);
+    Mat4 inverse(Mat4 *matrix);
+
+    Mat4 orthographic(float left, float right, float top, float bottom, float znear, float zfar);
 } // namespace Real
 
