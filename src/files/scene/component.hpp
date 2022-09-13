@@ -28,9 +28,9 @@ struct Transform
 
 struct CameraComponent
 {
+    Mat4 projection;
     U16 screen_width;
     U16 screen_height;
-    float fov;
     bool active;
     
 };

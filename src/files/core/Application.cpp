@@ -130,13 +130,13 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
             CameraSpawnEvent cse = {
                 .transform = {
                     .pos = {0.0f, 0.0f, 0.0f},
-                    .rot = {1.0f, 0.0f, 0.0f},
+                    .rot = {0.0f, 0.0f, 0.0f},
                     .scale = {1.0f, 1.0f, 1.0f},
                 },
                 .cc = {
+                    .projection = Real::orthographic(0, app->engine->config->screen_width, 0, app->engine->config->screen_height, -1.0f, 1.0f),
                     .screen_width = app->engine->config->screen_width,
                     .screen_height = app->engine->config->screen_height,
-                    .fov = 3.1415926f / 2.0f,
                     .active = true,
                 },
 

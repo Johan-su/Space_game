@@ -16,9 +16,9 @@ void Real::init_camera(Transform *camera_transform,
 
 
     *camera = {
+        .projection = {},
         .screen_width  = screen_width,
         .screen_height = screen_height,
-        .fov = 3.1415926f / 2.0f,
         .active        = active
     };
 
