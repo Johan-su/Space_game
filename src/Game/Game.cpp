@@ -156,6 +156,7 @@ static void setup_scene(scene *scene)
 
     Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
     Real::load_mesh("icosagon_mesh", "./resources/meshes/icosagon.mesh");
+    Real::load_mesh("cube_mesh", "./resources/meshes/cube.mesh");
     
     PlayerSpawnEvent pse = {
         .transform = {
