@@ -129,16 +129,19 @@ static void setup_scene(scene *scene)
     Real::load_texture("ship_texture", "./resources/ships/placeholder.bmp");
     Real::load_texture("planet_texture", "./resources/planets/placeholder.bmp");
 
+
     Real::load_vertex_shader_src("color_vert", "./resources/shaders/color.vert");
     Real::load_fragment_shader_src("color_frag", "./resources/shaders/color.frag");
-
     Real::init_shader("color", Real::get_vertex_src("color_vert"), Real::get_fragment_src("color_frag"));
+
+
+    Real::load_vertex_shader_src("uv_vert", "./resources/shaders/uv.vert");
+    Real::load_fragment_shader_src("uv_frag", "./resources/shaders/uv.frag");
+    Real::init_shader("uv", Real::get_vertex_src("uv_vert"), Real::get_fragment_src("uv_frag"));
 
 
     Real::load_vertex_shader_src("texture_vert", "./resources/shaders/texture.vert");
     Real::load_fragment_shader_src("texture_frag", "./resources/shaders/texture.frag");
-
-
     Real::init_shader("texture", Real::get_vertex_src("texture_vert"), Real::get_fragment_src("texture_frag"));
 
     auto uniform_set_func = [](Shader *shader) {
@@ -154,6 +157,10 @@ static void setup_scene(scene *scene)
 
     Real::init_material("color_material", Real::get_shader("color"), nullptr, color_set_func);
 
+
+    Real::init_material("uv_material", Real::get_shader("uv"), nullptr, [](Shader *){});
+
+
     Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
     Real::load_mesh("icosagon_mesh", "./resources/meshes/icosagon.mesh");
     Real::load_mesh("cube_mesh", "./resources/meshes/cube.mesh");
@@ -166,7 +173,7 @@ static void setup_scene(scene *scene)
             .scale = {100.0f, 100.0f, 100.0f},
         },
         .mesh = Real::get_mesh("cube_mesh"),
-        .material = Real::get_material("color_material"),
+        .material = Real::get_material("uv_material"),
     };
 
     Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
