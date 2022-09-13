@@ -51,33 +51,33 @@ void PlayerSystem::update(Iter *it)
     vel_x_target = 0.0f;
     vel_y_target = 0.0f;
 
-    Vector2f vel_direction = {0.0f, 0.0f};
-    
-
-    
-    if (Real::IsKeyPressed(VK_KEY_W))
     {
-        vel_direction.y += -1.0f;
-    }
+        Vector2f vel_direction = {0.0f, 0.0f};
+        
+        if (Real::IsKeyPressed(VK_KEY_W))
+        {
+            vel_direction.y += -1.0f;
+        }
 
-    if (Real::IsKeyPressed(VK_KEY_S))
-    {
-        vel_direction.y += 1.0f;
-    }
+        if (Real::IsKeyPressed(VK_KEY_S))
+        {
+            vel_direction.y += 1.0f;
+        }
 
-    if (Real::IsKeyPressed(VK_KEY_A))
-    {
-        vel_direction.x += -1.0f;
-    }
+        if (Real::IsKeyPressed(VK_KEY_A))
+        {
+            vel_direction.x += -1.0f;
+        }
 
-    if (Real::IsKeyPressed(VK_KEY_D))
-    {
-        vel_direction.x += 1.0f;
-    }
+        if (Real::IsKeyPressed(VK_KEY_D))
+        {
+            vel_direction.x += 1.0f;
+        }
 
-    vel_direction.normalize();
-    vel_x_target = speed * vel_direction.x;
-    vel_y_target = speed * vel_direction.y;
+        vel_direction.normalize();
+        vel_x_target = speed * vel_direction.x;
+        vel_y_target = speed * vel_direction.y;
+    }
 
 
     MousePos mpos = Real::getMousePos();
