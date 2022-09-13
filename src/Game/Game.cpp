@@ -147,6 +147,13 @@ static void setup_scene(scene *scene)
 
     Real::init_material("ship_material", Real::get_shader("texture"), Real::get_texture("ship_texture"), uniform_set_func);
 
+    auto color_set_func = [](Shader *shader)
+    {
+        Real::set_uniform_vec4f(shader, Vector4f {0.0f, 1.0f, 0.0f, 1.0f}, "u_Color");
+    };
+
+    Real::init_material("color_material", Real::get_shader("color"), nullptr, color_set_func);
+
     Real::load_mesh("square_mesh", "./resources/meshes/square.mesh");
     Real::load_mesh("icosagon_mesh", "./resources/meshes/icosagon.mesh");
     
