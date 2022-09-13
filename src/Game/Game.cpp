@@ -170,7 +170,7 @@ static void setup_scene(scene *scene)
             .pos = {400.0f, 500.0f, 0.0f},
             .rot = {0.0f, 0.0f, 0.0f},
             //.scale = {114.0f, 200.0f, 100.0f},
-            .scale = {100.0f, 100.0f, 100.0f},
+            .scale = {150.0f, 150.0f, 150.0f},
         },
         .mesh = Real::get_mesh("cube_mesh"),
         .material = Real::get_material("uv_material"),

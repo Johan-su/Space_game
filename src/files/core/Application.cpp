@@ -134,7 +134,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
                     .scale = {1.0f, 1.0f, 1.0f},
                 },
                 .cc = {
-                    .projection = Real::orthographic(0, app->engine->config->screen_width, 0, app->engine->config->screen_height, 0.0f, 100.0f),
+                    .projection = Real::orthographic(0, app->engine->config->screen_width, 0, app->engine->config->screen_height, 0.0f, 400.0f),
                     .screen_width = app->engine->config->screen_width,
                     .screen_height = app->engine->config->screen_height,
                     .active = true,
