@@ -86,14 +86,17 @@ void PlayerSystem::update(Iter *it)
     Transform *t_camera = Ecs::get_component<Transform>(it->registry, active_camera);
     CameraComponent *cc_camera = Ecs::get_component<CameraComponent>(it->registry, active_camera);
 
-    float world_mx = Real::screen_to_world_x(t_camera, cc_camera, mpos.x);
-    float world_my = Real::screen_to_world_y(t_camera, cc_camera, mpos.y);
+    //TODO(Johan): fix mouse tracking
+    /*{
+        float world_mx = Real::screen_to_world_x(t_camera, cc_camera, mpos.x);
+        float world_my = Real::screen_to_world_y(t_camera, cc_camera, mpos.y);
 
-    float dx = world_mx - transform->pos.x;
-    float dy = world_my - transform->pos.y;
+        float dx = world_mx - transform->pos.x;
+        float dy = world_my - transform->pos.y;
 
-    float angle = atan2f(dy, dx);
-    transform->rot = {cosf(angle), sinf(angle)};
+        float angle = atan2f(dy, dx);
+        transform->rot = {cosf(angle), sinf(angle)};
+    }*/
 
 
     vel->v.x = lerp(vel->v.x, vel_x_target, it->Ts * 6);
