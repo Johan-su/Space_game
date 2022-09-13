@@ -53,7 +53,6 @@ if(WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-set(CMAKE_USE_PTHREADS_INIT 1)
 
 
         #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}           -fsanitize=address")
