@@ -139,31 +139,31 @@ void PlayerSystem::update(Iter *it)
 
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_I))
     {
-        transform->rot.x += rotation_speed * it->Ts;
+        transform->rot.x -= rotation_speed * it->Ts;
     }
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_K))
     {
-        transform->rot.x -= rotation_speed * it->Ts;
+        transform->rot.x += rotation_speed * it->Ts;
     }
 
 
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_U))
     {
-        transform->rot.y += rotation_speed * it->Ts;
+        transform->rot.y -= rotation_speed * it->Ts;
     }
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_O))
     {
-        transform->rot.y -= rotation_speed * it->Ts;
+        transform->rot.y += rotation_speed * it->Ts;
     }
 
 
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_J))
     {
-        transform->rot.z += rotation_speed * it->Ts;
+        transform->rot.z -= rotation_speed * it->Ts;
     }
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_L))
     {
-        transform->rot.z -= rotation_speed * it->Ts;
+        transform->rot.z += rotation_speed * it->Ts;
     }
 
 
