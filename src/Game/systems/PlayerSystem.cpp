@@ -25,6 +25,8 @@ static Timer shoot_timer = {
 };
 
 
+const float rotation_speed = 1.0f;
+
 void PlayerSystem::update(Iter *it)
 {
     const Group *group = Ecs::get_group<Player>(it->registry);
@@ -39,8 +41,8 @@ void PlayerSystem::update(Iter *it)
     Entity player = group->entity_list[0]; 
 
 
-    Transform *transform        = Ecs::get_component<Transform>(it->registry, player);
-    Velocity *vel               = Ecs::get_component<Velocity>(it->registry, player);
+    Transform *transform = Ecs::get_component<Transform>(it->registry, player);
+    Velocity *vel = Ecs::get_component<Velocity>(it->registry, player);
 
     float vel_x_target;
     float vel_y_target;
@@ -123,6 +125,43 @@ void PlayerSystem::update(Iter *it)
             Ecs::push_event<BulletSpawnEvent>(it->registry, &bse);           
         }
     }
+
+    
+
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_I))
+    {
+        transform->rot.x += rotation_speed * it->Ts;
+    }
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_K))
+    {
+        transform->rot.x -= rotation_speed * it->Ts;
+    }
+
+
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_U))
+    {
+        transform->rot.y += rotation_speed * it->Ts;
+    }
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_O))
+    {
+        transform->rot.y -= rotation_speed * it->Ts;
+    }
+
+
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_J))
+    {
+        transform->rot.z += rotation_speed * it->Ts;
+    }
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_L))
+    {
+        transform->rot.z -= rotation_speed * it->Ts;
+    }
+
+
+
+
+
+
 }
 
 
