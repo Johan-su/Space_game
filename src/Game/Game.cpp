@@ -161,11 +161,11 @@ static void setup_scene(scene *scene)
     PlayerSpawnEvent pse = {
         .transform = {
             .pos = {400.0f, 500.0f, 0.0f},
-            .rot = {1.0f, 0.0f, 0.0f},
-            .scale = {114.0f, 200.0f, 0.0f},
+            .rot = {0.0f, 0.0f, 0.0f},
+            .scale = {114.0f, 200.0f, 100.0f},
         },
-        .mesh = Real::get_mesh("square_mesh"),
-        .material = Real::get_material("ship_material"),
+        .mesh = Real::get_mesh("cube_mesh"),
+        .material = Real::get_material("color_material"),
     };
 
     Ecs::push_event<PlayerSpawnEvent>(&scene->registry, &pse);
