@@ -127,6 +127,15 @@ void PlayerSystem::update(Iter *it)
     }
 
     
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_T))
+    {
+        transform->pos.z -= 1.0f;
+    }
+    if (Real::IsKeyPressed(KeyCodes::VK_KEY_G))
+    {
+        transform->pos.z += 1.0f;
+    }
+
 
     if (Real::IsKeyPressed(KeyCodes::VK_KEY_I))
     {
