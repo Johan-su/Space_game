@@ -152,7 +152,7 @@ static void setup_scene(scene *scene)
     
     PlayerSpawnEvent pse = {
         .transform = {
-            .pos = {0.0f, 0.0f, 0.0f},
+            .pos = {400.0f, 500.0f, 0.0f},
             .rot = {1.0f, 0.0f, 0.0f},
             .scale = {114.0f, 200.0f, 0.0f},
         },
