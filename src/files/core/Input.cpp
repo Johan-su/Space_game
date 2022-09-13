@@ -23,7 +23,18 @@ static Window *s_window;
 
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    //TODO(Johan): implement scroll
+    if (yoffset > 0)
+    {
+        s_input.scroll = MOUSE_SCROLL_UP;
+    }
+    else if (yoffset < 0)
+    {
+        s_input.scroll = MOUSE_SCROLL_DOWN;
+    }
+    else
+    {
+        s_input.scroll = MOUSE_SCROLL_NONE;
+    }
 }
 
 
