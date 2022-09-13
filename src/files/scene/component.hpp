@@ -38,7 +38,7 @@ struct CameraComponent
 
 struct Velocity
 {
-    union {Vector3f v;};
+    Vector3f v;
 };
 
 
