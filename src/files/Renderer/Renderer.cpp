@@ -129,7 +129,9 @@ void Renderer::draw(const Transform *transform, const MeshComponent *meshc, cons
     Real::bind(&meshc->mesh->va);
     Real::bind(&meshc->mesh->ib);
     Real::bind(materialc->material->shader);
-    Real::bind(materialc->material->texture, 0);
+
+    if (materialc->material->texture != nullptr)
+        Real::bind(materialc->material->texture, 0);
     
 
     Mat4 transform_m = Real::transform_to_mat4(transform);
