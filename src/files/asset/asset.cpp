@@ -162,6 +162,8 @@ static U64 *get_check_name_hash(const char *name, void *name_map)
     return name_hash_p;
 }
 
+//TODO(Johan): return name hash from all load functions instead of retrieving from get_<asset>("name") 
+
 
 void Real::load_mesh(const char *name, const char *path)
 {
