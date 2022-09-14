@@ -134,7 +134,7 @@ scene *Application::create_add_scene(const char *scene_name = "unnamed_scene")
                     .scale = {1.0f, 1.0f, 1.0f},
                 },
                 .cc = {
-                    .projection = Real::orthographic(0, app->engine->config->screen_width, 0, app->engine->config->screen_height, 0.0f, 400.0f),
+                    .projection = Real::orthographic(0, app->engine->config->screen_width, 0, app->engine->config->screen_height, -200.0f, 200.0f),
                     .screen_width = app->engine->config->screen_width,
                     .screen_height = app->engine->config->screen_height,
                     .active = true,
@@ -228,20 +228,6 @@ void Application::run(Application_data *app, scene *scene)
     CameraComponent *camera_cc = Ecs::get_component<CameraComponent>(&scene->registry, camera);
 
 
-    /*Transform transform = {
-        .pos = {400.0f, 500.0f},
-        .rot = {1.0f, 0.0f},
-        .scale = {100.0f, 100.0f},
-    };
-
-    MeshComponent meshc = {
-        .mesh = Real::get_mesh("square_mesh"),
-    };
-
-    Material *material = Real::get_material("ship_material"); */
-
-    // float angle = 0.0f;
-
     while (app->active)
     {
         curr = deltaTime::get_micro_time();
@@ -269,15 +255,6 @@ void Application::run(Application_data *app, scene *scene)
             fixed_update_count -= target_fixed_update;
         }
 
-         /*angle += 3.1415926f / 90.0f;
-
-        transform.rot.x = cosf(5 * angle);
-        transform.rot.y = sinf(5 * angle);
-
-        float r = 400.0f;
-
-        transform.pos.x = r * cosf(2 * angle) + 960.0f;
-        transform.pos.y = r * sinf(2 * angle) + 540.0f; */
 
         // begin render
         Renderer::begin(camera_tr, camera_cc);
