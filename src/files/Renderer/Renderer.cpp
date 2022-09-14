@@ -100,30 +100,6 @@ void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f c
 }
 
 
-void Renderer::draw(Transform *transform, MeshComponent *meshc, Shader *shader, Vector4f color)
-{
-    Real::bind(&meshc->mesh->va);
-    Real::bind(&meshc->mesh->ib);
-    Real::bind(shader);
-    
-    Real::set_uniform_vec4f(shader, color, "u_Color");
-
-    Mat4 transform_m = Real::transform_to_mat4(transform);
-
-    Mat4 projection = Real::orthographic(0, s_camera_comp->screen_width,
-        0, s_camera_comp->screen_height,
-        -1.0f, 1.0f);
-
-    Mat4 mvp = projection * transform_m;
-
-    
-    Real::set_uniform_mat4(shader, &mvp, "u_MVP");
-
-
-    glDrawElements(GL_TRIANGLES, meshc->mesh->ib.count, GL_UNSIGNED_INT, nullptr);
-}
-
-
 void Renderer::draw(const Transform *transform, const MeshComponent *meshc, const MaterialComponent *materialc)
 {
     Real::bind(&meshc->mesh->va);
@@ -135,13 +111,11 @@ void Renderer::draw(const Transform *transform, const MeshComponent *meshc, cons
     
 
     Mat4 transform_m = Real::transform_to_mat4(transform);
-
     Mat4 camera_transform_m = Real::transform_to_mat4(s_camera_transform);
 
-    Mat4 mvp = s_camera_comp->projection * Real::inverse(&camera_transform_m) * transform_m;
+    Mat4 mvp = s_camera_comp->projection /** Real::inverse(&camera_transform_m)*/ * transform_m;
 
     Real::set_uniform_mat4(materialc->material->shader, &mvp, "u_MVP");
-
     materialc->material->uniform_set_func(materialc->material->shader);
 
     glDrawElements(GL_TRIANGLES, meshc->mesh->ib.count, GL_UNSIGNED_INT, nullptr);    
