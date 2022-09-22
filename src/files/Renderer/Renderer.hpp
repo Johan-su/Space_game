@@ -32,5 +32,6 @@ namespace Renderer
     void draw(const Transform *transform, const MeshComponent *meshc, const MaterialComponent *materialc);
 
     void set_blending();
+    void set_depth_test(U32 depth_func);
 
 } // namespace Renderer

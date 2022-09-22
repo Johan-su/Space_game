@@ -255,11 +255,12 @@ void Application::run(Application_data *app, scene *scene)
             fixed_update_count -= target_fixed_update;
         }
 
+        Renderer::set_blending();
+        Renderer::set_depth_test(GL_LESS);
 
         // begin render
         Renderer::begin(camera_tr, camera_cc);
         Renderer::clear();
-        Renderer::set_blending();
         
         // Renderer::draw(&transform, &meshc, material);
 

@@ -74,7 +74,7 @@ void Renderer::end()
 
 void Renderer::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
@@ -125,4 +125,11 @@ void Renderer::draw(const Transform *transform, const MeshComponent *meshc, cons
 void Renderer::set_blending()
 {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+
+void Renderer::set_depth_test(U32 depth_func)
+{
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(depth_func);
 }
