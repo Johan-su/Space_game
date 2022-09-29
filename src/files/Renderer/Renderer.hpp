@@ -27,8 +27,8 @@ namespace Renderer
     void end();
 
     void clear();
-    void draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color);
-    void draw(Transform *transform, MeshComponent *mesh, Shader *shader, Vector4f color);
+    void draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vec4 color);
+    void draw(Transform *transform, MeshComponent *mesh, Shader *shader, Vec4 color);
     void draw(const Transform *transform, const MeshComponent *meshc, const MaterialComponent *materialc);
 
     void set_blending();

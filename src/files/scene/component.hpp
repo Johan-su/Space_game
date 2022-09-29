@@ -20,9 +20,9 @@ struct Sprite;
 
 struct Transform
 {
-    Vector3f pos; // center of the entity
-    Vector3f rot;
-    Vector3f scale;
+    Vec3 pos; // center of the entity
+    Vec3 rot;
+    Vec3 scale;
 };
 
 
@@ -38,7 +38,7 @@ struct CameraComponent
 
 struct Velocity
 {
-    Vector3f v;
+    Vec3 v;
 };
 
 
@@ -75,7 +75,7 @@ enum ColliderType
 struct BoxCollider 
 {
     U64 type;
-    Vector2f size; // gets scaled by transform.scale
+    Vec2 size; // gets scaled by transform.scale
 };
 
 

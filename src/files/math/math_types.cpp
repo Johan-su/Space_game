@@ -1,123 +1,90 @@
 #include "math_types.hpp"
 
 #include <math.h>
+#include "../assert.hpp"
 
 
-
-
-float Vector2f::magnitude()
+float Real::dot(Vec2 *v1, Vec2 *v2)
 {
-    return sqrtf(this->x * this->x + this->y * this->y);
+    return v1->x * v2->x + v1->y * v2->y;
 }
 
 
-void Vector2f::normalize()
+float Real::dot(Vec3 *v1, Vec3 *v2)
 {
-    float mag = this->magnitude();
-
-    if (mag < 0.0001f) // must be a zero vector
-        return;
-
-    this->x = this->x / mag;
-    this->y = this->y / mag;
-
+    return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
 
-float Vector2f::dot(Vector2f other_v2f)
+float Real::dot(Vec4 *v1, Vec4 *v2)
 {
-    return this->x * other_v2f.x + this->y * other_v2f.y;
+    return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z + v1->w * v2->w;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-float Vector3f::magnitude()
+void Real::normalize(Vec2 *v)
 {
-    return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z);
+    float norm = sqrtf(dot(v, v));
+    assert(!isnan(norm) && norm != 0, "Cannot normalize a 0 vector");
+    *v *= 1 / norm;
 }
 
 
-void Vector3f::normalize()
+void Real::normalize(Vec3 *v)
 {
-    float mag = this->magnitude();
-
-    if (mag < 0.0001f) // must be a zero vector
-        return;
-
-    this->x = this->x / mag;
-    this->y = this->y / mag;
-    this->z = this->z / mag;
-
+    float norm = sqrtf(dot(v, v));
+    assert(!isnan(norm) && norm != 0, "Cannot normalize a 0 vector");
+    *v *= 1 / norm;
 }
 
 
-float Vector3f::dot(Vector3f other_v3f)
+void Real::normalize(Vec4 *v)
 {
-    return this->x * other_v3f.x + this->y * other_v3f.y + this->z * other_v3f.z;
+    float norm = sqrtf(dot(v, v));
+    assert(!isnan(norm) && norm != 0, "Cannot normalize a 0 vector");
+    *v *= 1 / norm;
 }
 
 
-
-
-
-
-
-
-
-
-float Vector4f::magnitude()
+void Real::normalize(Rot3 *r)
 {
-    return sqrtf(this->x * this->x + this->y * this->y + this->z * this->z + this->w * this->w);
+    float norm = sqrtf(r->s * r->s + dot(&r->bivec, &r->bivec));
+    assert(!isnan(norm) && norm != 0, "Cannot normalize a 0 rotor");
+    r->s /= norm; 
+    r->bivec /= norm;
 }
 
 
-void Vector4f::normalize()
+Vec3 Real::cross(Vec3 *v1, Vec3 *v2)
 {
-    float mag = this->magnitude();
-
-    if (mag < 0.0001f) // must be a zero vector
-        return;
-
-    this->x = this->x / mag;
-    this->y = this->y / mag;
-    this->z = this->z / mag;
-    this->w = this->w / mag;
-
+    return Vec3 {.x = v1->y * v2->z - v1->z * v2->y,
+                 .y = v1->z * v2->x - v1->x * v2->z,
+                 .z = v1->x * v2->y - v1->y * v2->x};
 }
 
 
-float Vector4f::dot(Vector4f other_v4f)
+BiVec3 Real::wedge(Vec3 *v1, Vec3 *v2)
 {
-    return this->x * other_v4f.x + this->y * other_v4f.y + this->z * other_v4f.z + this->w * other_v4f.w;
+    return BiVec3 {.x = v1->x * v2->y - v1->y * v2->x,
+                   .y = v1->y * v2->z - v1->z * v2->y,
+                   .z = v1->z * v2->x - v1->x * v2->z};    
 }
 
 
-
-
-
-
-
-Quaternion Real::quat_from_euler_angles(Vector3f angles)
+Rot3 Real::from_to(Vec3 *v_from, Vec3 *v_to)
 {
+    Rot3 rot = {};
+    rot.s = dot(v_from, v_to) / sqrtf(dot(v_from, v_from) * dot(v_to, v_to));
+    rot.bivec = wedge(v_to, v_from);
 
+
+
+
+    normalize(&rot);
+    return rot;
 }
 
 
-Vector3f Real::euler_angles_from_quat(Quaternion quat)
-{
-
-}
-
-        
 Mat4 Real::transpose(Mat4 *matrix)
 {
     Mat4 t_matrix = {};

@@ -2,65 +2,70 @@
 
 #include "../int.hpp"
 
-class Vector2f
+class Vec2
 {
 public:
     union {float x, r, u;};
     union {float y, g, v;};
 
 
-    Vector2f operator+(Vector2f v2f) { return Vector2f {this->x + v2f.x, this->y + v2f.y}; }
-    Vector2f operator-(Vector2f v2f) { return Vector2f {this->x - v2f.x, this->y - v2f.y}; }
+    Vec2 operator+(Vec2 v2f) { return Vec2 {this->x + v2f.x, this->y + v2f.y}; }
+    Vec2 operator-(Vec2 v2f) { return Vec2 {this->x - v2f.x, this->y - v2f.y}; }
 
 
-    Vector2f operator+(float scalar)  { return Vector2f {this->x + scalar, this->y + scalar}; }
-    Vector2f operator-(float scalar)  { return Vector2f {this->x - scalar, this->y - scalar}; }
-    Vector2f operator*(float scalar)  { return Vector2f {this->x * scalar, this->y * scalar}; }
-    Vector2f operator/(float scalar)  { return Vector2f {this->x / scalar, this->y / scalar}; }
+    Vec2 operator+(float s)  { return Vec2 {this->x + s, this->y + s}; }
+    Vec2 operator-(float s)  { return Vec2 {this->x - s, this->y - s}; }
+    Vec2 operator*(float s)  { return Vec2 {this->x * s, this->y * s}; }
+    Vec2 operator/(float s)  { return Vec2 {this->x / s, this->y / s}; }
 
-    void operator+=(float scalar) { *this = *this + scalar; }
-    void operator-=(float scalar) { *this = *this - scalar; }
-    void operator*=(float scalar) { *this = *this * scalar; }
-    void operator/=(float scalar) { *this = *this / scalar; }
+    void operator+=(float s) { *this = *this + s; }
+    void operator-=(float s) { *this = *this - s; }
+    void operator*=(float s) { *this = *this * s; }
+    void operator/=(float s) { *this = *this / s; }
 
-
-    float magnitude();
-    void normalize();
-    float dot(Vector2f v2f);
 };
 
 
-class Vector3f
+class Vec3
 {
 public:
     union {float x, r;};
     union {float y, g;};
     union {float z, b;};
 
-    Vector2f xy() { return Vector2f {this->x, this->y}; }
+    Vec2 xy() { return Vec2 {this->x, this->y}; }
 
-    Vector3f operator+(Vector3f v3f) { return Vector3f {this->x + v3f.x, this->y + v3f.y, this->z + v3f.z}; }
-    Vector3f operator-(Vector3f v3f) { return Vector3f {this->x - v3f.x, this->y - v3f.y, this->z - v3f.z}; }
-
-
-    Vector3f operator+(float scalar)  { return Vector3f {this->x + scalar, this->y + scalar, this->z + scalar}; }
-    Vector3f operator-(float scalar)  { return Vector3f {this->x - scalar, this->y - scalar, this->z - scalar}; }
-    Vector3f operator*(float scalar)  { return Vector3f {this->x * scalar, this->y * scalar, this->z * scalar}; }
-    Vector3f operator/(float scalar)  { return Vector3f {this->x / scalar, this->y / scalar, this->z / scalar}; }
-
-    void operator+=(float scalar) { *this = *this + scalar; }
-    void operator-=(float scalar) { *this = *this - scalar; }
-    void operator*=(float scalar) { *this = *this * scalar; }
-    void operator/=(float scalar) { *this = *this / scalar; }
+    Vec3 operator+(Vec3 v) { return Vec3 {this->x + v.x, this->y + v.y, this->z + v.z}; }
+    Vec3 operator-(Vec3 v) { return Vec3 {this->x - v.x, this->y - v.y, this->z - v.z}; }
 
 
-    float magnitude();
-    void normalize();
-    float dot(Vector3f v3f);
+    Vec3 operator+(float s)  { return Vec3 {this->x + s, this->y + s, this->z + s}; }
+    Vec3 operator-(float s)  { return Vec3 {this->x - s, this->y - s, this->z - s}; }
+    Vec3 operator*(float s)  { return Vec3 {this->x * s, this->y * s, this->z * s}; }
+    Vec3 operator/(float s)  { return Vec3 {this->x / s, this->y / s, this->z / s}; }
+
+    void operator+=(float s) { *this = *this + s; }
+    void operator-=(float s) { *this = *this - s; }
+    void operator*=(float s) { *this = *this * s; }
+    void operator/=(float s) { *this = *this / s; }
+   
+};
+
+typedef Vec3 BiVec3; 
+
+// https://marctenbosch.com/quaternions/code.htm
+class Rot3
+{
+public:
+    float s;
+    BiVec3 bivec;
+
+
 };
 
 
-class Vector4f
+
+class Vec4
 {
 public:
     union
@@ -78,26 +83,22 @@ public:
     float &operator[](int index) { return this->array[index]; };
 
 
-    Vector3f xyz() { return Vector3f {this->x, this->y, this->z}; }
+    Vec3 xyz() { return Vec3 {this->x, this->y, this->z}; }
 
-    Vector4f operator+(Vector4f v4f) { return Vector4f {this->x + v4f.x, this->y + v4f.y, this->z + v4f.z, this->w + v4f.w}; }
-    Vector4f operator-(Vector4f v4f) { return Vector4f {this->x - v4f.x, this->y - v4f.y, this->z - v4f.z, this->w - v4f.w}; }
-
-
-    Vector4f operator+(float scalar)  { return Vector4f {this->x + scalar, this->y + scalar, this->z + scalar, this->w + scalar}; }
-    Vector4f operator-(float scalar)  { return Vector4f {this->x - scalar, this->y - scalar, this->z - scalar, this->w - scalar}; }
-    Vector4f operator*(float scalar)  { return Vector4f {this->x * scalar, this->y * scalar, this->z * scalar, this->w * scalar}; }
-    Vector4f operator/(float scalar)  { return Vector4f {this->x / scalar, this->y / scalar, this->z / scalar, this->w / scalar}; }
-
-    void operator+=(float scalar) { *this = *this + scalar; }
-    void operator-=(float scalar) { *this = *this - scalar; }
-    void operator*=(float scalar) { *this = *this * scalar; }
-    void operator/=(float scalar) { *this = *this / scalar; }
+    Vec4 operator+(Vec4 v4f) { return Vec4 {this->x + v4f.x, this->y + v4f.y, this->z + v4f.z, this->w + v4f.w}; }
+    Vec4 operator-(Vec4 v4f) { return Vec4 {this->x - v4f.x, this->y - v4f.y, this->z - v4f.z, this->w - v4f.w}; }
 
 
-    float magnitude();
-    void normalize();
-    float dot(Vector4f v4f);
+    Vec4 operator+(float s)  { return Vec4 {this->x + s, this->y + s, this->z + s, this->w + s}; }
+    Vec4 operator-(float s)  { return Vec4 {this->x - s, this->y - s, this->z - s, this->w - s}; }
+    Vec4 operator*(float s)  { return Vec4 {this->x * s, this->y * s, this->z * s, this->w * s}; }
+    Vec4 operator/(float s)  { return Vec4 {this->x / s, this->y / s, this->z / s, this->w / s}; }
+
+    void operator+=(float s) { *this = *this + s; }
+    void operator-=(float s) { *this = *this - s; }
+    void operator*=(float s) { *this = *this * s; }
+    void operator/=(float s) { *this = *this / s; }
+
 };
 
 
@@ -107,10 +108,10 @@ public:
 class Mat2
 {
 public:
-    union {Vector2f x1, i;};
-    union {Vector2f x2, j;};
+    union {Vec2 x1, i;};
+    union {Vec2 x2, j;};
 
-    Vector2f operator*(Vector2f v2f) { return (x1 * v2f.x) + (x2 * v2f.y); }
+    Vec2 operator*(Vec2 v2f) { return (x1 * v2f.x) + (x2 * v2f.y); }
 
     Mat2 operator*(Mat2 mat2) { return Mat2 { *this * mat2.x1, *this * mat2.x2, }; } 
 };
@@ -119,11 +120,11 @@ public:
 class Mat3
 {
 public:
-    union {Vector3f x1, i;};
-    union {Vector3f x2, j;};
-    union {Vector3f x3, k;};
+    union {Vec3 x1, i;};
+    union {Vec3 x2, j;};
+    union {Vec3 x3, k;};
 
-    Vector3f operator*(Vector3f v3f) { return (x1 * v3f.x) + (x2 * v3f.y) + (x3 * v3f.z); }
+    Vec3 operator*(Vec3 v3f) { return (x1 * v3f.x) + (x2 * v3f.y) + (x3 * v3f.z); }
 
     Mat3 operator*(Mat3 mat3) { return Mat3 { *this * mat3.x1, *this * mat3.x2, *this * mat3.x3, }; } 
 };
@@ -134,20 +135,20 @@ class Mat4
 public:
     union
     {
-        Vector4f array[4];
+        Vec4 array[4];
         struct
         {
-            union {Vector4f x1, i;};
-            union {Vector4f x2, j;};
-            union {Vector4f x3, k;};
-            union {Vector4f x4, l;};
+            union {Vec4 x1, i;};
+            union {Vec4 x2, j;};
+            union {Vec4 x3, k;};
+            union {Vec4 x4, l;};
         };
     };
 
-    Vector4f &operator[](int index) { return this->array[index]; };
+    Vec4 &operator[](int index) { return this->array[index]; };
 
     Mat4 operator*(float s) { return Mat4 {this->x1 * s, this->x2 * s, this->x3 * s, this->x4 * s}; };
-    Vector4f operator*(Vector4f v4f) { return (x1 * v4f.x) + (x2 * v4f.y) + (x3 * v4f.z) + (x4 * v4f.w); }
+    Vec4 operator*(Vec4 v4f) { return (x1 * v4f.x) + (x2 * v4f.y) + (x3 * v4f.z) + (x4 * v4f.w); }
 
     Mat4 operator*(Mat4 mat4) { return Mat4 { *this * mat4.x1, *this * mat4.x2, *this * mat4.x3, *this * mat4.x4, }; }
 };
@@ -157,34 +158,30 @@ public:
 
 
 
-class Quaternion
-{
-public:
-
-    float r, i, j, k;
-
-    void normalize();
-};
-
-
-
-
-
-
-
-
-
-
-
-
 namespace Real
 {
-    Quaternion quat_from_euler_angles(Vector3f angles);
-    Vector3f euler_angles_from_quat(Quaternion quat);
+
+    float dot(Vec2 *v1, Vec2 *v2);
+    float dot(Vec3 *v1, Vec3 *v2);
+    float dot(Vec4 *v1, Vec4 *v2); 
+
+    void normalize(Vec2 *v);
+    void normalize(Vec3 *v);
+    void normalize(Vec4 *v);
+    void normalize(Rot3 *r);
+
+    Vec3 cross(Vec3 *v1, Vec3 *v2);
+    BiVec3 wedge(Vec3 *v1, Vec3 *v2);
+
+
+    Rot3 from_to(Vec3 *v_from, Vec3 *v_to);
+
+
+
+
 
 
     Mat4 transpose(Mat4 *matrix);
-
     Mat4 gauss_eliminate(Mat4 *matrix);
     float determinant(Mat4 *matrix);
     Mat4 inverse(Mat4 *matrix);

@@ -54,7 +54,7 @@ void PlayerSystem::update(Iter *it)
     vel_y_target = 0.0f;
 
     {
-        Vector2f vel_direction = {0.0f, 0.0f};
+        Vec2 vel_direction = {0.0f, 0.0f};
         
         if (Real::IsKeyPressed(VK_KEY_W))
         {
@@ -76,7 +76,8 @@ void PlayerSystem::update(Iter *it)
             vel_direction.x += 1.0f;
         }
 
-        vel_direction.normalize();
+        if (vel_direction.x != 0.0f || vel_direction.y != 0.0f)
+            Real::normalize(&vel_direction);
         vel_x_target = speed * vel_direction.x;
         vel_y_target = speed * vel_direction.y;
     }

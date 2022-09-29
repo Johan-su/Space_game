@@ -19,8 +19,8 @@ enum BoxOrCircle
 
 struct QuadTree
 {
-    Vector2f pos;
-    Vector2f size;
+    Vec2 pos;
+    Vec2 size;
 
     QuadTree *sub_trees[SUBTREE_AMOUNT]; // 0th tree starts at top right going counter clockwise
 
@@ -39,7 +39,7 @@ static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e
 static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
 
-    Vector2f size = {};
+    Vec2 size = {};
 
     if (bc_e != nullptr)
     {
@@ -80,13 +80,13 @@ static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_a
 
 static void spill_tree(QuadTree *tree, top_memory_arena *arena)
 {
-        Vector2f pos0 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
-        Vector2f pos1 = {.x = tree->pos.x - tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
-        Vector2f pos2 = {.x = tree->pos.x - tree->size.x / 2, .y = tree->pos.y + tree->size.y / 2};
-        Vector2f pos3 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y + tree->size.y / 2};
+        Vec2 pos0 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
+        Vec2 pos1 = {.x = tree->pos.x - tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
+        Vec2 pos2 = {.x = tree->pos.x - tree->size.x / 2, .y = tree->pos.y + tree->size.y / 2};
+        Vec2 pos3 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y + tree->size.y / 2};
 
 
-        Vector2f size = {.x = tree->size.x / 2, .y = tree->size.y}; 
+        Vec2 size = {.x = tree->size.x / 2, .y = tree->size.y}; 
 
     // init sub_trees
     for (int i = 0; i < SUBTREE_AMOUNT; ++i)
@@ -216,7 +216,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
             CircleCollider *cc_e1 = &tree->cc_list[i];
 
 
-            Vector2f size1;
+            Vec2 size1;
             if (bc_e1->type != ColliderType::Nothing)
             {
                 size1 = bc_e1->size;
@@ -243,7 +243,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 
 
 
-                Vector2f size2;
+                Vec2 size2;
                 if (bc_e2->type != ColliderType::Nothing)
                 {
                     size2 = bc_e2->size;

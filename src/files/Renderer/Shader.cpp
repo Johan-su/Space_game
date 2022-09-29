@@ -208,7 +208,7 @@ void Real::set_uniform_float(Shader *shader, float value, const char *name)
 }
 
 
-void Real::set_uniform_vec3f(Shader *shader, Vector3f value, const char *name)
+void Real::set_uniform_vec3(Shader *shader, Vec3 value, const char *name)
 {
     U64 hash = HashMapN::hash_string(name);
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);
@@ -223,7 +223,7 @@ void Real::set_uniform_vec3f(Shader *shader, Vector3f value, const char *name)
 }
 
 
-void Real::set_uniform_vec4f(Shader *shader, Vector4f value, const char *name)
+void Real::set_uniform_vec4(Shader *shader, Vec4 value, const char *name)
 {
     U64 hash = HashMapN::hash_string(name);
     UniformElement *element = HashMapN::get_pointer(&shader->uniform_map, hash);

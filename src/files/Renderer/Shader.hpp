@@ -47,8 +47,8 @@ namespace Real
 
     void set_uniform_I32(Shader *shader, I32 value, const char *name);
     void set_uniform_float(Shader *shader, float value, const char *name);
-    void set_uniform_vec3f(Shader *shader, Vector3f value, const char *name);
-    void set_uniform_vec4f(Shader *shader, Vector4f value, const char *name);
+    void set_uniform_vec3(Shader *shader, Vec3 value, const char *name);
+    void set_uniform_vec4(Shader *shader, Vec4 value, const char *name);
     void set_uniform_mat4(Shader *shader, Mat4 *mat, const char *name);
 
 } // namespace Real

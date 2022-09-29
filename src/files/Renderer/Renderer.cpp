@@ -78,19 +78,19 @@ void Renderer::clear()
 }
 
 
-void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vector4f color)
+void Renderer::draw(VertexArray *va, IndexBuffer *ib, Shader *shader, Vec4 color)
 {
     Real::bind(va);
     Real::bind(ib);
     Real::bind(shader);
 
-    Real::set_uniform_vec4f(shader, color, "u_Color");
+    Real::set_uniform_vec4(shader, color, "u_Color");
 
     Mat4 transform_matrix = {
-        Vector4f {1.0f, 0.0f, 0.0f, 0.0f},
-        Vector4f {0.0f, 1.0f, 0.0f, 0.0f},
-        Vector4f {0.0f, 0.0f, 1.0f, 0.0f},
-        Vector4f {0.0f, 0.0f, 0.0f, 1.0f},
+        Vec4 {1.0f, 0.0f, 0.0f, 0.0f},
+        Vec4 {0.0f, 1.0f, 0.0f, 0.0f},
+        Vec4 {0.0f, 0.0f, 1.0f, 0.0f},
+        Vec4 {0.0f, 0.0f, 0.0f, 1.0f},
     };
 
     Real::set_uniform_mat4(shader, &transform_matrix, "u_MVP");

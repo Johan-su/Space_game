@@ -152,7 +152,7 @@ static void setup_scene(scene *scene)
 
     auto color_set_func = [](Shader *shader)
     {
-        Real::set_uniform_vec4f(shader, Vector4f {0.0f, 1.0f, 0.0f, 1.0f}, "u_Color");
+        Real::set_uniform_vec4(shader, Vec4 {0.0f, 1.0f, 0.0f, 1.0f}, "u_Color");
     };
 
     Real::init_material("color_material", Real::get_shader("color"), nullptr, color_set_func);

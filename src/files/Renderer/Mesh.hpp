@@ -20,8 +20,8 @@
 
 struct Vertex
 {
-    Vector3f pos;
-    Vector2f tex_coords;
+    Vec3 pos;
+    Vec2 tex_coords;
 };
 
 
