@@ -3,7 +3,6 @@
 #include "Components_Events.hpp"
 #include <math.h>
 
-
 void AIControllerSystem::update(Iter *it)
 {
 
@@ -64,7 +63,6 @@ void AIControllerSystem::update(Iter *it)
     }
 }
 
-
 void AngleSystem::update(Iter *iter)
 {
     View<AnglularVelocity> *angle_vel_view = Ecs::get_view<AnglularVelocity, Transform>(iter->registry);
@@ -83,8 +81,6 @@ void AngleSystem::update(Iter *iter)
 
     }
 }
-
-
 
 
 static const float MOUSE_ZOOM_SCALE_SPEED = 1.3f;
@@ -151,9 +147,6 @@ void CameraController::update(Iter *iter)
         anchor_check = false;
     }
 }
-
-
-
 
 
 const Usize MAX_ENTITIES_IN_TREE = 256;
@@ -225,8 +218,6 @@ static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_a
 }
 
 
-
-
 static void spill_tree(QuadTree *tree, top_memory_arena *arena)
 {
         Vec2 pos0 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
@@ -288,8 +279,6 @@ static void spill_tree(QuadTree *tree, top_memory_arena *arena)
         add_entity_to_intersecting_trees(tree, arena, tree->entity_list[i], &tree->t_list[i], &tree->bc_list[i], &tree->cc_list[i]);
     }
 }
-
-
 
 
 static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
@@ -445,9 +434,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 
 
 //#define PROFILE_FUNCTIONS
-#include "../files/Time.hpp"
-
-
+//#include "../files/Time.hpp"
 
 
 void CollisionSystem::update(Iter *it)
@@ -486,7 +473,6 @@ void CollisionSystem::update(Iter *it)
 }
 
 
-
 void DamageSystem::onCollision(Iter *it)
 {
     CollisionEvent *event = (CollisionEvent *)it->event;
@@ -519,8 +505,6 @@ void DamageSystem::onCollision(Iter *it)
         }
     }
 }
-
-
 
 
 void EntityCreationSystem::create_player(Iter *iter)
@@ -698,7 +682,6 @@ void EntityCreationSystem::create_planet(Iter *it)
 }
 
 
-
 void FiringSystem::update(Iter *it)
 {
     const Group *group = Ecs::get_group<FiringComponent, Transform>(it->registry);
@@ -811,7 +794,6 @@ void GravitySystem::update(Iter *it)
 }
 
 
-
 void HealthSystem::on_kill(Iter *it)
 {
     KillEvent *event = (KillEvent *)it->event;
@@ -849,7 +831,6 @@ void HealthSystem::update(Iter *it)
 }
 
 
-
 void MovementSystem::update(Iter *iter)
 {
     View<Velocity> *vel_view = Ecs::get_view<Velocity, Transform>(iter->registry);
@@ -867,7 +848,6 @@ void MovementSystem::update(Iter *iter)
 }
 
 
-
 struct Timer
 {
     float max_val;
@@ -876,12 +856,10 @@ struct Timer
 
 
 
-
 static float lerp(float current, float target, float step)
 {
     return current + step * (target - current);
 }
-
 
 
 static Timer shoot_timer = {
@@ -1037,10 +1015,8 @@ void PlayerSystem::update(Iter *it)
 }
 
 
-
-
 //#define PROFILE_FUNCTIONS
-#include "../files/Time.hpp"
+//#include "../files/Time.hpp"
 
 void RenderSystem::render(Iter *it)
 {
@@ -1062,7 +1038,6 @@ void RenderSystem::render(Iter *it)
 }
 
 
-
 /**
  * @return float between 0.0f and 1.0f
  */
@@ -1072,16 +1047,9 @@ static float rand_float()
 }
 
 
-
-
-
 static U8 wave = 0;
 
 static float timer = 0.0f;
-
-
-
-
 
 
 void SpawnerSystem::update(Iter *it)
