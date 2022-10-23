@@ -1,5 +1,4 @@
 #include "systems.hpp"
-
 #include "Components_Events.hpp"
 #include <math.h>
 
@@ -439,7 +438,7 @@ static void check_collisions_in_tree(QuadTree *tree, Ecs::Registry *reg)
 
 void CollisionSystem::update(Iter *it)
 {
-    BEGIN_PROFILE_BLOCK();
+    //BEGIN_PROFILE_BLOCK();
 
     const Group *box_group = Ecs::get_group<Transform, BoxCollider>(it->registry); 
     const Transform *box_transform_list    = Ecs::get_comp_array<Transform>(box_group, 0);
@@ -469,7 +468,7 @@ void CollisionSystem::update(Iter *it)
 
     check_collisions_in_tree(root, it->registry);
 
-    END_PROFILE_BLOCK();
+    //END_PROFILE_BLOCK();
 }
 
 
@@ -1020,7 +1019,7 @@ void PlayerSystem::update(Iter *it)
 
 void RenderSystem::render(Iter *it)
 {
-    BEGIN_PROFILE_BLOCK();
+    //BEGIN_PROFILE_BLOCK();
 
 
     const Group *group = Ecs::get_group<Transform, MeshComponent, MaterialComponent>(it->registry);
@@ -1034,7 +1033,7 @@ void RenderSystem::render(Iter *it)
         Renderer::draw(&transform_list[i], &mesh_list[i], &material_list[i]);
     }
     
-    END_PROFILE_BLOCK();
+    //END_PROFILE_BLOCK();
 }
 
 
