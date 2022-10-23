@@ -1,9 +1,7 @@
 #include "systems.hpp"
 
 #include "Components_Events.hpp"
-
 #include <math.h>
-
 
 
 void AIControllerSystem::update(Iter *it)
@@ -66,9 +64,6 @@ void AIControllerSystem::update(Iter *it)
     }
 }
 
-
-
-#include <math.h>
 
 void AngleSystem::update(Iter *iter)
 {
@@ -157,9 +152,6 @@ void CameraController::update(Iter *iter)
     }
 }
 
-
-
-#include <assert.h>
 
 
 
@@ -754,7 +746,6 @@ void FiringSystem::update(Iter *it)
 
 
 #include <float.h>
-#include <math.h>
 const float G = 6.6743E-11f;
 
 
@@ -875,8 +866,6 @@ void MovementSystem::update(Iter *iter)
     }
 }
 
-
-#include <math.h>
 
 
 struct Timer
@@ -1073,7 +1062,6 @@ void RenderSystem::render(Iter *it)
 }
 
 
-#include <math.h>
 
 /**
  * @return float between 0.0f and 1.0f
