@@ -1,20 +1,7 @@
 #include "Game.hpp"
 
 #include "../files/EntryPoint.hpp"
-#include "systems/MovementSystem.hpp"
-#include "systems/RenderSystem.hpp"
-#include "systems/PlayerSystem.hpp"
-#include "systems/AngleSystem.hpp"
-#include "systems/EntityCreationSystem.hpp"
-#include "systems/CameraController.hpp"
-#include "systems/GravitySystem.hpp"
-#include "systems/CollisionSystem.hpp"
-#include "systems/SpawnerSystem.hpp"
-#include "systems/AIControllerSystem.hpp"
-#include "systems/HealthSystem.hpp"
-#include "systems/FiringSystem.hpp"
-#include "systems/DamageSystem.hpp"
-
+#include "systems.hpp"
 
 static void init_components(scene *scene)
 {
