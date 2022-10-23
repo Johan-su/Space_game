@@ -96,7 +96,7 @@ static bool is_word(const char *src, const char *word)
 
 static void parse_and_add_uniforms(Shader *shader, const char *src, ShaderType shader_type)
 {
-    for (U32 index = 0;*(src + index) != '\0'; ++index)
+    for (U32 index = 0; *(src + index) != '\0'; ++index)
     {
         if (is_word(src + index, "uniform"))
         {
@@ -130,7 +130,6 @@ static void parse_and_add_uniforms(Shader *shader, const char *src, ShaderType s
 }
 
 
-
 void ShaderN::init(Shader *shader, const char *vert_src, const char *frag_src)
 {
     HashMapN::init(&shader->uniform_map);
@@ -162,8 +161,6 @@ void ShaderN::init(Shader *shader, const char *vert_src, const char *frag_src)
 }
 
 
-
-
 void Real::bind(Shader *shader)
 {
     glUseProgram(shader->id);
@@ -174,8 +171,6 @@ void Real::unbind(Shader *shader)
 {
     glUseProgram(0);
 }
-
-
 
 
 void Real::set_uniform_I32(Shader *shader, I32 value, const char *name)
