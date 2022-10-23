@@ -36,6 +36,58 @@ void Component_functions::init_component_bytes(top_memory_arena *mm, Component_d
 }
 
 
+void *Component_functions::get_component_pool_raw(Component_data *cdata, Usize compid)
+{
+    ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
+
+    void *comp_pool = cdata->component_pools[compid];
+    ECS_assert(comp_pool != nullptr, "Component_pool is nullptr");
+
+    return comp_pool;
+}
+
+
+void *Component_functions::init_page_raw(top_memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize)
+{
+    // not actually U8 used for byte-wise
+    Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool;
+
+    ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
+
+
+    Usize pool_size_without_dense_array = sizeof(Component_page<U8>) - sizeof(U8) * PAGE_SIZE;
+    Usize pool_size_with_dense_array = pool_size_without_dense_array + compsize * PAGE_SIZE;
+
+    // not actually U8 used for byte-wise
+    // TODO(Johan): test if allocation works correctly
+    Component_page<U8> *page = (Component_page<U8> *)Arena::top_alloc_bytes(mm, pool_size_with_dense_array, 8); // 8 to gurantee alignment
+    page->entity_count = 0;
+    for(Usize i = 0; i < PAGE_SIZE; ++i)
+    {
+        page->sparse_array[i] = ENTITY_NULL;
+        page->entity_list[i]  = ENTITY_NULL;
+    }
+    ECS_assert(pool->page_count < MAX_PAGE_AMOUNT, "Maximum page amount reached");
+    pool->component_pages[page_id] = page;
+    pool->page_count += 1;
+    return (void *)page;
+}
+
+
+void *Component_functions::get_page_raw(top_memory_arena *mm, void *raw_pool, U32 id, Usize compsize)
+{
+    // not actually U8 use for byte-wise
+    Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool; 
+
+    ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
+    if (pool->component_pages[id] == nullptr)
+    {
+        // not actually U8 use for byte-wise
+        pool->component_pages[id] = (Component_page<U8> *)init_page_raw(mm, pool, id, compsize);
+    }
+    return pool->component_pages[id];
+}
+
 #define ECS_DEBUG3 0
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)

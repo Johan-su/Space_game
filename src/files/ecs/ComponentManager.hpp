@@ -48,7 +48,9 @@ namespace Ecs
     {
         void init(Component_data *cdata);
         void init_component_bytes(top_memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment);
-
+        void *get_component_pool_raw(Component_data *cdata, Usize compid);
+        void *init_page_raw(top_memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize);
+        void *get_page_raw(top_memory_arena *mm, void *raw_pool, U32 id, Usize compsize);
         void destroy_entity(Component_data *cdata, Entity e);
 
         void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount);
@@ -69,26 +71,22 @@ namespace Ecs
         template<typename T>
         void init_component(top_memory_arena *mm, Component_data *cdata)
         {
-            const Usize compid = get_component_id<T>(cdata);
-            init_component_bytes(mm, cdata, compid, sizeof(T), alignof(T));
+            init_component_bytes(mm, cdata, get_component_id<T>(cdata), sizeof(T), alignof(T));
         }
 
         template<typename T>
         Component_pool<T> *get_component_pool(Component_data *cdata)
         {
-            const Usize compid = get_component_id<T>(cdata);
-            ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
-
-            Component_pool<T> *comp_pool = (Component_pool<T>*) cdata->component_pools[compid];
-            ECS_assert(comp_pool != nullptr, "Component_pool is nullptr");
-
-            return comp_pool;
+            return (Component_pool<T> *)get_component_pool_raw(cdata, get_component_id<T>(cdata));
         }
 
 
         template<typename T>
         Component_page<T> *init_page(top_memory_arena *mm, Component_pool<T> *pool, U32 page_id)
         {
+            return (Component_page<T> *)init_page_raw(mm, (void *)pool, page_id, sizeof(T));
+
+            /* 
             ECS_assert(page_id < MAX_PAGE_AMOUNT, "page_id outside legal scope");
             Component_page<T> *page = Arena::top_alloc<Component_page<T>>(mm);
 
@@ -105,12 +103,15 @@ namespace Ecs
             ++pool->page_count;
 
             return page;
+            */
         }
 
 
         template<typename T>
         Component_page<T> *get_page(top_memory_arena *mm, Component_pool<T> *pool, U32 id)
         {
+            return (Component_page<T> *)get_page_raw(mm, (void *)pool, id, sizeof(T));
+            /*
             ECS_assert(id < MAX_PAGE_AMOUNT , "id must be lower than MAX_PAGE_AMOUNT");
 
             if (pool->component_pages[id] == nullptr)
@@ -119,6 +120,7 @@ namespace Ecs
             }
 
             return pool->component_pages[id];
+            */
         }
 
 
