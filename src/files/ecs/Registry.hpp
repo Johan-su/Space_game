@@ -67,7 +67,7 @@ namespace Ecs
     void set_component(Registry *registry, Entity e, T comp)
     {
 
-        Component_functions::set_component<T>(registry->mm, registry->cdata, e, comp);
+        Component_functions::set_component<T>(registry->mm, registry->cdata, e, &comp);
     }
 
 

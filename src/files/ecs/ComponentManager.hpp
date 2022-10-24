@@ -51,6 +51,8 @@ namespace Ecs
         void *get_component_pool_raw(Component_data *cdata, Usize compid);
         void *init_page_raw(top_memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize);
         void *get_page_raw(top_memory_arena *mm, void *raw_pool, U32 id, Usize compsize);
+        void set_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize);
+        void *get_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize);
         void destroy_entity(Component_data *cdata, Entity e);
 
         void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount);
@@ -125,10 +127,13 @@ namespace Ecs
 
 
         template<typename T>
-        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T comp)
+        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T *comp)
         {
+            #if 1
+            set_component_raw(mm, cdata, e, (void *)comp, get_component_id<T>(cdata), sizeof(T));
+            #else
             ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
-            ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
+                ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
 
             U32 page_id = e / PAGE_SIZE;
             U32 page_entry = e % PAGE_SIZE;
@@ -139,15 +144,17 @@ namespace Ecs
 
             page->entity_list[page->entity_count] = e;
 
-            page->dense_array[page->entity_count] = comp;
+            page->dense_array[page->entity_count] = *comp;
 
             ++page->entity_count;
             ++pool->entity_count;
+            #endif
         }
 
         template<typename T>
         Entity lookup_entity(top_memory_arena *mm, Component_data *cdata, Entity e)
-        {   
+        {
+            ECS_assert(false, "unimplemented");   
             U32 page_id = e / PAGE_SIZE;
             U32 page_entry = e % PAGE_SIZE;
 
@@ -186,6 +193,10 @@ namespace Ecs
         template<typename T>
         T *get_component(top_memory_arena *mm, Component_data *cdata, Entity e)
         {
+            #if 1
+            return (T *)get_component_raw(mm, cdata, e, get_component_id<T>(cdata), sizeof(T));
+            #else
+            kasdlö
             ECS_assert(e < ENTITY_NULL, "Entity outside scope");
             Component_pool<T> *pool = get_component_pool<T>(cdata);
             U32 page_id = e / PAGE_SIZE;
@@ -196,6 +207,7 @@ namespace Ecs
                 return nullptr;
             }
             return &page->dense_array[page->sparse_array[page_entry]];
+            #endif
         }
 
 

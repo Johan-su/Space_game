@@ -88,7 +88,41 @@ void *Component_functions::get_page_raw(top_memory_arena *mm, void *raw_pool, U3
     return pool->component_pages[id];
 }
 
+
+void Component_functions::set_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize)
+{
+    ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
+    ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
+    U32 page_id = e / PAGE_SIZE;
+    U32 page_entry = e % PAGE_SIZE;
+    // not actually U8 use for byte-wise
+    Component_pool<U8> *pool = (Component_pool<U8> *)get_component_pool_raw(cdata, compid);
+    // not actually U8 use for byte-wise
+    Component_page<U8> *page = (Component_page<U8> *)get_page_raw(mm, pool, page_id, compsize);
+    page->sparse_array[page_entry] = page->entity_count;
+    page->entity_list[page->entity_count] = e;
+    memcpy(&page->dense_array[page->entity_count * compsize], raw_comp, compsize); // TODO(Johan) test if actually works
+    ++page->entity_count;
+    ++pool->entity_count;
+}
 #define ECS_DEBUG3 0
+
+void *Component_functions::get_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize)
+{
+    ECS_assert(e < ENTITY_NULL, "Entity outside scope");
+    // not actually U8 use for byte-wise
+    Component_pool<U8> *pool = (Component_pool<U8> *)get_component_pool_raw(cdata, compid);
+    U32 page_id = e / PAGE_SIZE;
+    U32 page_entry = e % PAGE_SIZE;
+    // not actually U8 use for byte-wise
+    Component_page<U8> *page = (Component_page<U8> *)get_page_raw(mm, pool, page_id, compsize);
+    if (page->sparse_array[page_entry] == ENTITY_NULL)
+    {
+        return nullptr;
+    }
+    return &page->dense_array[page->sparse_array[page_entry] * compsize]; // TODO(Johan): test if actually works
+}
+
 
 void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 {
