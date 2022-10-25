@@ -40,19 +40,19 @@ void Internal::init_global_memory()
     reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
-    Arena::init_top_arena(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
+    Arena::init(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *asset_buffer_start = (char *)app_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.asset_buffer, asset_buffer_start, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(10 * MiB));
+    Arena::init(&g_memory.asset_buffer, asset_buffer_start, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(10 * MiB));
 
     void *scratch_buffer_start = (char *)asset_buffer_start + 10 *MiB;
-    Arena::init_top_arena(&g_memory.scratch_buffer, scratch_buffer_start, Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
+    Arena::init(&g_memory.scratch_buffer, scratch_buffer_start, Platform::bytes_to_page_amount(2 * MiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
 
     void *event_buffer_start = (char *)scratch_buffer_start + 2 * MiB;
-    Arena::init_top_arena(&g_memory.event_buffer, event_buffer_start, Platform::bytes_to_page_amount(10 * MiB), Platform::bytes_to_page_amount(1 * GiB));
+    Arena::init(&g_memory.event_buffer, event_buffer_start, Platform::bytes_to_page_amount(10 * MiB), Platform::bytes_to_page_amount(1 * GiB));
 
     void *view_buffer_start = (char *)event_buffer_start + 1 * GiB;
-    Arena::init_top_arena(&g_memory.view_buffer, view_buffer_start,  Platform::bytes_to_page_amount(10 * MiB),  Platform::bytes_to_page_amount(1 * GiB));
+    Arena::init(&g_memory.view_buffer, view_buffer_start,  Platform::bytes_to_page_amount(10 * MiB),  Platform::bytes_to_page_amount(1 * GiB));
 
 
     // scene buffers
@@ -60,7 +60,7 @@ void Internal::init_global_memory()
         void *base = (char *)reserve_memory_end - 512 * GiB; // 512 GiB from end
         for(int i = 0; i < MAX_SCENE_COUNT; ++i)
         {
-            Arena::init_top_arena(&g_memory.scene_buffers[i], (char *)base + i * 16 * GiB, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(16 * GiB));
+            Arena::init(&g_memory.scene_buffers[i], (char *)base + i * 16 * GiB, Platform::bytes_to_page_amount(4 * KiB), Platform::bytes_to_page_amount(16 * GiB));
         }
     }
 }

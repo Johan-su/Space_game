@@ -4,7 +4,7 @@
 #include "platform/platform.hpp"
 #include "utils.hpp"
 
-void Arena::init_top_arena(Memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
+void Arena::init(Memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
 {
     Usize page_size = Platform::get_page_size();
     

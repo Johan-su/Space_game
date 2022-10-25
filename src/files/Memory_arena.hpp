@@ -24,7 +24,7 @@ namespace Arena
      * @param max_size_reserved max reserved size in bytes (gets converted to pages)
      * 
      */
-    void init_top_arena(Memory_arena *arena, void *reserved_space_address, Usize pre_allocation, Usize max_size_reserved);
+    void init(Memory_arena *arena, void *reserved_space_address, Usize pre_allocation, Usize max_size_reserved);
     void clean_arena(Memory_arena *arena);
     void *top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment);
 
