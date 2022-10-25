@@ -37,7 +37,7 @@ namespace Ecs
     namespace Event_functions
     {
         void init(event_data *ed); 
-        void run_events(event_data *ed, top_memory_arena *event_mm, Iter *it);
+        void run_events(event_data *ed, Memory_arena *event_mm, Iter *it);
     } // namespace Event_functions
     
 
@@ -74,7 +74,7 @@ namespace Ecs
 
 
         template<typename T>
-        void push_event(event_data *ed, top_memory_arena *event_mm, T *event)
+        void push_event(event_data *ed, Memory_arena *event_mm, T *event)
         {
             const Usize id = get_event_id<T>(ed);
             ECS_assert(ed->event_init[id], "event must be initalized");

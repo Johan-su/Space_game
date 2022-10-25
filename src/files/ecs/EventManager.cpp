@@ -15,7 +15,7 @@ void Event_functions::init(event_data *ed)
 }
 
 
-void Event_functions::run_events(event_data *ed, top_memory_arena *event_mm, Iter *it)
+void Event_functions::run_events(event_data *ed, Memory_arena *event_mm, Iter *it)
 {
     void *after_latest_event = event_mm->data;
 

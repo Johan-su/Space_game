@@ -3,7 +3,7 @@
 using namespace Ecs;
 
 
-void Ecs::init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm, top_memory_arena *event_mm)
+void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memory_arena *event_mm)
 {
     ECS_assert(registry != nullptr, "Registry cannot be nullptr");
 

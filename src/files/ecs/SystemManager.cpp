@@ -49,14 +49,14 @@ void System_functions::init_system(system_data *sys_data, Phase phase, SystemFun
 }
 
 
-static void run_system(SystemFunc *sys_func, top_memory_arena *view_mm, Iter *iter)
+static void run_system(SystemFunc *sys_func, Memory_arena *view_mm, Iter *iter)
 {
     Arena::clear_top_arena(view_mm);
     sys_func(iter);
 }
 
 
-void System_functions::progess_systems(system_data *sys_data, top_memory_arena *view_mm, Iter *iter)
+void System_functions::progess_systems(system_data *sys_data, Memory_arena *view_mm, Iter *iter)
 {
     for (int i = 0; i < sys_data->pre_update_funcs.count; ++i)
     {

@@ -47,12 +47,12 @@ namespace Ecs
     namespace Component_functions 
     {
         void init(Component_data *cdata);
-        void init_component_bytes(top_memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment);
+        void init_component_bytes(Memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment);
         void *get_component_pool_raw(Component_data *cdata, Usize compid);
-        void *init_page_raw(top_memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize);
-        void *get_page_raw(top_memory_arena *mm, void *raw_pool, U32 id, Usize compsize);
-        void set_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize);
-        void *get_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize);
+        void *init_page_raw(Memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize);
+        void *get_page_raw(Memory_arena *mm, void *raw_pool, U32 id, Usize compsize);
+        void set_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize);
+        void *get_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize);
         void destroy_entity(Component_data *cdata, Entity e);
 
         void fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount);
@@ -71,7 +71,7 @@ namespace Ecs
 
 
         template<typename T>
-        void init_component(top_memory_arena *mm, Component_data *cdata)
+        void init_component(Memory_arena *mm, Component_data *cdata)
         {
             init_component_bytes(mm, cdata, get_component_id<T>(cdata), sizeof(T), alignof(T));
         }
@@ -84,7 +84,7 @@ namespace Ecs
 
 
         template<typename T>
-        Component_page<T> *init_page(top_memory_arena *mm, Component_pool<T> *pool, U32 page_id)
+        Component_page<T> *init_page(Memory_arena *mm, Component_pool<T> *pool, U32 page_id)
         {
             return (Component_page<T> *)init_page_raw(mm, (void *)pool, page_id, sizeof(T));
 
@@ -110,7 +110,7 @@ namespace Ecs
 
 
         template<typename T>
-        Component_page<T> *get_page(top_memory_arena *mm, Component_pool<T> *pool, U32 id)
+        Component_page<T> *get_page(Memory_arena *mm, Component_pool<T> *pool, U32 id)
         {
             return (Component_page<T> *)get_page_raw(mm, (void *)pool, id, sizeof(T));
             /*
@@ -127,7 +127,7 @@ namespace Ecs
 
 
         template<typename T>
-        void set_component(top_memory_arena *mm, Component_data *cdata, Entity e, T *comp)
+        void set_component(Memory_arena *mm, Component_data *cdata, Entity e, T *comp)
         {
             #if 1
             set_component_raw(mm, cdata, e, (void *)comp, get_component_id<T>(cdata), sizeof(T));
@@ -152,7 +152,7 @@ namespace Ecs
         }
 
         template<typename T>
-        Entity lookup_entity(top_memory_arena *mm, Component_data *cdata, Entity e)
+        Entity lookup_entity(Memory_arena *mm, Component_data *cdata, Entity e)
         {
             ECS_assert(false, "unimplemented");   
             U32 page_id = e / PAGE_SIZE;
@@ -191,7 +191,7 @@ namespace Ecs
         
 
         template<typename T>
-        T *get_component(top_memory_arena *mm, Component_data *cdata, Entity e)
+        T *get_component(Memory_arena *mm, Component_data *cdata, Entity e)
         {
             #if 1
             return (T *)get_component_raw(mm, cdata, e, get_component_id<T>(cdata), sizeof(T));
@@ -242,7 +242,7 @@ namespace Ecs
 
 
         template<typename T1, typename... Ts>
-        View<T1> *get_view(top_memory_arena *view_mm, Component_data *cdata)
+        View<T1> *get_view(Memory_arena *view_mm, Component_data *cdata)
         {
             const Usize typeCount = 1 + sizeof...(Ts);
 
@@ -287,7 +287,7 @@ namespace Ecs
 
 
         template<typename... T>
-        Group *get_group(top_memory_arena *view_mm, Component_data *cdata)
+        Group *get_group(Memory_arena *view_mm, Component_data *cdata)
         {
             const Usize typeCount = sizeof...(T);
 

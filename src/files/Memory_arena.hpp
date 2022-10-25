@@ -4,7 +4,7 @@
 
 
 
-struct top_memory_arena
+struct Memory_arena
 {
     Usize max_size_commited; // with current allocation
     Usize max_size_reserved;
@@ -24,11 +24,11 @@ namespace Arena
      * @param max_size_reserved max reserved size in bytes (gets converted to pages)
      * 
      */
-    void init_top_arena(top_memory_arena *arena, void *reserved_space_address, Usize pre_allocation, Usize max_size_reserved);
-    void clean_arena(top_memory_arena *arena);
-    void *top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignment);
+    void init_top_arena(Memory_arena *arena, void *reserved_space_address, Usize pre_allocation, Usize max_size_reserved);
+    void clean_arena(Memory_arena *arena);
+    void *top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment);
 
-    void clear_top_arena(top_memory_arena *arena);
+    void clear_top_arena(Memory_arena *arena);
 
 
 
@@ -38,7 +38,7 @@ namespace Arena
 namespace Arena
 {
     template<typename T>
-    T *top_alloc(top_memory_arena *arena, Usize size = 1)
+    T *top_alloc(Memory_arena *arena, Usize size = 1)
     {
         return (T *)top_alloc_bytes(arena, sizeof(T) * size, alignof(T));
     }

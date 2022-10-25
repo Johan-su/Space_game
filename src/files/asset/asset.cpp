@@ -54,7 +54,7 @@ void Internal::clean_asset()
 }
 
 
-static const char *slurp_file(const char *path, top_memory_arena *arena)
+static const char *slurp_file(const char *path, Memory_arena *arena)
 {
     FILE *file = fopen(path, "r");
 

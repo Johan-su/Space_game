@@ -74,7 +74,7 @@ void Internal::clean_global_memory()
     Arena::clean_arena(&g_memory.view_buffer);
     Arena::clean_arena(&g_memory.event_buffer);
 
-    for (top_memory_arena *ar = g_memory.scene_buffers; ar != (g_memory.scene_buffers + MAX_SCENE_COUNT); ++ar)
+    for (Memory_arena *ar = g_memory.scene_buffers; ar != (g_memory.scene_buffers + MAX_SCENE_COUNT); ++ar)
     {
         Arena::clean_arena(ar);
     }
@@ -104,7 +104,7 @@ static void clean_glfw()
 }
 
 
-engine_data *Internal::create_engine(top_memory_arena *arena)
+engine_data *Internal::create_engine(Memory_arena *arena)
 {
     engine_data *engine = Arena::top_alloc<engine_data>(arena);
 

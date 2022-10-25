@@ -15,7 +15,7 @@ void Component_functions::init(Component_data *cdata)
 }
 
 
-void Component_functions::init_component_bytes(top_memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment)
+void Component_functions::init_component_bytes(Memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment)
 {
         // not actually a pool of U8.
         Component_pool<U8> *comp_pool = (Component_pool<U8> *)cdata->component_pools[compid];
@@ -47,7 +47,7 @@ void *Component_functions::get_component_pool_raw(Component_data *cdata, Usize c
 }
 
 
-void *Component_functions::init_page_raw(top_memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize)
+void *Component_functions::init_page_raw(Memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize)
 {
     // not actually U8 used for byte-wise
     Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool;
@@ -74,7 +74,7 @@ void *Component_functions::init_page_raw(top_memory_arena *mm, void *raw_pool, U
 }
 
 
-void *Component_functions::get_page_raw(top_memory_arena *mm, void *raw_pool, U32 id, Usize compsize)
+void *Component_functions::get_page_raw(Memory_arena *mm, void *raw_pool, U32 id, Usize compsize)
 {
     // not actually U8 use for byte-wise
     Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool; 
@@ -89,7 +89,7 @@ void *Component_functions::get_page_raw(top_memory_arena *mm, void *raw_pool, U3
 }
 
 
-void Component_functions::set_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize)
+void Component_functions::set_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize)
 {
     ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
     ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
@@ -107,7 +107,7 @@ void Component_functions::set_component_raw(top_memory_arena *mm, Component_data
 }
 #define ECS_DEBUG3 0
 
-void *Component_functions::get_component_raw(top_memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize)
+void *Component_functions::get_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize)
 {
     ECS_assert(e < ENTITY_NULL, "Entity outside scope");
     // not actually U8 use for byte-wise

@@ -13,9 +13,9 @@ namespace Ecs
 {
     struct Registry
     {
-        top_memory_arena *mm;
-        top_memory_arena *view_mm;
-        top_memory_arena *event_mm;
+        Memory_arena *mm;
+        Memory_arena *view_mm;
+        Memory_arena *event_mm;
         Entity_data *edata;
         event_data *evdata;
         system_data *sysdata;
@@ -23,7 +23,7 @@ namespace Ecs
     };
 
     
-    void init(Registry *registry, top_memory_arena *mm, top_memory_arena *view_mm, top_memory_arena *event_mm);
+    void init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memory_arena *event_mm);
     void init_system(Registry *registry, Phase phase, SystemFunc *system_function);
 
     void progress_systems(Registry *registry, float Ts);

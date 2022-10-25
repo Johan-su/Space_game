@@ -174,10 +174,10 @@ struct QuadTree
 
 
 
-static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e);
+static void add_entity_to_tree(QuadTree *tree, Memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e);
 
 
-static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
+static void add_entity_to_intersecting_trees(QuadTree *parent_tree, Memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
 
     Vec2 size = {};
@@ -217,7 +217,7 @@ static void add_entity_to_intersecting_trees(QuadTree *parent_tree, top_memory_a
 }
 
 
-static void spill_tree(QuadTree *tree, top_memory_arena *arena)
+static void spill_tree(QuadTree *tree, Memory_arena *arena)
 {
         Vec2 pos0 = {.x = tree->pos.x + tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
         Vec2 pos1 = {.x = tree->pos.x - tree->size.x / 2, .y = tree->pos.y - tree->size.y / 2};
@@ -280,7 +280,7 @@ static void spill_tree(QuadTree *tree, top_memory_arena *arena)
 }
 
 
-static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
+static void add_entity_to_tree(QuadTree *tree, Memory_arena *arena, Entity e, const Transform *t_e, const BoxCollider *bc_e, const CircleCollider *cc_e)
 {
     if (tree->entity_count < MAX_ENTITIES_IN_TREE)
     {
@@ -311,7 +311,7 @@ static void add_entity_to_tree(QuadTree *tree, top_memory_arena *arena, Entity e
 }
 
 
-static void init_root(QuadTree *root, top_memory_arena *arena)
+static void init_root(QuadTree *root, Memory_arena *arena)
 {
     *root = {
         .pos = {0.0f, 0.0f},

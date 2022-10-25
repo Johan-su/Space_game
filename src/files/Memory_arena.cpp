@@ -4,7 +4,7 @@
 #include "platform/platform.hpp"
 #include "utils.hpp"
 
-void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
+void Arena::init_top_arena(Memory_arena *arena, void *reserved_space_address, Usize page_pre_allocation, Usize max_pages_reserved)
 {
     Usize page_size = Platform::get_page_size();
     
@@ -25,7 +25,7 @@ void Arena::init_top_arena(top_memory_arena *arena, void *reserved_space_address
 }
 
 
-void Arena::clean_arena(top_memory_arena *arena)
+void Arena::clean_arena(Memory_arena *arena)
 {
     memory_map::free(arena->data, arena->max_size_commited);
     arena->data = nullptr;
@@ -35,7 +35,7 @@ void Arena::clean_arena(top_memory_arena *arena)
 }
 
 
-void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignment)
+void *Arena::top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment)
 {
     #if 1
     // dbg(fprintf(stderr, "DEBUG: top Allocation [%p, %llu %llu]\n", arena, bytes, alignment));
@@ -74,7 +74,7 @@ void *Arena::top_alloc_bytes(top_memory_arena *arena, Usize bytes, Usize alignme
 }
 
 
-void Arena::clear_top_arena(top_memory_arena *arena)
+void Arena::clear_top_arena(Memory_arena *arena)
 {
    // memset(arena->data, 0, arena->max_size_commited);
     arena->bytes_allocated = 0;
