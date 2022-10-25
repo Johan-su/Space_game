@@ -21,7 +21,7 @@ void Arena::init(Memory_arena *arena, void *reserved_space_address, Usize page_p
 
 
 
-    clear_top_arena(arena);
+    clear_arena(arena);
 }
 
 
@@ -74,7 +74,7 @@ void *Arena::top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment)
 }
 
 
-void Arena::clear_top_arena(Memory_arena *arena)
+void Arena::clear_arena(Memory_arena *arena)
 {
    // memset(arena->data, 0, arena->max_size_commited);
     arena->bytes_allocated = 0;

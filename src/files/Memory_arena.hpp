@@ -28,7 +28,7 @@ namespace Arena
     void clean_arena(Memory_arena *arena);
     void *top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment);
 
-    void clear_top_arena(Memory_arena *arena);
+    void clear_arena(Memory_arena *arena);
 
 
 

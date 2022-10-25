@@ -35,5 +35,5 @@ void Event_functions::run_events(event_data *ed, Memory_arena *event_mm, Iter *i
         }
         --ed->events_in_buffer_count;
     }
-    Arena::clear_top_arena(event_mm);
+    Arena::clear_arena(event_mm);
 }

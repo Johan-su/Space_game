@@ -14,7 +14,7 @@ void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memo
     registry->view_mm = view_mm;
     registry->event_mm = event_mm;
 
-    Arena::clear_top_arena(event_mm);
+    Arena::clear_arena(event_mm);
 
 
     registry->edata   = Arena::top_alloc<Entity_data>(registry->mm);

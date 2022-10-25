@@ -128,7 +128,7 @@ static U64 *get_check_path_hash(const char *path, void *path_map, AssetType type
     if (HashMapN::get_pointer(path_map_v, path_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to load %s that already exists or hash collision\n", asset_to_string(type));
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return nullptr;
     }
 
@@ -150,7 +150,7 @@ static U64 *get_check_name_hash(const char *name, void *name_map)
     if (HashMapN::get_pointer(name_map_v, name_hash) != nullptr)
     {
         fprintf(stderr, "WARNING: tried to use \"%s\" which is already in use\n", name);
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return nullptr; 
     }
 
@@ -171,7 +171,7 @@ void Real::load_mesh(const char *name, const char *path)
 
     if (name_hash == nullptr || path_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -184,7 +184,7 @@ void Real::load_mesh(const char *name, const char *path)
     HashMapN::set(&s_mesh_map.path_map, *path_hash, (void *)mesh);
 
     fprintf(stderr, "NOTE: loaded %s \"%s\" from %s\n", asset_to_string(AssetType::Mesh), name, path);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -195,7 +195,7 @@ void Real::load_texture(const char *name, const char *path)
 
     if (name_hash == nullptr || path_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -206,7 +206,7 @@ void Real::load_texture(const char *name, const char *path)
     HashMapN::set(&s_texture_map.name_map, *name_hash, (void *)texture);
 
     fprintf(stderr, "NOTE: loaded %s \"%s\" from %s\n", asset_to_string(AssetType::Texture), name, path);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -217,7 +217,7 @@ void Real::load_vertex_shader_src(const char *name, const char *path)
 
     if (name_hash == nullptr || path_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -227,7 +227,7 @@ void Real::load_vertex_shader_src(const char *name, const char *path)
     HashMapN::set(&s_string_map.name_map, *name_hash, (void *)src);
 
     fprintf(stderr, "NOTE: loaded Vertex %s \"%s\" from %s\n", asset_to_string(AssetType::String), name, path);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -238,7 +238,7 @@ void Real::load_fragment_shader_src(const char *name, const char *path)
 
     if (name_hash == nullptr || path_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -248,7 +248,7 @@ void Real::load_fragment_shader_src(const char *name, const char *path)
     HashMapN::set(&s_string_map.name_map, *name_hash, (void *)src);
     
     fprintf(stderr, "NOTE: loaded Fragment %s \"%s\" from %s\n", asset_to_string(AssetType::String), name, path);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -258,7 +258,7 @@ void Real::init_shader(const char *name, const char *vert_src, const char *frag_
 
     if (name_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -268,7 +268,7 @@ void Real::init_shader(const char *name, const char *vert_src, const char *frag_
     HashMapN::set(&s_shader_map.name_map, *name_hash, (void *)shader);
     
     fprintf(stderr, "NOTE: initalized %s \"%s\"\n", asset_to_string(AssetType::Shader), name);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -291,7 +291,7 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
 
     if (name_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -308,7 +308,7 @@ void Real::init_sprite(const char *name, U32 x, U32 y, U32 w, U32 h, Texture *te
     };
 
     HashMapN::set(&s_sprite_map.name_map, *name_hash, (void *)sprite);
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 
@@ -318,7 +318,7 @@ void Real::init_material(const char *name, Shader *shader, Texture *texture, sha
 
     if (name_hash == nullptr)
     {
-        Arena::clear_top_arena(&g_memory.scratch_buffer);
+        Arena::clear_arena(&g_memory.scratch_buffer);
         return;
     }
 
@@ -328,7 +328,7 @@ void Real::init_material(const char *name, Shader *shader, Texture *texture, sha
 
     HashMapN::set(&s_material_map.name_map, *name_hash, (void *)material);
 
-    Arena::clear_top_arena(&g_memory.scratch_buffer);
+    Arena::clear_arena(&g_memory.scratch_buffer);
 }
 
 

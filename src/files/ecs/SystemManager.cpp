@@ -51,7 +51,7 @@ void System_functions::init_system(system_data *sys_data, Phase phase, SystemFun
 
 static void run_system(SystemFunc *sys_func, Memory_arena *view_mm, Iter *iter)
 {
-    Arena::clear_top_arena(view_mm);
+    Arena::clear_arena(view_mm);
     sys_func(iter);
 }
 
