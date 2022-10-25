@@ -6,7 +6,7 @@
 #include <string.h>
 
 
-static int set_value(config_data *settings, const char *var, uint16_t val)
+static int set_value(config_data *settings, const char *var, U16 val)
 {
     if (strcmp(var, "screen_width") == 0)
     {
@@ -35,7 +35,7 @@ static int set_value(config_data *settings, const char *var, uint16_t val)
 
 static void substring(char *buf1, char *buf2, const char *str , const char divider)
 {
-    int64_t pos = -1;
+    I64 pos = -1;
     for(size_t i = 0; i < strlen(str); ++i)
     {
         if (str[i] == divider)

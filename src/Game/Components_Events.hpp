@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdint.h>
 #include "../files/scene/component.hpp"
 // components
 

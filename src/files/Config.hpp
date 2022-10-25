@@ -1,13 +1,13 @@
 #pragma once
 
-#include <stdint.h>
+#include "int.hpp"
 
 struct config_data
 {
-    uint16_t screen_width;
-    uint16_t screen_height;
+    U16 screen_width;
+    U16 screen_height;
 
-    uint16_t FPS_target;
+    U16 FPS_target;
 
 };
 

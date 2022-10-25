@@ -1,6 +1,6 @@
 #include "Memory_arena.hpp"
 #include <string.h>
-
+#include <stdlib.h>
 #include "platform/platform.hpp"
 #include "utils.hpp"
 

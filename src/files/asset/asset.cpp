@@ -5,7 +5,6 @@
 #include "../Renderer/Shader.hpp"
 
 
-#include <stdlib.h>
 
 struct AssetData
 {
