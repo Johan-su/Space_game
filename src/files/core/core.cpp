@@ -36,8 +36,8 @@ global_memory g_memory = {};
 void Internal::init_global_memory()
 {
     Platform::init();
-    reserve_memory_begin = memory_map::reserve(nullptr, Platform::bytes_to_page_amount(10 * TiB)); // 100 TiB
-    reserve_memory_end = (char *)reserve_memory_begin + 10 * TiB;
+    reserve_memory_begin = memory_map::reserve(nullptr, Platform::bytes_to_page_amount(1 * TiB)); // 1 TiB
+    reserve_memory_end = (char *)reserve_memory_begin + 1 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
     Arena::init(&g_memory.app_buffer, app_buffer_start, Platform::bytes_to_page_amount(4 * KiB),  Platform::bytes_to_page_amount(2 * MiB)); // 2 MiB
