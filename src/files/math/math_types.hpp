@@ -51,19 +51,6 @@ public:
    
 };
 
-typedef Vec3 BiVec3; 
-
-// https://marctenbosch.com/quaternions/code.htm
-class Rot3
-{
-public:
-    float s;
-    BiVec3 bivec;
-
-
-};
-
-
 
 class Vec4
 {
@@ -100,8 +87,6 @@ public:
     void operator/=(float s) { *this = *this / s; }
 
 };
-
-
 
 
 
@@ -155,7 +140,27 @@ public:
 
 
 
+typedef float BiVec2;
+typedef Vec3 BiVec3;
+// https://marctenbosch.com/quaternions/
+// https://marctenbosch.com/quaternions/code.htm
+// https://www.youtube.com/watch?v=PNlgMPzj-7Q&list=PLpzmRsG7u_gqaTo_vEseQ7U8KFvtiJY4K
 
+
+class Rot2
+{
+public:
+    float s;
+    BiVec2 bivec;
+};
+
+
+class Rot3
+{
+public:
+    float s;
+    BiVec3 bivec;
+};
 
 
 namespace Real
@@ -165,13 +170,24 @@ namespace Real
     float dot(Vec3 *v1, Vec3 *v2);
     float dot(Vec4 *v1, Vec4 *v2); 
 
+    // returns the area (as a bivector) bounded by the vectors.
+    BiVec2 wedge(Vec2 *v1, Vec2 *v2);
+    BiVec3 wedge(Vec3 *v1, Vec3 *v2);
+
+    Rot2 geoprod(Vec2 *v1, Vec2 *v2);
+    Rot3 geoprod(Vec3 *v1, Vec3 *v2);
+
+
+
+
     void normalize(Vec2 *v);
     void normalize(Vec3 *v);
     void normalize(Vec4 *v);
+
+    void normalize(Rot2 *r);
     void normalize(Rot3 *r);
 
     Vec3 cross(Vec3 *v1, Vec3 *v2);
-    BiVec3 wedge(Vec3 *v1, Vec3 *v2);
 
 
     Rot3 from_to(Vec3 *v_from, Vec3 *v_to);
