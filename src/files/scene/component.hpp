@@ -1,8 +1,11 @@
 #pragma once
 
-#include "../ecs/Entity.hpp"
+
 #include "../math/math_types.hpp"
 #include "../int.hpp"
+
+// TODO(Johan): maybe change back to #include "Entity.hpp"
+typedef U64 Entity;
 
 
 
