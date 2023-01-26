@@ -1,7 +1,7 @@
 #pragma once
 #include "../Config.hpp"
 
-#include "../ecs/ecs.hpp"
+#include "../ecs.hpp"
 #include "../Memory_arena.hpp"
 #include "window.hpp"
 

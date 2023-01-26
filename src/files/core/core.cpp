@@ -9,7 +9,7 @@
 #include "../asset/asset.hpp"
 
 
-#include "../ecs/ecs.hpp"
+#include "../ecs.hpp"
 #include "../int.hpp"
 #include "../Renderer/Renderer.hpp"
 

@@ -2,7 +2,7 @@
 
 #if defined(_WIN32) || defined(__linux__)
 
-#include "ecs/ecs.hpp"
+#include "ecs.hpp"
 #include "core/Application.hpp"
 #include "scene/Camera.hpp"
 #include "scene/component.hpp"
