@@ -89,37 +89,6 @@ typedef U64 Entity;
 
 
 
-
-
-
-
-
-
-namespace Ecs
-{
-
-    struct Entity_data
-    {
-        U64 m_entitycount;
-    };
-
-    namespace Entity_functions
-    {
-
-
-        void init(Entity_data *e_data);
-
-        Entity create_entity(Entity_data *e_data);
-        void destroy_entity(Entity_data *edata, Entity e);
-
-    }
-}
-
-
-
-
-
-
 /**
  * non-owning view, only provides copies of components
  */
@@ -535,8 +504,20 @@ enum Phase
 };
 
 
+namespace Ecs
+{
+    struct Registry;
+}
 
-struct Iter;
+
+struct Iter 
+{
+    Ecs::Registry *registry;
+    Group *group;
+    Memory_arena *view_arena;
+    void *event;
+    float Ts;
+};
 
 namespace Ecs
 {
@@ -585,14 +566,7 @@ struct Memory_arena;
 
 
 
-struct Iter 
-{
-    Ecs::Registry *registry;
-    Group *group;
-    Memory_arena *view_arena;
-    void *event;
-    float Ts;
-};
+
 
 
 
@@ -690,37 +664,6 @@ namespace Ecs
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace Ecs
 {
     struct Registry
@@ -728,7 +671,9 @@ namespace Ecs
         Memory_arena *mm;
         Memory_arena *view_mm;
         Memory_arena *event_mm;
-        Entity_data *edata;
+
+        U64 entity_count;
+
         event_data *evdata;
         system_data *sysdata;
         Component_data *cdata;      

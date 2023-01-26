@@ -365,29 +365,6 @@ void Event_functions::run_events(event_data *ed, Memory_arena *event_mm, Iter *i
 }
 
 
-void Entity_functions::init(Entity_data *e_data)
-{
-    e_data->m_entitycount = 0;
-}
-
-
-Entity Entity_functions::create_entity(Entity_data *e_data) //TODO(Johan) add entity recycling
-{
-    Entity e = Entity();
-    e = {e_data->m_entitycount++};
-    return e;
-}
-
-
-void Entity_functions::destroy_entity(Entity_data *edata, Entity e)
-{
-    
-}
-
-
-
-
-
 
 void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memory_arena *event_mm)
 {
@@ -403,12 +380,10 @@ void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memo
     Arena::clear_arena(event_mm);
 
 
-    registry->edata   = Arena::top_alloc<Entity_data>(registry->mm);
     registry->evdata  = Arena::top_alloc<event_data>(registry->mm);
     registry->sysdata = Arena::top_alloc<system_data>(registry->mm);
     registry->cdata   = Arena::top_alloc<Component_data>(registry->mm);
 
-    Entity_functions::init(registry->edata);
     Event_functions::init(registry->evdata);
     System_functions::init(registry->sysdata);
     Component_functions::init(registry->cdata);
@@ -437,16 +412,14 @@ void Ecs::progress_systems(Registry *registry, float Ts)
 
 Entity Ecs::create_entity(Registry *registry)
 {
-    Entity e = Entity_functions::create_entity(registry->edata);
-
-    return e;    
+    return registry->entity_count++;
 }
 
 
 void Ecs::destroy_entity(Registry *registry, Entity e)
 {
     Component_functions::destroy_entity(registry->cdata, e);
-    Entity_functions::destroy_entity(registry->edata, e);
+    // TODO(Johan): add entity removal system here
 }
 
 
