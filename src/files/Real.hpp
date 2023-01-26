@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(_WIN64) || defined(__linux__)
+#if defined(_WIN32) || defined(__linux__)
 
 #include "ecs/ecs.hpp"
 #include "core/Application.hpp"
@@ -12,6 +12,6 @@
 
 #else
 
-#error Compiles only on 64 bit Windows or Linux
+#error Compiles only on Windows or Linux
 
 #endif

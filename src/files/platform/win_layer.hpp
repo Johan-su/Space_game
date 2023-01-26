@@ -1,14 +1,14 @@
-#ifdef _WIN64
-#include "win64_layer.hpp"
+#include "../int.hpp"
+
 #include <Windows.h>
 #include <sys/timeb.h>
 
 #include <stdio.h>
 #include <string.h>
 
-SYSTEM_INFO g_info;
+static SYSTEM_INFO g_info;
 
-void Windows::init()
+void Platform::init()
 {
 
     GetSystemInfo(&g_info);
@@ -20,26 +20,26 @@ void Windows::init()
 
 static FILETIME time;
 
-uint64_t Windows::get_micro_time()
+U64 Platform::get_micro_time()
 {
     GetSystemTimePreciseAsFileTime(&time);
 
-    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10;    
+    return ((((U64)time.dwHighDateTime) << 32) + (U64)time.dwLowDateTime) / 10;    
 }
 
-uint64_t Windows::get_mili_time()
+U64 Platform::get_mili_time()
 {
     GetSystemTimePreciseAsFileTime(&time);
 
-    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10000;
+    return ((((U64)time.dwHighDateTime) << 32) + (U64)time.dwLowDateTime) / 10000;
 }
 
 
-uint64_t Windows::get_sec_time()
+U64 Platform::get_sec_time()
 {
     GetSystemTimePreciseAsFileTime(&time);
 
-    return ((((uint64_t)time.dwHighDateTime) << 32) + (uint64_t)time.dwLowDateTime) / 10000000; 
+    return ((((U64)time.dwHighDateTime) << 32) + (U64)time.dwLowDateTime) / 10000000; 
 }
 
 
@@ -47,9 +47,9 @@ uint64_t Windows::get_sec_time()
 
 
 
-void *Windows::reserve(void *address, size_t page_amount)
+void *Platform::reserve(void *address, Usize page_amount)
 {
-    size_t page_size = g_info.dwPageSize;
+    Usize page_size = g_info.dwPageSize;
 
     LPVOID V_address = VirtualAlloc(address, page_amount * page_size, MEM_RESERVE, PAGE_READWRITE);
     if (V_address == nullptr)
@@ -62,9 +62,9 @@ void *Windows::reserve(void *address, size_t page_amount)
 }
 
 
-void *Windows::commit(void *address, size_t page_amount)
+void *Platform::commit(void *address, Usize page_amount)
 {
-    size_t page_size = g_info.dwPageSize;
+    Usize page_size = g_info.dwPageSize;
 
     LPVOID V_address = VirtualAlloc(address, page_amount * page_size, MEM_COMMIT, PAGE_READWRITE);
     if (V_address == nullptr)
@@ -77,9 +77,9 @@ void *Windows::commit(void *address, size_t page_amount)
     return V_address;
 }
 
-void Windows::free(void *address, size_t page_amount)
+void Platform::free(void *address, Usize page_amount)
 {
-    size_t page_size = g_info.dwPageSize;
+    Usize page_size = g_info.dwPageSize;
 
     if (VirtualFree(address, page_amount * page_size, MEM_DECOMMIT) == 0)
     {
@@ -90,19 +90,19 @@ void Windows::free(void *address, size_t page_amount)
 
 
 
-size_t Windows::get_page_size()
+Usize Platform::get_page_size()
 {
     return g_info.dwPageSize;
 }
 
 
-void Windows::get_abs_path(const char *src_path, char *buf, uint32_t buf_len)
+void Platform::get_abs_path(const char *src_path, char *buf, U32 buf_len)
 {
 
     // normal buf_len wont include space for filename so we subtract the filename length to require more memory
     DWORD shortened_buf_len = buf_len;
 
-    uint32_t filename_pos = strlen(src_path);
+    U32 filename_pos = strlen(src_path);
     {
         while (filename_pos > 0)
         {
@@ -123,12 +123,3 @@ void Windows::get_abs_path(const char *src_path, char *buf, uint32_t buf_len)
         exit(1);
    }
 }
-
-
-
-
-
-
-
-
-#endif

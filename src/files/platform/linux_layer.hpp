@@ -1,6 +1,3 @@
-#ifdef __linux__
-#include "linux_layer.hpp"
-
 #include <chrono>
 #include <sys/time.h>
 #include <sys/mman.h>
@@ -102,23 +99,3 @@ size_t Linux::get_page_size()
 
     return (size_t)page_size;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif

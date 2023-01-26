@@ -209,7 +209,7 @@ void Application::run(Application_data *app, scene *scene)
     U64 target_fixed_update = 1000000 / FIXED_UPDATE_FREQUENCY_PER_SEC;
     
     U64 curr;
-    U64 prev = deltaTime::get_micro_time();
+    U64 prev = Platform::get_micro_time();
     U64 dt; // dt in microseconds 10^-6 seconds
     float ts; // time step in seconds
     
@@ -230,7 +230,7 @@ void Application::run(Application_data *app, scene *scene)
 
     while (app->active)
     {
-        curr = deltaTime::get_micro_time();
+        curr = Platform::get_micro_time();
         dt = curr - prev;
         prev = curr;
       
@@ -278,7 +278,7 @@ void Application::run(Application_data *app, scene *scene)
         // wait if frame took less than 1 / maxFps seconds
         do
         {
-            curr = deltaTime::get_micro_time();
+            curr = Platform::get_micro_time();
             dt = curr - prev;
         } while (dt < target_time);
 

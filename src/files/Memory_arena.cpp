@@ -8,7 +8,7 @@ void Arena::init(Memory_arena *arena, void *reserved_space_address, Usize page_p
 {
     Usize page_size = Platform::get_page_size();
     
-    arena->data = memory_map::commit(reserved_space_address, page_pre_allocation);
+    arena->data = Platform::commit(reserved_space_address, page_pre_allocation);
 
     if (page_pre_allocation > max_pages_reserved)
     {
@@ -27,7 +27,7 @@ void Arena::init(Memory_arena *arena, void *reserved_space_address, Usize page_p
 
 void Arena::clean_arena(Memory_arena *arena)
 {
-    memory_map::free(arena->data, arena->max_size_commited);
+    Platform::free(arena->data, arena->max_size_commited);
     arena->data = nullptr;
     arena->bytes_allocated = 0;
     arena->max_size_commited = 0;
@@ -57,7 +57,7 @@ void *Arena::top_alloc_bytes(Memory_arena *arena, Usize bytes, Usize alignment)
             fprintf(stderr, "ERROR: allocation out of top arena's reserved bounds\n");
             exit(1);
         }
-        memory_map::commit((char *)arena->data + arena->max_size_commited, page_amount);
+        Platform::commit((char *)arena->data + arena->max_size_commited, page_amount);
         arena->max_size_commited += page_amount * page_size;
 
     }

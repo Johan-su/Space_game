@@ -36,7 +36,7 @@ global_memory g_memory = {};
 void Internal::init_global_memory()
 {
     Platform::init();
-    reserve_memory_begin = memory_map::reserve(nullptr, Platform::bytes_to_page_amount(1 * TiB)); // 1 TiB
+    reserve_memory_begin = Platform::reserve(nullptr, Platform::bytes_to_page_amount(1 * TiB)); // 1 TiB
     reserve_memory_end = (char *)reserve_memory_begin + 1 * TiB;
 
     void *app_buffer_start = reserve_memory_begin;
