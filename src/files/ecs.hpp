@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Memory_arena.hpp"
-#include "utils.hpp"
 
 
 
@@ -270,9 +269,6 @@ struct Iter
 };
 
 
-struct Group;
-
-
 
 
 
@@ -309,63 +305,14 @@ namespace Ecs
     };
 
 
-    namespace Event_functions
+    void run_events(Registry *registry, Iter *it);
+
+    template<typename T>
+    Usize get_event_id(event_data *ed)
     {
-        void init(event_data *ed); 
-        void run_events(event_data *ed, Memory_arena *event_mm, Iter *it);
-    } // namespace Event_functions
-    
-
-    namespace Event_functions
-    {
-        template<typename T>
-        Usize get_event_id(event_data *ed)
-        {
-            static const Usize id = ed->event_types_count++;
-            return id;
-        }
-
-        template<typename T>
-        void init_event(event_data *ed)
-        {
-            const Usize id = get_event_id<T>(ed);
-            ECS_assert(id < MAX_EVENT_TYPES, "id must be lower than MAX_EVENT_TYPES");
-
-            ed->event_init[id] = true;
-            ed->type_data[id].size = sizeof(T);
-            ed->type_data[id].alignment = alignof(T);
-        }
-
-
-        template<typename T>
-        void init_event_listener(event_data *ed, void (*listener)(Iter *))
-        {
-            const Usize id = get_event_id<T>(ed);
-            ECS_assert(ed->listener_data[id].event_sub_count < MAX_EVENT_SUBS, "cannot have more than MAX_EVENT_SUBS subs to a single event");
-
-            ed->listener_data[id].event_listeners[ed->listener_data[id].event_sub_count] = listener;
-            ++ed->listener_data[id].event_sub_count;
-        }
-
-
-        template<typename T>
-        void push_event(event_data *ed, Memory_arena *event_mm, T *event)
-        {
-            const Usize id = get_event_id<T>(ed);
-            ECS_assert(ed->event_init[id], "event must be initalized");
-
-            Usize *id_b = (Usize *)Arena::top_alloc_bytes(event_mm, sizeof(Usize) + sizeof(T), alignof(Usize)); // id + event aligned as id
-            *id_b = id;
-
-            T *event_b = (T *)(id_b + 1);
-            *event_b = *event;
-
-            ++ed->events_in_buffer_count;
-        }
-        
-
-
-    } // namespace Event_functions
+        static const Usize id = ed->event_types_count++;
+        return id;
+    }
 
 } // namespace Ecs
 
@@ -392,7 +339,7 @@ namespace Ecs
 
         U64 entity_count;
 
-        event_data *evdata;
+        event_data evdata;
 
         SystemPool pre_update_funcs;
         SystemPool on_update_funcs;
@@ -414,24 +361,44 @@ namespace Ecs
 
 namespace Ecs
 {
+
+
     template<typename T>
     void init_event(Registry *registry)
     {
-        Event_functions::init_event<T>(registry->evdata);
+        const Usize id = get_event_id<T>(&registry->evdata);
+        ECS_assert(id < MAX_EVENT_TYPES, "id must be lower than MAX_EVENT_TYPES");
+
+        registry->evdata.event_init[id] = true;
+        registry->evdata.type_data[id].size = sizeof(T);
+        registry->evdata.type_data[id].alignment = alignof(T);
     }
 
 
     template<typename T>
     void push_event(Registry *registry, T *event)
     {
-        Event_functions::push_event<T>(registry->evdata, registry->event_mm, event);
+        const Usize id = get_event_id<T>(&registry->evdata);
+        ECS_assert(registry->evdata.event_init[id], "event must be initalized");
+
+        Usize *id_b = (Usize *)Arena::top_alloc_bytes(registry->event_mm, sizeof(Usize) + sizeof(T), alignof(Usize)); // id + event aligned as id
+        *id_b = id;
+
+        T *event_b = (T *)(id_b + 1);
+        *event_b = *event;
+
+        ++registry->evdata.events_in_buffer_count;
     }
 
 
     template<typename T>
     void init_event_listener(Registry *registry, void (*listener)(Iter *))
     {
-        Event_functions::init_event_listener<T>(registry->evdata, listener);
+        const Usize id = get_event_id<T>(&registry->evdata);
+        ECS_assert(registry->evdata.listener_data[id].event_sub_count < MAX_EVENT_SUBS, "cannot have more than MAX_EVENT_SUBS subs to a single event");
+
+        registry->evdata.listener_data[id].event_listeners[registry->evdata.listener_data[id].event_sub_count] = listener;
+        ++registry->evdata.listener_data[id].event_sub_count;
     }
 
 

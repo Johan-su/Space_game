@@ -219,7 +219,7 @@ void Application::run(Application_data *app, scene *scene)
         .registry = &scene->registry,
     };
 
-    Ecs::Event_functions::run_events(scene->registry.evdata, scene->registry.event_mm, &it);
+    Ecs::run_events(&scene->registry, &it);
 
     Entity camera = Application::get_first_active_camera(&scene->registry);
 
