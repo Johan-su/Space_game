@@ -22,13 +22,7 @@ using namespace Ecs;
 
 
 
-void Component_functions::init(Component_data *cdata)
-{
-    memset(cdata, 0, sizeof(*cdata));
-}
-
-
-void Component_functions::init_component_bytes(Memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment)
+void Ecs::init_component_bytes(Memory_arena *mm, Component_data *cdata, Usize compid, Usize comp_size, Usize comp_alignment)
 {
         // not actually a pool of U8.
         Component_pool<U8> *comp_pool = (Component_pool<U8> *)cdata->component_pools[compid];
@@ -49,7 +43,7 @@ void Component_functions::init_component_bytes(Memory_arena *mm, Component_data 
 }
 
 
-void *Component_functions::get_component_pool_raw(Component_data *cdata, Usize compid)
+void *Ecs::get_component_pool_raw(Component_data *cdata, Usize compid)
 {
     ECS_assert(cdata->pool_init[compid], "Component_pool was not initalized");
 
@@ -60,7 +54,7 @@ void *Component_functions::get_component_pool_raw(Component_data *cdata, Usize c
 }
 
 
-void *Component_functions::init_page_raw(Memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize)
+void *Ecs::init_page_raw(Memory_arena *mm, void *raw_pool, U32 page_id, Usize compsize)
 {
     // not actually U8 used for byte-wise
     Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool;
@@ -87,7 +81,7 @@ void *Component_functions::init_page_raw(Memory_arena *mm, void *raw_pool, U32 p
 }
 
 
-void *Component_functions::get_page_raw(Memory_arena *mm, void *raw_pool, U32 id, Usize compsize)
+void *Ecs::get_page_raw(Memory_arena *mm, void *raw_pool, U32 id, Usize compsize)
 {
     // not actually U8 use for byte-wise
     Component_pool<U8> *pool = (Component_pool<U8> *)raw_pool; 
@@ -102,7 +96,7 @@ void *Component_functions::get_page_raw(Memory_arena *mm, void *raw_pool, U32 id
 }
 
 
-void Component_functions::set_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize)
+void Ecs::set_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, void *raw_comp, Usize compid, Usize compsize)
 {
     ECS_assert(e != ENTITY_NULL, "entity cannot be ENTITY_NULL");
     ECS_assert(e < (MAX_ENTITY_AMOUNT - 1), "entity id out of bounds");
@@ -120,7 +114,7 @@ void Component_functions::set_component_raw(Memory_arena *mm, Component_data *cd
 }
 #define ECS_DEBUG3 0
 
-void *Component_functions::get_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize)
+void *Ecs::get_component_raw(Memory_arena *mm, Component_data *cdata, Entity e, Usize compid, Usize compsize)
 {
     ECS_assert(e < ENTITY_NULL, "Entity outside scope");
     // not actually U8 use for byte-wise
@@ -137,7 +131,7 @@ void *Component_functions::get_component_raw(Memory_arena *mm, Component_data *c
 }
 
 
-void Component_functions::destroy_entity(Component_data *cdata, Entity e)
+void Ecs::destroy_entity(Component_data *cdata, Entity e)
 {
     ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
 
@@ -195,7 +189,7 @@ void Component_functions::destroy_entity(Component_data *cdata, Entity e)
 }
 
 
-void Component_functions::fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount)
+void Ecs::fill_similar_entities(Component_data *cdata, Entity *entity_list, Usize *count, Usize *comp_ids, Usize min_id, Usize typeCount)
 {
     // not actually pool of U8, used for manipulating indiviudal bytes.
 
@@ -294,10 +288,8 @@ void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memo
 
 
     registry->evdata  = Arena::top_alloc<event_data>(registry->mm);
-    registry->cdata   = Arena::top_alloc<Component_data>(registry->mm);
 
     Event_functions::init(registry->evdata);
-    Component_functions::init(registry->cdata);
 }
 
 
@@ -387,8 +379,59 @@ Entity Ecs::create_entity(Registry *registry)
 
 void Ecs::destroy_entity(Registry *registry, Entity e)
 {
-    Component_functions::destroy_entity(registry->cdata, e);
-    // TODO(Johan): add entity removal system here
+    ECS_assert(e < MAX_ENTITY_AMOUNT - 1, "entity id out of bounds");
+
+    U32 page_id      = e / PAGE_SIZE;
+    U32 page_entry_e = e % PAGE_SIZE;
+    ECS_dbg3(printf("DEBUG: DESTROYING ENTITY [%llu]\n", e));
+    for(size_t i = 0; i < registry->cdata.componentTypesCount; ++i)
+    {
+        ECS_assert(registry->cdata.pool_init[i], "disordered/uninitalized component pool");
+
+        size_t &compsize     = registry->cdata.component_sizes[i];
+
+        // component is not actually U8, used to access individual bytes.
+        Component_pool<U8> *pool = (Component_pool<U8> *)registry->cdata.component_pools[i];
+        
+
+
+        if (pool->entity_count == 0) {
+            ECS_dbg3(printf("DEBUG: Ignoring destroy entity [%llu] on empty pool; component id: %llu\n", e, i));
+            continue;
+        }
+
+
+        // component is not actually U8, used to access individual bytes.
+        Component_page<U8> *page = pool->component_pages[page_id];
+        if (page == nullptr)
+        { 
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu] on empty page; component id: %ld, page id: %llu\n", e, i, page_id));
+            continue;
+        }
+
+        if (page->sparse_array[page_entry_e] == ENTITY_NULL)
+        {
+            ECS_dbg3(printf("DEBUG: ignoring destroy entity [%llu], does not exist in page; component id: %llu, page id: %ld\n", e, i, page_id));
+            continue;
+        }
+
+        Entity laste = page->entity_list[page->entity_count - 1];
+        U32 page_entry_laste = laste % PAGE_SIZE;
+
+        memcpy( &(page->dense_array[page->sparse_array[page_entry_e] * compsize]),
+                &(page->dense_array[page->sparse_array[page_entry_laste] * compsize]), 
+                compsize);
+
+
+        page->entity_list[page->sparse_array[page_entry_e]] = laste;
+        page->entity_list[page->entity_count - 1] = ENTITY_NULL;
+
+        page->sparse_array[page_entry_laste] = page->sparse_array[page_entry_e];
+        
+        page->sparse_array[page_entry_e] = ENTITY_NULL;
+        --page->entity_count;
+    }
+
 }
 
 
