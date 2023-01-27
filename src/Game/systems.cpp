@@ -1014,13 +1014,9 @@ void PlayerSystem::update(Iter *it)
 }
 
 
-//#define PROFILE_FUNCTIONS
-//#include "../files/Time.hpp"
 
 void RenderSystem::render(Iter *it)
 {
-    //BEGIN_PROFILE_BLOCK();
-
 
     const Group *group = Ecs::get_group<Transform, MeshComponent, MaterialComponent>(it->registry);
 
@@ -1033,7 +1029,6 @@ void RenderSystem::render(Iter *it)
         Renderer::draw(&transform_list[i], &mesh_list[i], &material_list[i]);
     }
     
-    //END_PROFILE_BLOCK();
 }
 
 
