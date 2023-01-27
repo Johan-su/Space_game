@@ -248,93 +248,6 @@ void Component_functions::fill_similar_entities(Component_data *cdata, Entity *e
 
 
 
-
-
-
-
-
-void System_functions::init(system_data *sys_data)
-{
-    memset(sys_data, 0, sizeof(*sys_data));
-}
-
-
-void System_functions::init_system(system_data *sys_data, Phase phase, SystemFunc *system_func)
-{
-    switch (phase)
-    {
-        case Phase::None:
-        {} break;
-
-        
-        case Phase::PreUpdate:
-        {
-            sys_data->pre_update_funcs.funcs[sys_data->pre_update_funcs.count] = system_func;
-            ++sys_data->pre_update_funcs.count;
-        } break;
-
-
-        case Phase::OnUpdate:
-        {
-            sys_data->on_update_funcs.funcs[sys_data->on_update_funcs.count] = system_func;
-            ++sys_data->on_update_funcs.count;
-        } break;
-
-
-        case Phase::PostUpdate:
-        {
-            sys_data->post_update_funcs.funcs[sys_data->post_update_funcs.count] = system_func;
-            ++sys_data->post_update_funcs.count;
-        } break;
-
-
-        default:
-        {
-            ECS_assert(false, "Unreachable");
-        } break;
-        
-    }
-}
-
-
-static void run_system(SystemFunc *sys_func, Memory_arena *view_mm, Iter *iter)
-{
-    Arena::clear_arena(view_mm);
-    sys_func(iter);
-}
-
-
-void System_functions::progess_systems(system_data *sys_data, Memory_arena *view_mm, Iter *iter)
-{
-    for (int i = 0; i < sys_data->pre_update_funcs.count; ++i)
-    {
-        run_system(sys_data->pre_update_funcs.funcs[i], view_mm, iter);
-    }
-
-
-    for (int i = 0; i < sys_data->on_update_funcs.count; ++i)
-    {
-        run_system(sys_data->on_update_funcs.funcs[i], view_mm, iter);
-    }
-
-
-    for (int i = 0; i < sys_data->post_update_funcs.count; ++i)
-    {
-        run_system(sys_data->post_update_funcs.funcs[i], view_mm, iter);
-
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
 void Event_functions::init(event_data *ed)
 {
     memset(ed, 0, sizeof(*ed));
@@ -369,7 +282,7 @@ void Event_functions::run_events(event_data *ed, Memory_arena *event_mm, Iter *i
 void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memory_arena *event_mm)
 {
     ECS_assert(registry != nullptr, "Registry cannot be nullptr");
-
+    memset(registry, 0, sizeof(*registry));
 
 
 
@@ -381,20 +294,55 @@ void Ecs::init(Registry *registry, Memory_arena *mm, Memory_arena *view_mm, Memo
 
 
     registry->evdata  = Arena::top_alloc<event_data>(registry->mm);
-    registry->sysdata = Arena::top_alloc<system_data>(registry->mm);
     registry->cdata   = Arena::top_alloc<Component_data>(registry->mm);
 
     Event_functions::init(registry->evdata);
-    System_functions::init(registry->sysdata);
     Component_functions::init(registry->cdata);
 }
 
 
-void Ecs::init_system(Registry *registry, Phase phase, SystemFunc *system_function)
+void Ecs::init_system(Registry *registry, Phase phase, SystemFunc *system_func)
 {
-    System_functions::init_system(registry->sysdata, phase, system_function);
+    switch (phase)
+    {
+        case Phase::None:
+        {} break;
+
+        
+        case Phase::PreUpdate:
+        {
+            registry->pre_update_funcs.funcs[registry->pre_update_funcs.count] = system_func;
+            ++registry->pre_update_funcs.count;
+        } break;
+
+
+        case Phase::OnUpdate:
+        {
+            registry->on_update_funcs.funcs[registry->on_update_funcs.count] = system_func;
+            ++registry->on_update_funcs.count;
+        } break;
+
+
+        case Phase::PostUpdate:
+        {
+            registry->post_update_funcs.funcs[registry->post_update_funcs.count] = system_func;
+            ++registry->post_update_funcs.count;
+        } break;
+
+
+        default:
+        {
+            ECS_assert(false, "Unreachable");
+        } break;
+        
+    }
 }
 
+static void run_system(SystemFunc *sys_func, Memory_arena *view_mm, Iter *iter)
+{
+    Arena::clear_arena(view_mm);
+    sys_func(iter);
+}
 
 void Ecs::progress_systems(Registry *registry, float Ts)
 {
@@ -406,7 +354,28 @@ void Ecs::progress_systems(Registry *registry, float Ts)
         .Ts         = Ts
     };
     Event_functions::run_events(registry->evdata, registry->event_mm, &it);
-    System_functions::progess_systems(registry->sysdata, registry->view_mm, &it);
+
+
+
+
+
+    for (Usize i = 0; i < registry->pre_update_funcs.count; ++i)
+    {
+        run_system(registry->pre_update_funcs.funcs[i], registry->view_mm, &it);
+    }
+
+
+    for (Usize i = 0; i < registry->on_update_funcs.count; ++i)
+    {
+        run_system(registry->on_update_funcs.funcs[i], registry->view_mm, &it);
+    }
+
+
+    for (Usize i = 0; i < registry->post_update_funcs.count; ++i)
+    {
+        run_system(registry->post_update_funcs.funcs[i], registry->view_mm, &it);
+
+    }
 }
 
 
