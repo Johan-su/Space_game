@@ -19,10 +19,10 @@
 #include <limits.h>
 
 
-const Usize KiB = 1024llu;
-const Usize MiB = 1024llu * KiB;
-const Usize GiB = 1024llu * MiB;
-const Usize TiB = 1024llu * GiB;
+#define KiB (1024llu)
+#define MiB (1024llu * KiB)
+#define GiB (1024llu * MiB)
+#define TiB (1024llu * GiB)
 
 
 
