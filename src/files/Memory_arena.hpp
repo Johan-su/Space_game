@@ -17,12 +17,8 @@ struct Memory_arena
 namespace Arena  
 {
     /**
-     * 
-     * 
-     * 
      * @param pre_allocation current commit size in bytes (gets converted to pages)
      * @param max_size_reserved max reserved size in bytes (gets converted to pages)
-     * 
      */
     void init(Memory_arena *arena, void *reserved_space_address, Usize pre_allocation, Usize max_size_reserved);
     void clean_arena(Memory_arena *arena);
