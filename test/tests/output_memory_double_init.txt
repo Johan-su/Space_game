@@ -1,1 +1,0 @@
-Assertion [ !mm->m_MemoryActive ] failed in C:/Users/jsbol/repos/Space_game/src/files/ecs/MemoryManager.cpp line 7: Memory pool already active
